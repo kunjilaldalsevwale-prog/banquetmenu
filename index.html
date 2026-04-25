@@ -365,7 +365,7 @@ const restaurantPreload = {"categories":[{"id":"thali","name":"Thali (थाल�
 async function loadData(){
   // ALWAYS load from server first — this ensures all devices see same menu
   try{
-    const r = await fetch('/api/menu');
+    const r = await fetch('/api/menu', {cache:'no-store'});
     if(r.ok){
       const data = await r.json();
       const hasData = Object.values(data).some(m=>m.categories&&m.categories.length>0);
@@ -503,14 +503,16 @@ async function processFile(files){
           allMenus[currentMenu] = parsed;
           saveData();
           const total = parsed.categories.reduce((s,c)=>s+c.items.length,0);
-          setTimeout(()=>{
+          setTimeout(async ()=>{
             document.getElementById('scan-card').classList.remove('show');
             document.getElementById('success-card').classList.add('show');
             document.getElementById('success-detail').textContent = total + ' items found across ' + parsed.categories.length + ' categories!';
             document.getElementById('editor-wrap').classList.add('show');
             renderAdminCats();
             updateCounts();
-            toast('✅ ' + MENU_NAMES[currentMenu] + ' menu built! ' + total + ' items found.');
+            // Save to server immediately after scan
+            await saveData();
+            toast('✅ ' + MENU_NAMES[currentMenu] + ' menu saved! ' + total + ' items found.');
           }, 500);
           return;
         }
