@@ -3,520 +3,661 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Food House — Menu Manager</title>
+<title>Food House — Banquet Menu</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Raleway:wght@300;400;500;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Raleway:wght@300;400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --navy:#0D2744;--royal:#1A4A7A;--mid:#2E6FA8;--sky:#5B9FD4;
-  --gold:#B8953F;--gold2:#D4AC5C;--pale:#C8E0F0;--pale2:#e8f2fa;
-  --cream:#F5F0E8;--ivory:#FBF8F2;--white:#fff;
+  --navy:#0D2744;--royal:#1A4A7A;--mid:#2E6FA8;--gold:#B8953F;--gold2:#D4AC5C;
+  --pale:#C8E0F0;--ivory:#FBF8F2;--cream:#F5F0E8;--white:#fff;
   --muted:#4A6A88;--text:#0A1E35;
-  --green:#166534;--green-bg:#dcfce7;--green-border:#86efac;
-  --red:#991b1b;--red-bg:#fee2e2;--red-border:#fca5a5;
+  --green:#166534;--green-bg:#dcfce7;--green-bd:#86efac;
+  --red:#991b1b;--red-bg:#fee2e2;--red-bd:#fca5a5;
+  --orange:#92400e;--orange-bg:#fef3c7;--orange-bd:#fcd34d;
 }
 body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);min-height:100vh;-webkit-tap-highlight-color:transparent}
 
-.topbar{background:var(--navy);padding:0 1.2rem;display:flex;align-items:center;justify-content:space-between;height:54px;border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:200}
-.tb-brand{font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;color:var(--gold2);letter-spacing:0.05em}
-.tb-sub{font-size:0.52rem;color:rgba(200,224,240,0.55);letter-spacing:0.15em;text-transform:uppercase}
+/* ── TOPBAR ── */
+.topbar{background:var(--navy);height:52px;padding:0 1rem;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:200}
+.tb-left{display:flex;flex-direction:column}
+.tb-brand{font-family:'Cinzel',serif;font-size:0.82rem;font-weight:700;color:var(--gold2);letter-spacing:0.05em}
+.tb-sub{font-size:0.48rem;color:rgba(200,224,240,0.5);letter-spacing:0.15em;text-transform:uppercase}
 .tb-toggle{display:flex;background:rgba(255,255,255,0.08);border-radius:6px;overflow:hidden;border:1px solid rgba(184,149,63,0.3)}
-.tb-btn{padding:0.4rem 0.8rem;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;border:none;background:none;color:rgba(200,224,240,0.6);cursor:pointer;font-weight:600;font-family:'Raleway',sans-serif;transition:all 0.2s;white-space:nowrap}
+.tb-btn{padding:0.38rem 0.75rem;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;border:none;background:none;color:rgba(200,224,240,0.6);cursor:pointer;font-weight:600;font-family:'Raleway',sans-serif;transition:all 0.2s;white-space:nowrap}
 .tb-btn.active{background:var(--gold);color:var(--navy)}
 
+/* ── VIEWS ── */
 .view{display:none}.view.active{display:block}
 
-/* ADMIN */
-.admin-wrap{max-width:780px;margin:0 auto;padding:1.2rem 1rem 4rem}
-.welcome-card{background:var(--navy);border-radius:12px;padding:1.4rem 1.5rem;margin-bottom:1.4rem;display:flex;gap:1rem;align-items:center}
-.wc-icon{font-size:2rem;width:52px;height:52px;background:var(--gold);border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none}
-.wc-title{font-family:'Cinzel',serif;font-size:1.05rem;color:var(--white);margin-bottom:0.3rem}
-.wc-sub{font-size:0.72rem;color:rgba(200,224,240,0.65);line-height:1.6}
-.pulse-pill{display:inline-flex;align-items:center;gap:0.35rem;background:rgba(46,204,113,0.12);border:1px solid rgba(46,204,113,0.35);color:#4ade80;font-size:0.58rem;padding:2px 8px;border-radius:20px;margin-top:0.4rem;font-weight:600}
-.pulse-dot{width:6px;height:6px;border-radius:50%;background:#4ade80;animation:blink 1.4s infinite}
+/* ══════════════════════════
+   ADMIN VIEW
+══════════════════════════ */
+.aw{max-width:820px;margin:0 auto;padding:1.2rem 1rem 5rem}
+
+.welcome{background:var(--navy);border-radius:12px;padding:1.3rem 1.4rem;margin-bottom:1.3rem;display:flex;gap:1rem;align-items:center}
+.w-icon{font-size:1.8rem;width:48px;height:48px;background:var(--gold);border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none}
+.w-title{font-family:'Cinzel',serif;font-size:1rem;color:var(--white);margin-bottom:0.2rem}
+.w-sub{font-size:0.7rem;color:rgba(200,224,240,0.65);line-height:1.5}
+.live-pill{display:inline-flex;align-items:center;gap:0.3rem;background:rgba(46,204,113,0.12);border:1px solid rgba(46,204,113,0.35);color:#4ade80;font-size:0.55rem;padding:2px 7px;border-radius:20px;margin-top:0.35rem;font-weight:600}
+.live-dot{width:5px;height:5px;border-radius:50%;background:#4ade80;animation:blink 1.4s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
 
-.sec-hd{font-family:'Cinzel',serif;font-size:0.8rem;font-weight:600;color:var(--navy);letter-spacing:0.1em;text-transform:uppercase;padding-bottom:0.6rem;border-bottom:2px solid var(--pale);margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem}
+.sec-hd{font-family:'Cinzel',serif;font-size:0.78rem;font-weight:600;color:var(--navy);letter-spacing:0.1em;text-transform:uppercase;padding-bottom:0.5rem;border-bottom:2px solid var(--pale);margin-bottom:0.9rem;display:flex;align-items:center;justify-content:space-between}
 
-.how-card{background:var(--white);border:1px solid var(--pale);border-radius:10px;padding:1.1rem;margin-bottom:1.4rem}
-.how-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0.6rem;margin-top:0.8rem}
-.how-step{text-align:center;padding:0.6rem}
-.how-step-num{width:28px;height:28px;border-radius:50%;background:var(--navy);color:var(--gold2);font-family:'Cinzel',serif;font-size:0.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 0.4rem}
-.how-step-text{font-size:0.62rem;color:var(--muted);line-height:1.4}
+/* CATEGORY TABS (admin) */
+.admin-tabs{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:1.2rem}
+.admin-tab{padding:0.45rem 0.9rem;font-size:0.65rem;letter-spacing:0.08em;text-transform:uppercase;border:1px solid var(--pale);background:var(--white);color:var(--muted);cursor:pointer;border-radius:6px;font-weight:600;font-family:'Raleway',sans-serif;transition:all 0.2s}
+.admin-tab.active{background:var(--navy);color:var(--gold2);border-color:var(--navy)}
+.admin-tab-add{background:var(--gold);color:var(--navy);border-color:var(--gold)}
+.admin-tab-add:hover{background:#a07830}
 
-.upload-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.9rem;margin-bottom:1.4rem}
-.u-card{background:var(--white);border:1px solid var(--pale);border-radius:10px;overflow:hidden;transition:box-shadow 0.2s}
-.u-card:hover{box-shadow:0 4px 20px rgba(13,39,68,0.1)}
-.u-head{padding:0.85rem 1rem;display:flex;align-items:center;gap:0.5rem}
-.u-head-icon{font-size:1.2rem}
-.u-head-name{font-family:'Cinzel',serif;font-size:0.78rem;font-weight:600;color:var(--white)}
-.u-body{padding:0.9rem}
-.u-status{font-size:0.65rem;font-weight:600;display:flex;align-items:center;gap:0.35rem;margin-bottom:0.7rem}
-.sdot{width:7px;height:7px;border-radius:50%;flex:none}
-.sdot-on{background:#4ade80}.sdot-off{background:#f87171}
-.s-live{color:var(--green)}.s-none{color:var(--red)}
-.u-file-info{background:var(--pale2);border-radius:5px;padding:0.45rem 0.6rem;font-size:0.62rem;color:var(--muted);line-height:1.5;margin-bottom:0.6rem;display:none;word-break:break-word}
-.u-btn{width:100%;padding:0.6rem 0.4rem;border:none;border-radius:6px;font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;font-weight:700;font-family:'Raleway',sans-serif;transition:all 0.2s}
-.u-btn-idle{background:var(--navy);color:var(--gold2)}
-.u-btn-idle:hover{background:var(--royal)}
-.u-btn-done{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
-.u-del{width:100%;margin-top:0.35rem;padding:0.4rem;border:1px solid var(--red-border);background:none;border-radius:5px;font-size:0.6rem;color:var(--red);cursor:pointer;font-weight:600;font-family:'Raleway',sans-serif;display:none}
-.u-del:hover{background:var(--red-bg)}
-.file-input{display:none}
-.u-time{font-size:0.58rem;color:var(--muted);text-align:center;margin-top:0.4rem}
+/* CATEGORY PANEL */
+.cat-panel{display:none}.cat-panel.active{display:block}
 
-.qr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.9rem;margin-bottom:1.4rem}
-.qr-card{background:var(--white);border:1px solid var(--pale);border-radius:10px;padding:1rem;text-align:center}
-.qr-card-title{font-size:0.68rem;font-weight:700;color:var(--navy);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.7rem}
-.qr-canvas-wrap{display:flex;justify-content:center;margin-bottom:0.6rem}
+/* ITEM LIST (admin) */
+.item-list{display:grid;gap:0.6rem;margin-bottom:1rem}
+.admin-item{background:var(--white);border:1px solid var(--pale);border-radius:8px;padding:0.75rem 0.9rem;display:flex;align-items:center;gap:0.7rem}
+.admin-item-drag{color:var(--pale);font-size:1rem;cursor:grab;flex:none}
+.admin-item-info{flex:1;min-width:0}
+.admin-item-name{font-size:0.85rem;font-weight:600;color:var(--text);display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap}
+.admin-item-desc{font-size:0.68rem;color:var(--muted);margin-top:0.1rem;font-style:italic}
+.admin-item-price{font-family:'Cinzel',serif;font-size:0.9rem;font-weight:600;color:var(--navy);white-space:nowrap}
+.admin-item-price::before{content:'₹';font-size:0.65rem;opacity:0.6}
+.item-actions{display:flex;gap:0.3rem;flex:none}
+.btn-edit{padding:3px 8px;background:var(--orange-bg);color:var(--orange);border:1px solid var(--orange-bd);border-radius:4px;font-size:0.6rem;cursor:pointer;font-weight:600;font-family:'Raleway',sans-serif}
+.btn-del{padding:3px 8px;background:var(--red-bg);color:var(--red);border:1px solid var(--red-bd);border-radius:4px;font-size:0.6rem;cursor:pointer;font-weight:600;font-family:'Raleway',sans-serif}
+.veg-dot{width:10px;height:10px;border-radius:2px;border:1px solid;flex:none}
+.veg-dot.veg{background:#dcfce7;border-color:#4ade80}
+.veg-dot.nonveg{background:#fee2e2;border-color:#f87171}
+
+/* ADD ITEM FORM */
+.add-form{background:var(--cream);border:1px solid var(--pale);border-radius:10px;padding:1rem;margin-bottom:1rem}
+.add-form-title{font-size:0.7rem;font-weight:700;color:var(--navy);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.8rem}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:0.6rem}
+.form-row-3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:0.6rem;margin-bottom:0.6rem}
+.f-label{font-size:0.6rem;font-weight:600;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.2rem;display:block}
+.f-input{width:100%;border:1px solid var(--pale);border-radius:5px;padding:0.45rem 0.6rem;font-size:0.8rem;font-family:'Raleway',sans-serif;color:var(--text);background:var(--white);outline:none}
+.f-input:focus{border-color:var(--royal)}
+.f-select{width:100%;border:1px solid var(--pale);border-radius:5px;padding:0.45rem 0.6rem;font-size:0.8rem;font-family:'Raleway',sans-serif;color:var(--text);background:var(--white);outline:none}
+.f-btn-row{display:flex;gap:0.5rem;justify-content:flex-end}
+.f-btn-save{padding:0.5rem 1.2rem;background:var(--navy);color:var(--gold2);border:none;border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer;font-family:'Raleway',sans-serif}
+.f-btn-cancel{padding:0.5rem 1rem;background:none;color:var(--muted);border:1px solid var(--pale);border-radius:6px;font-size:0.7rem;font-weight:600;cursor:pointer;font-family:'Raleway',sans-serif}
+
+/* CAT RENAME */
+.cat-header-row{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.8rem}
+.cat-name-input{flex:1;border:1px solid var(--pale);border-radius:5px;padding:0.4rem 0.6rem;font-size:0.82rem;font-family:'Cinzel',serif;color:var(--navy);background:var(--white);outline:none;font-weight:600}
+.cat-name-input:focus{border-color:var(--royal)}
+.btn-rename{padding:0.4rem 0.8rem;background:var(--royal);color:white;border:none;border-radius:5px;font-size:0.62rem;font-weight:600;cursor:pointer;font-family:'Raleway',sans-serif;white-space:nowrap}
+.btn-delete-cat{padding:0.4rem 0.8rem;background:var(--red-bg);color:var(--red);border:1px solid var(--red-bd);border-radius:5px;font-size:0.62rem;font-weight:600;cursor:pointer;font-family:'Raleway',sans-serif;white-space:nowrap}
+.add-item-btn{width:100%;padding:0.55rem;background:none;border:2px dashed var(--pale);border-radius:8px;color:var(--muted);font-size:0.7rem;font-weight:600;cursor:pointer;font-family:'Raleway',sans-serif;transition:all 0.2s}
+.add-item-btn:hover{border-color:var(--royal);color:var(--royal)}
+
+/* QR CARDS */
+.qr-card{background:var(--white);border:1px solid var(--pale);border-radius:10px;padding:1rem;display:flex;gap:1rem;align-items:center;margin-bottom:0.8rem}
 .qr-canvas-wrap canvas{border-radius:6px;border:1px solid var(--pale)}
-.qr-note{font-size:0.6rem;color:var(--muted);margin-bottom:0.6rem;line-height:1.4}
-.qr-dl-btn{display:block;width:100%;padding:0.5rem;background:var(--navy);color:var(--gold2);border:none;border-radius:5px;font-size:0.62rem;font-weight:700;cursor:pointer;letter-spacing:0.08em;font-family:'Raleway',sans-serif;transition:background 0.2s}
-.qr-dl-btn:hover{background:var(--royal)}
+.qr-info-title{font-family:'Cinzel',serif;font-size:0.85rem;font-weight:600;color:var(--navy);margin-bottom:0.3rem}
+.qr-info-url{font-size:0.62rem;color:var(--muted);margin-bottom:0.6rem;word-break:break-all}
+.qr-dl-btn{padding:0.45rem 1rem;background:var(--navy);color:var(--gold2);border:none;border-radius:5px;font-size:0.62rem;font-weight:700;cursor:pointer;font-family:'Raleway',sans-serif}
 
-.team-card{background:var(--white);border:1px solid var(--pale);border-radius:10px;padding:1.1rem;margin-bottom:1.4rem}
-.team-add-row{display:flex;gap:0.5rem;margin-bottom:0.8rem;flex-wrap:wrap}
-.team-inp{flex:1;min-width:100px;border:1px solid var(--pale);border-radius:5px;padding:0.5rem 0.7rem;font-size:0.8rem;font-family:'Raleway',sans-serif;color:var(--text);background:var(--ivory);outline:none}
-.team-inp:focus{border-color:var(--royal)}
-.team-add-btn{padding:0.5rem 1rem;background:var(--royal);color:white;border:none;border-radius:5px;font-size:0.7rem;font-weight:700;cursor:pointer;font-family:'Raleway',sans-serif;white-space:nowrap}
-.member{display:flex;align-items:center;justify-content:space-between;padding:0.55rem 0;border-bottom:1px solid var(--pale)}
-.member:last-child{border-bottom:none}
-.member-l{display:flex;align-items:center;gap:0.6rem}
-.avatar{width:30px;height:30px;border-radius:50%;background:var(--mid);color:white;font-size:0.62rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}
-.member-name{font-size:0.8rem;font-weight:600}
-.member-role{font-size:0.62rem;color:var(--muted)}
-.mem-rm{background:none;border:1px solid var(--red-border);color:var(--red);padding:2px 7px;border-radius:4px;font-size:0.6rem;cursor:pointer;font-weight:600;font-family:'Raleway',sans-serif}
+/* ══════════════════════════
+   CUSTOMER VIEW
+══════════════════════════ */
+.cw{max-width:480px;margin:0 auto}
+.c-hero{background:var(--navy);text-align:center;padding:2rem 1.2rem 1.5rem;border-bottom:2px solid var(--gold);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Ccircle cx='30' cy='30' r='10' fill='none' stroke='%235B9FD4' stroke-width='0.8' opacity='0.2'/%3E%3Cellipse cx='30' cy='10' rx='3' ry='6' fill='%235B9FD4' opacity='0.1'/%3E%3Cellipse cx='50' cy='30' rx='6' ry='3' fill='%235B9FD4' opacity='0.1'/%3E%3C/svg%3E")}
+.c-brand{font-family:'Cinzel',serif;font-size:1.9rem;font-weight:700;color:var(--white);letter-spacing:0.06em;line-height:1}
+.c-sub{font-size:0.58rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold2);margin-top:0.2rem}
+.c-div{display:flex;align-items:center;gap:0.5rem;justify-content:center;margin:0.7rem 0}
+.c-line{flex:1;max-width:50px;height:1px;background:rgba(200,224,240,0.2)}
+.c-dia{width:5px;height:5px;background:var(--gold);transform:rotate(45deg)}
+.c-addr{font-size:0.58rem;color:rgba(200,224,240,0.45);letter-spacing:0.06em}
 
-.log-card{background:var(--white);border:1px solid var(--pale);border-radius:10px;overflow:hidden;margin-bottom:1.4rem}
-.log-head{background:var(--cream);padding:0.7rem 1rem;border-bottom:1px solid var(--pale);display:flex;justify-content:space-between;align-items:center}
-.log-head h3{font-size:0.7rem;font-weight:700;color:var(--navy);letter-spacing:0.1em;text-transform:uppercase}
-.log-body{max-height:200px;overflow-y:auto}
-.log-row{display:flex;align-items:center;gap:0.7rem;padding:0.6rem 1rem;border-bottom:1px solid rgba(200,224,240,0.3);font-size:0.7rem}
-.log-row:last-child{border-bottom:none}
-.ldot{width:7px;height:7px;border-radius:50%;flex:none}
-.log-time{font-size:0.6rem;color:var(--muted);margin-left:auto;white-space:nowrap}
-.log-empty{padding:1.2rem;text-align:center;font-size:0.72rem;color:var(--muted)}
+/* MENU TYPE TABS (customer top) */
+.c-type-nav{background:var(--navy);display:flex;border-bottom:1px solid rgba(184,149,63,0.3)}
+.c-type-btn{flex:1;padding:0.7rem 0.5rem;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(200,224,240,0.45);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;font-weight:600;font-family:'Raleway',sans-serif;transition:all 0.2s}
+.c-type-btn.active{color:var(--gold2);border-bottom-color:var(--gold)}
 
-/* CUSTOMER VIEW */
-.cust-wrap{max-width:480px;margin:0 auto}
-.cust-hero{background:var(--navy);text-align:center;padding:2rem 1.2rem 1.6rem;border-bottom:2px solid var(--gold)}
-.cust-brand{font-family:'Cinzel',serif;font-size:1.8rem;font-weight:700;color:var(--white);letter-spacing:0.08em;margin-bottom:0.15rem}
-.cust-sub{font-size:0.58rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold2)}
-.cust-div{display:flex;align-items:center;gap:0.5rem;justify-content:center;margin:0.7rem 0}
-.cust-line{flex:1;max-width:50px;height:1px;background:rgba(200,224,240,0.25)}
-.cust-dia{width:5px;height:5px;background:var(--gold);transform:rotate(45deg)}
-.cust-addr{font-size:0.6rem;color:rgba(200,224,240,0.5);letter-spacing:0.06em}
+/* CATEGORY TABS (customer) */
+.c-cat-nav{background:var(--royal);display:flex;overflow-x:auto;scrollbar-width:none;border-bottom:2px solid var(--gold)}
+.c-cat-nav::-webkit-scrollbar{display:none}
+.c-cat-btn{flex:none;padding:0.75rem 1rem;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(200,224,240,0.5);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;font-weight:600;font-family:'Raleway',sans-serif;transition:all 0.2s}
+.c-cat-btn.active{color:var(--gold2);border-bottom-color:var(--gold)}
 
-.menu-nav{background:var(--royal);display:flex;overflow-x:auto;scrollbar-width:none;border-bottom:2px solid var(--gold)}
-.menu-nav::-webkit-scrollbar{display:none}
-.menu-nav-btn{flex:none;padding:0.8rem 1rem;font-size:0.6rem;letter-spacing:0.13em;text-transform:uppercase;color:rgba(200,224,240,0.5);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;font-weight:600;font-family:'Raleway',sans-serif;transition:all 0.2s}
-.menu-nav-btn.active{color:var(--gold2);border-bottom-color:var(--gold)}
-
-.menu-section{display:none;padding:1rem 1rem 4rem;animation:fadeUp 0.2s ease}
-.menu-section.active{display:block}
+/* MENU CONTENT */
+.c-content{padding:1rem 1rem 5rem}
+.c-section{display:none}.c-section.active{display:block;animation:fadeUp 0.2s ease}
 @keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 
-.no-menu-box{text-align:center;padding:3.5rem 1rem}
-.no-menu-box .ico{font-size:2.8rem;display:block;margin-bottom:0.8rem}
-.no-menu-box h3{font-family:'Cinzel',serif;font-size:1rem;color:var(--navy);margin-bottom:0.4rem}
-.no-menu-box p{font-size:0.75rem;color:var(--muted);line-height:1.7}
+.c-sec-title{text-align:center;margin-bottom:1.2rem}
+.c-sec-eyebrow{font-size:0.55rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:0.2rem}
+.c-sec-name{font-family:'Cinzel',serif;font-size:1.3rem;font-weight:600;color:var(--navy)}
 
-.menu-file-bar{background:var(--white);border:1px solid var(--pale);border-radius:8px;padding:0.75rem 1rem;margin-bottom:0.8rem;display:flex;align-items:center;justify-content:space-between;gap:0.7rem}
-.mfb-name{font-size:0.8rem;font-weight:600;color:var(--text)}
-.mfb-date{font-size:0.62rem;color:var(--muted);margin-top:0.1rem}
-.save-btn{padding:0.4rem 0.8rem;background:var(--royal);color:white;border:none;border-radius:5px;font-size:0.62rem;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'Raleway',sans-serif;text-decoration:none}
-.menu-img{width:100%;border-radius:8px;display:block}
-.menu-loading{text-align:center;padding:3rem;font-size:0.8rem;color:var(--muted)}
+/* MENU ITEMS (customer) */
+.c-item{display:flex;align-items:start;justify-content:space-between;gap:0.8rem;padding:0.8rem 0;border-bottom:1px solid rgba(200,224,240,0.4)}
+.c-item:last-child{border-bottom:none}
+.c-item-left{flex:1;min-width:0}
+.c-item-name{font-family:'EB Garamond',serif;font-size:1.05rem;font-weight:500;color:var(--text);display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;line-height:1.3}
+.c-item-desc{font-size:0.72rem;color:var(--muted);margin-top:0.15rem;font-style:italic;line-height:1.4}
+.c-item-price{font-family:'Cinzel',serif;font-size:0.95rem;font-weight:600;color:var(--navy);white-space:nowrap;padding-top:0.1rem}
+.c-item-price::before{content:'₹';font-size:0.68rem;opacity:0.6;margin-right:1px}
+.vdot{width:9px;height:9px;border-radius:2px;border:1px solid;flex:none;margin-top:3px}
+.vdot.veg{background:#dcfce7;border-color:#4ade80}
+.vdot.nonveg{background:#fee2e2;border-color:#f87171}
 
-.cust-footer{text-align:center;padding:1.2rem;font-size:0.65rem;color:var(--muted);line-height:2;border-top:1px solid var(--pale)}
-.cust-footer a{color:var(--royal);text-decoration:none;font-weight:600}
+.empty-cat{text-align:center;padding:2.5rem 1rem;font-size:0.78rem;color:var(--muted)}
 
-/* MODAL */
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(10,30,53,0.75);z-index:300;align-items:center;justify-content:center}
-.modal-bg.show{display:flex}
-.modal-box{background:white;border-radius:12px;padding:2rem;text-align:center;width:280px}
-.modal-icon{font-size:2rem;margin-bottom:0.6rem}
-.modal-title{font-family:'Cinzel',serif;font-size:0.95rem;color:var(--navy);margin-bottom:0.4rem}
-.modal-sub{font-size:0.7rem;color:var(--muted);margin-bottom:1rem}
-.modal-bar{height:5px;background:var(--pale);border-radius:3px;overflow:hidden}
-.modal-fill{height:100%;background:linear-gradient(to right,var(--royal),var(--gold));border-radius:3px;width:0;transition:width 0.25s}
+/* TYPE SECTIONS */
+.c-type-section{display:none}.c-type-section.active{display:block}
 
-.toast{position:fixed;bottom:1.2rem;left:50%;transform:translateX(-50%) translateY(50px);background:var(--navy);color:white;padding:0.7rem 1.3rem;border-radius:8px;font-size:0.75rem;font-weight:500;border-left:3px solid var(--gold2);opacity:0;transition:all 0.3s;z-index:400;white-space:nowrap;pointer-events:none}
+/* FOOTER */
+.c-footer{text-align:center;padding:1.2rem;font-size:0.65rem;color:var(--muted);line-height:2;border-top:1px solid var(--pale)}
+.c-footer a{color:var(--royal);text-decoration:none;font-weight:600}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.2rem;left:50%;transform:translateX(-50%) translateY(50px);background:var(--navy);color:white;padding:0.7rem 1.3rem;border-radius:8px;font-size:0.75rem;font-weight:500;border-left:3px solid var(--gold2);opacity:0;transition:all 0.3s;z-index:999;white-space:nowrap;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-@media(max-width:580px){
-  .upload-grid,.qr-grid{grid-template-columns:1fr}
-  .how-steps{grid-template-columns:repeat(2,1fr)}
-  .welcome-card{flex-direction:column;text-align:center}
-}
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(10,30,53,0.7);z-index:300;align-items:center;justify-content:center;padding:1rem}
+.modal-bg.show{display:flex}
+.modal-box{background:white;border-radius:12px;padding:1.5rem;width:100%;max-width:380px}
+.modal-title{font-family:'Cinzel',serif;font-size:1rem;color:var(--navy);margin-bottom:1rem;padding-bottom:0.6rem;border-bottom:1px solid var(--pale)}
+
+@media(max-width:560px){.form-row,.form-row-3{grid-template-columns:1fr}.welcome{flex-direction:column;text-align:center}}
 </style>
 </head>
 <body>
 
 <div class="topbar" id="topbar">
-  <div>
+  <div class="tb-left">
     <div class="tb-brand">🏛 Food House</div>
     <div class="tb-sub">Menu Manager</div>
   </div>
   <div class="tb-toggle">
     <button class="tb-btn active" onclick="switchView('admin',this)">⚙ Admin</button>
-    <button class="tb-btn" onclick="switchView('customer',this)">👁 Customer View</button>
+    <button class="tb-btn" onclick="switchView('customer',this)">👁 Preview</button>
   </div>
 </div>
 
-<!-- ADMIN VIEW -->
+<!-- ══ ADMIN VIEW ══ -->
 <div id="view-admin" class="view active">
-  <div class="admin-wrap">
-    <div class="welcome-card">
-      <div class="wc-icon">🍽</div>
-      <div>
-        <div class="wc-title">Team Food House — Control Panel</div>
-        <div class="wc-sub">Upload menu PDFs or images below. Changes are saved online and visible to all customers instantly.</div>
-        <div class="pulse-pill"><span class="pulse-dot"></span>Connected to Cloudinary · Live Storage</div>
-      </div>
-    </div>
+<div class="aw">
 
-    <div class="how-card">
-      <div class="sec-hd">📖 How It Works</div>
-      <div class="how-steps">
-        <div class="how-step"><div class="how-step-num">1</div><div class="how-step-text">Upload your menu PDF or image below</div></div>
-        <div class="how-step"><div class="how-step-num">2</div><div class="how-step-text">Download the QR code for that menu</div></div>
-        <div class="how-step"><div class="how-step-num">3</div><div class="how-step-text">Print & place QR on your tables</div></div>
-        <div class="how-step"><div class="how-step-num">4</div><div class="how-step-text">Customers scan → see latest menu</div></div>
-      </div>
-    </div>
-
-    <div class="sec-hd">📤 Upload Menus</div>
-    <div class="upload-grid">
-      <div class="u-card">
-        <div class="u-head" style="background:#0D2744"><span class="u-head-icon">🍛</span><span class="u-head-name">Restaurant</span></div>
-        <div class="u-body">
-          <div class="u-status" id="ust-restaurant"><span class="sdot sdot-off"></span><span class="s-none">No menu yet</span></div>
-          <div class="u-file-info" id="ufi-restaurant"></div>
-          <button class="u-btn u-btn-idle" id="ubtn-restaurant" onclick="triggerUpload('restaurant')">+ Upload PDF / Image</button>
-          <input type="file" id="uinp-restaurant" class="file-input" accept=".pdf,image/*" onchange="handleFile('restaurant',this)">
-          <button class="u-del" id="udel-restaurant" onclick="removeMenu('restaurant')">🗑 Remove Menu</button>
-          <div class="u-time" id="utime-restaurant"></div>
-        </div>
-      </div>
-      <div class="u-card">
-        <div class="u-head" style="background:#2E1A4A"><span class="u-head-icon">🏛</span><span class="u-head-name">Banquet Hall</span></div>
-        <div class="u-body">
-          <div class="u-status" id="ust-banquet"><span class="sdot sdot-off"></span><span class="s-none">No menu yet</span></div>
-          <div class="u-file-info" id="ufi-banquet"></div>
-          <button class="u-btn u-btn-idle" id="ubtn-banquet" onclick="triggerUpload('banquet')">+ Upload PDF / Image</button>
-          <input type="file" id="uinp-banquet" class="file-input" accept=".pdf,image/*" onchange="handleFile('banquet',this)">
-          <button class="u-del" id="udel-banquet" onclick="removeMenu('banquet')">🗑 Remove Menu</button>
-          <div class="u-time" id="utime-banquet"></div>
-        </div>
-      </div>
-      <div class="u-card">
-        <div class="u-head" style="background:#4A1A0D"><span class="u-head-icon">🌶</span><span class="u-head-name">Chaat Adda</span></div>
-        <div class="u-body">
-          <div class="u-status" id="ust-chaat"><span class="sdot sdot-off"></span><span class="s-none">No menu yet</span></div>
-          <div class="u-file-info" id="ufi-chaat"></div>
-          <button class="u-btn u-btn-idle" id="ubtn-chaat" onclick="triggerUpload('chaat')">+ Upload PDF / Image</button>
-          <input type="file" id="uinp-chaat" class="file-input" accept=".pdf,image/*" onchange="handleFile('chaat',this)">
-          <button class="u-del" id="udel-chaat" onclick="removeMenu('chaat')">🗑 Remove Menu</button>
-          <div class="u-time" id="utime-chaat"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="sec-hd">📱 QR Codes — Download & Print for Tables</div>
-    <div class="qr-grid">
-      <div class="qr-card">
-        <div class="qr-card-title">🍛 Restaurant</div>
-        <div class="qr-canvas-wrap"><canvas id="qr-restaurant" width="140" height="140"></canvas></div>
-        <div class="qr-note">Scan to open Restaurant menu</div>
-        <button class="qr-dl-btn" onclick="downloadQR('restaurant','Restaurant')">⬇ Download QR PNG</button>
-      </div>
-      <div class="qr-card">
-        <div class="qr-card-title">🏛 Banquet Hall</div>
-        <div class="qr-canvas-wrap"><canvas id="qr-banquet" width="140" height="140"></canvas></div>
-        <div class="qr-note">Scan to open Banquet Hall menu</div>
-        <button class="qr-dl-btn" onclick="downloadQR('banquet','Banquet Hall')">⬇ Download QR PNG</button>
-      </div>
-      <div class="qr-card">
-        <div class="qr-card-title">🌶 Chaat Adda</div>
-        <div class="qr-canvas-wrap"><canvas id="qr-chaat" width="140" height="140"></canvas></div>
-        <div class="qr-note">Scan to open Chaat Adda menu</div>
-        <button class="qr-dl-btn" onclick="downloadQR('chaat','Chaat Adda')">⬇ Download QR PNG</button>
-      </div>
-    </div>
-
-    <div class="sec-hd">👥 Team Members</div>
-    <div class="team-card">
-      <div class="team-add-row">
-        <input type="text" class="team-inp" id="inp-name" placeholder="Member name">
-        <input type="text" class="team-inp" id="inp-role" placeholder="Role (e.g. Manager)">
-        <button class="team-add-btn" onclick="addMember()">+ Add</button>
-      </div>
-      <div id="team-list"></div>
-    </div>
-
-    <div class="sec-hd">📋 Activity Log</div>
-    <div class="log-card">
-      <div class="log-head"><h3>Recent Changes</h3><span style="font-size:0.62rem;color:var(--muted)" id="log-count">0 entries</span></div>
-      <div class="log-body" id="log-body"><div class="log-empty">No activity yet.</div></div>
+  <div class="welcome">
+    <div class="w-icon">🍽</div>
+    <div>
+      <div class="w-title">Team Food House — Menu Editor</div>
+      <div class="w-sub">Add, edit or remove menu items. Changes show instantly when customers scan the QR.</div>
+      <div class="live-pill"><span class="live-dot"></span>Live · Instant Updates</div>
     </div>
   </div>
+
+  <!-- MENU TYPE SELECTOR -->
+  <div class="sec-hd">Select Menu to Edit</div>
+  <div class="admin-tabs" id="menu-type-tabs">
+    <button class="admin-tab active" onclick="switchMenuType('kitty',this)">🍱 Kitty Menu</button>
+    <button class="admin-tab" onclick="switchMenuType('birthday',this)">🎂 Birthday Menu</button>
+  </div>
+
+  <!-- KITTY MENU EDITOR -->
+  <div id="admin-kitty" class="cat-panel active">
+    <div class="sec-hd">
+      <span>Kitty Menu — Categories & Items</span>
+      <button class="admin-tab admin-tab-add" onclick="addCategory('kitty')">+ Add Category</button>
+    </div>
+    <div class="admin-tabs" id="kitty-cat-tabs"></div>
+    <div id="kitty-cat-panels"></div>
+  </div>
+
+  <!-- BIRTHDAY MENU EDITOR -->
+  <div id="admin-birthday" class="cat-panel">
+    <div class="sec-hd">
+      <span>Birthday Menu — Categories & Items</span>
+      <button class="admin-tab admin-tab-add" onclick="addCategory('birthday')">+ Add Category</button>
+    </div>
+    <div class="admin-tabs" id="birthday-cat-tabs"></div>
+    <div id="birthday-cat-panels"></div>
+  </div>
+
+  <!-- QR CODES -->
+  <div class="sec-hd" style="margin-top:1.5rem">📱 QR Code</div>
+  <div class="qr-card">
+    <div class="qr-canvas-wrap"><canvas id="main-qr" width="100" height="100"></canvas></div>
+    <div>
+      <div class="qr-info-title">🏛 Banquet Hall Menu</div>
+      <div class="qr-info-url" id="qr-url-display">banquetmenu.vercel.app/?menu=banquet</div>
+      <button class="qr-dl-btn" onclick="downloadQR()">⬇ Download QR PNG</button>
+    </div>
+  </div>
+
+</div>
 </div>
 
-<!-- CUSTOMER VIEW -->
+<!-- ══ CUSTOMER VIEW ══ -->
 <div id="view-customer" class="view">
-  <div class="cust-wrap">
-    <div class="cust-hero">
-      <div class="cust-brand">FOOD HOUSE</div>
-      <div class="cust-sub">Kunjilal · Since 1947</div>
-      <div class="cust-div"><span class="cust-line"></span><span class="cust-dia"></span><span class="cust-line"></span></div>
-      <div class="cust-addr">Vidhya Nagar, Ramghat Road, Aligarh (UP) · +91-7088004440</div>
+<div class="cw">
+  <div class="c-hero">
+    <div class="c-brand">FOOD HOUSE</div>
+    <div class="c-sub">Kunjilal · Since 1947</div>
+    <div class="c-div"><span class="c-line"></span><span class="c-dia"></span><span class="c-line"></span></div>
+    <div class="c-addr">Vidhya Nagar, Ramghat Road, Aligarh · +91-7088004440</div>
+  </div>
+
+  <!-- MENU TYPE (Kitty / Birthday) -->
+  <div class="c-type-nav">
+    <button class="c-type-btn active" onclick="switchCustType('kitty',this)">🍱 Kitty Menu</button>
+    <button class="c-type-btn" onclick="switchCustType('birthday',this)">🎂 Birthday</button>
+  </div>
+
+  <!-- KITTY CUSTOMER VIEW -->
+  <div id="cust-kitty" class="c-type-section active">
+    <div class="c-cat-nav" id="kitty-cust-tabs"></div>
+    <div class="c-content" id="kitty-cust-content"></div>
+  </div>
+
+  <!-- BIRTHDAY CUSTOMER VIEW -->
+  <div id="cust-birthday" class="c-type-section">
+    <div class="c-cat-nav" id="birthday-cust-tabs"></div>
+    <div class="c-content" id="birthday-cust-content"></div>
+  </div>
+
+  <div class="c-footer">
+    <strong style="color:var(--navy)">Kunjilal Food House</strong><br>
+    Vidhya Nagar, Ramghat Road, Aligarh, UP<br>
+    <a href="tel:+917088004440">📞 +91-7088004440</a> &nbsp;·&nbsp;
+    <a href="https://wa.me/917088004440">💬 WhatsApp</a>
+  </div>
+</div>
+</div>
+
+<!-- ITEM EDIT MODAL -->
+<div class="modal-bg" id="item-modal">
+  <div class="modal-box">
+    <div class="modal-title" id="modal-title">Add Item</div>
+    <div class="form-row-3">
+      <div><label class="f-label">Item Name *</label><input class="f-input" id="f-name" placeholder="e.g. Paneer Tikka"></div>
+      <div><label class="f-label">Price (₹) *</label><input class="f-input" id="f-price" type="number" placeholder="220"></div>
+      <div><label class="f-label">Type</label>
+        <select class="f-select" id="f-type">
+          <option value="veg">🟢 Veg</option>
+          <option value="nonveg">🔴 Non-Veg</option>
+        </select>
+      </div>
     </div>
-    <div class="menu-nav">
-      <button class="menu-nav-btn active" onclick="showMenuTab('restaurant',this)">🍛 Restaurant</button>
-      <button class="menu-nav-btn" onclick="showMenuTab('banquet',this)">🏛 Banquet Hall</button>
-      <button class="menu-nav-btn" onclick="showMenuTab('chaat',this)">🌶 Chaat Adda</button>
+    <div style="margin-bottom:0.8rem">
+      <label class="f-label">Description (optional)</label>
+      <input class="f-input" id="f-desc" placeholder="e.g. Marinated cottage cheese, tandoor grilled">
     </div>
-    <div id="ctab-restaurant" class="menu-section active"></div>
-    <div id="ctab-banquet" class="menu-section"></div>
-    <div id="ctab-chaat" class="menu-section"></div>
-    <div class="cust-footer">
-      <strong style="color:var(--navy)">Kunjilal Food House</strong><br>
-      Vidhya Nagar, Ramghat Road, Aligarh, UP<br>
-      <a href="tel:+917088004440">📞 +91-7088004440</a> &nbsp;·&nbsp;
-      <a href="https://wa.me/917088004440">💬 WhatsApp</a>
+    <div class="f-btn-row">
+      <button class="f-btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="f-btn-save" onclick="saveItem()">💾 Save Item</button>
     </div>
   </div>
 </div>
 
-<div class="modal-bg" id="modal">
+<!-- CAT NAME MODAL -->
+<div class="modal-bg" id="cat-modal">
   <div class="modal-box">
-    <div class="modal-icon">📤</div>
-    <div class="modal-title">Uploading Menu</div>
-    <div class="modal-sub" id="modal-sub">Uploading to cloud...</div>
-    <div class="modal-bar"><div class="modal-fill" id="modal-fill"></div></div>
+    <div class="modal-title">Category Name</div>
+    <div style="margin-bottom:1rem">
+      <label class="f-label">Category Name *</label>
+      <input class="f-input" id="f-cat-name" placeholder="e.g. Starters, Main Course...">
+    </div>
+    <div class="f-btn-row">
+      <button class="f-btn-cancel" onclick="closeCatModal()">Cancel</button>
+      <button class="f-btn-save" onclick="saveCatName()">💾 Save</button>
+    </div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ══ CLOUDINARY CONFIG ══
-const CLOUD_NAME   = 'dtegieseu';
-const API_KEY      = '274222899338492';
-const API_SECRET   = 'mzRyr44o12tfZMVQvNN2QVtH_pA';
-const BASE_URL     = 'https://banquetmenu.vercel.app';
-const LABELS       = { restaurant:'Restaurant', banquet:'Banquet Hall', chaat:'Chaat Adda' };
+const BASE_URL = 'https://banquetmenu.vercel.app';
+const STORE_KEY = 'fh_banquet_menu_v4';
 
-// ══ STATE (metadata only in localStorage, actual files in Cloudinary) ══
-const META_KEY  = 'fh_cloudinary_meta_v1';
-const TEAM_KEY  = 'fh_team_v2';
-const LOG_KEY   = 'fh_logs_v2';
+// ── DEFAULT MENU DATA ──
+const defaultData = {
+  kitty: {
+    info: 'Timings: 12:00 PM – 5:00 PM',
+    categories: [
+      {
+        id: 'bev', name: 'Beverages',
+        items: [
+          {id:'b1', name:'Soup | Shakes | Mocktail', price:75, type:'veg', desc:'Choice of one from the selection'},
+          {id:'b2', name:'Cold Drink | Tea | Coffee', price:50, type:'veg', desc:'Choice of one from the selection'},
+        ]
+      },
+      {
+        id: 'sta', name: 'Starters',
+        items: [
+          {id:'s1', name:'Paneer Tikka | Dahi Cutlet | Chilly Paneer', price:90, type:'veg', desc:'Choice from this category'},
+          {id:'s2', name:'Manchurian | Seekh Kabab | Spring Roll | Noodle | Pani Puri | Dhokla | Chaat', price:70, type:'veg', desc:'Choice from this category'},
+        ]
+      },
+      {
+        id: 'main', name: 'Main Course',
+        items: [
+          {id:'m1', name:'Mini Dosa | Vada Sambhar | Idli Sambhar | Pav Bhaji | Aloo Tikki', price:100, type:'veg', desc:'Choice from this category'},
+        ]
+      }
+    ]
+  },
+  birthday: {
+    info: 'Minimum 20 guests | Advance booking required',
+    categories: [
+      {
+        id: 'bpkg', name: 'Hall Packages',
+        items: [
+          {id:'pk1', name:'Jharokha Hall', price:12000, type:'veg', desc:'Minimum 30 Pax · 3 Hours · ₹1,200/- per extra hour'},
+          {id:'pk2', name:'Darbar Hall', price:20000, type:'veg', desc:'Minimum 20 Pax · 3 Hours · ₹1,200/- per extra hour'},
+        ]
+      },
+      {
+        id: 'bstarter', name: 'Starters',
+        items: [
+          {id:'bs1', name:'Paneer Tikka', price:0, type:'veg', desc:'Marinated cottage cheese, tandoor grilled'},
+          {id:'bs2', name:'Hara Bhara Kabab', price:0, type:'veg', desc:'Spinach & peas patties'},
+          {id:'bs3', name:'Chicken Tikka', price:0, type:'nonveg', desc:'Yogurt-marinated boneless chicken'},
+          {id:'bs4', name:'Seekh Kabab', price:0, type:'nonveg', desc:'Minced mutton skewers, coal-smoked'},
+        ]
+      },
+      {
+        id: 'bmain', name: 'Main Course',
+        items: [
+          {id:'bm1', name:'Dal Makhani', price:0, type:'veg', desc:'Slow-cooked black lentils'},
+          {id:'bm2', name:'Paneer Butter Masala', price:0, type:'veg', desc:'Rich tomato-butter gravy'},
+          {id:'bm3', name:'Butter Chicken', price:0, type:'nonveg', desc:'Silky tomato-butter sauce'},
+          {id:'bm4', name:'Chicken Biryani', price:0, type:'nonveg', desc:'Awadhi-style slow dum'},
+          {id:'bm5', name:'Veg Biryani', price:0, type:'veg', desc:'Dum-cooked, saffron'},
+        ]
+      },
+      {
+        id: 'bdessert', name: 'Desserts',
+        items: [
+          {id:'bd1', name:'Gulab Jamun', price:0, type:'veg', desc:'Served warm'},
+          {id:'bd2', name:'Kheer / Phirni', price:0, type:'veg', desc:'Saffron rice pudding'},
+          {id:'bd3', name:'Gajar ka Halwa', price:0, type:'veg', desc:'Carrot pudding, ghee & dry fruits'},
+        ]
+      }
+    ]
+  }
+};
 
-let menuMeta = { restaurant: null, banquet: null, chaat: null };
-let team     = [{ name:'Team Food House', role:'Owner', initials:'TF' }];
-let logs     = [];
+let menuData = JSON.parse(JSON.stringify(defaultData));
+let currentMenuType = 'kitty';
+let editingItem = null; // {menuType, catId, itemId}
+let editingCat  = null; // {menuType, catId, mode:'add'|'rename'}
 
-function saveMeta() {
+// ── LOAD / SAVE ──
+function loadData() {
   try {
-    localStorage.setItem(META_KEY, JSON.stringify(menuMeta));
-    localStorage.setItem(TEAM_KEY, JSON.stringify(team));
-    localStorage.setItem(LOG_KEY,  JSON.stringify(logs.slice(0,40)));
+    const saved = localStorage.getItem(STORE_KEY);
+    if (saved) menuData = JSON.parse(saved);
   } catch(e) {}
 }
-
-function loadMeta() {
-  try {
-    const m = localStorage.getItem(META_KEY);
-    if (m) menuMeta = JSON.parse(m);
-    const t = localStorage.getItem(TEAM_KEY);
-    if (t) team = JSON.parse(t);
-    const l = localStorage.getItem(LOG_KEY);
-    if (l) logs = JSON.parse(l);
-  } catch(e) {}
+function saveData() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(menuData)); } catch(e) {}
 }
 
-// ══ VIEW SWITCH ══
+// ── VIEW SWITCH ──
 function switchView(v, btn) {
   document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.tb-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('view-' + v).classList.add('active');
   btn.classList.add('active');
+  if (v === 'customer') renderCustomer();
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
-// ══ UPLOAD TO CLOUDINARY ══
-function triggerUpload(type) {
-  document.getElementById('uinp-' + type).click();
-}
-
-async function handleFile(type, input) {
-  const file = input.files[0];
-  if (!file) return;
-
-  const modal = document.getElementById('modal');
-  const fill  = document.getElementById('modal-fill');
-  const sub   = document.getElementById('modal-sub');
-  modal.classList.add('show');
-  sub.textContent = 'Uploading ' + file.name + ' to cloud...';
-
-  let prog = 0;
-  const iv = setInterval(() => { prog = Math.min(prog + Math.random()*15, 85); fill.style.width = prog + '%'; }, 200);
-
-  try {
-    // Generate signature using API secret
-    const timestamp = Math.round(new Date().getTime() / 1000);
-    const public_id = 'foodhouse_' + type + '_menu';
-    
-    // Create signature string
-    const str = `overwrite=true&public_id=${public_id}&timestamp=${timestamp}${API_SECRET}`;
-    
-    // Use SHA-1 hash via SubtleCrypto
-    const msgBuffer = new TextEncoder().encode(str);
-    const hashBuffer = await crypto.subtle.digest('SHA-1', msgBuffer);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const signature = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('api_key', API_KEY);
-    formData.append('timestamp', timestamp);
-    formData.append('public_id', public_id);
-    formData.append('overwrite', 'true');
-    formData.append('signature', signature);
-
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`, {
-      method: 'POST',
-      body: formData
-    });
-
-    const data = await res.json();
-    clearInterval(iv);
-
-    if (data.secure_url) {
-      fill.style.width = '100%';
-      menuMeta[type] = {
-        url: data.secure_url,
-        filename: file.name,
-        mimetype: file.type,
-        uploadedAt: new Date().toISOString(),
-        public_id: data.public_id
-      };
-      saveMeta();
-      setTimeout(() => {
-        modal.classList.remove('show');
-        fill.style.width = '0';
-        updateAdminUI(type);
-        renderCustomerTab(type);
-        addLog(type, file.name, 'upload');
-        toast('✓ ' + LABELS[type] + ' menu uploaded & live for all customers!');
-      }, 400);
-    } else {
-      clearInterval(iv);
-      modal.classList.remove('show');
-      toast('⚠ Upload failed: ' + (data.error?.message || 'Unknown error. Try again.'));
-      console.error('Cloudinary error:', data);
-    }
-  } catch(e) {
-    clearInterval(iv);
-    modal.classList.remove('show');
-    toast('⚠ Upload failed: ' + e.message);
-    console.error(e);
-  }
-  input.value = '';
-}
-
-function showPresetError() {
-  alert(`One-time setup needed!\n\n1. Go to cloudinary.com → Settings → Upload\n2. Click "Add upload preset"\n3. Set Preset name: foodhouse_menu\n4. Set Signing mode: Unsigned\n5. Click Save\n\nThen try uploading again!`);
-}
-
-function updateAdminUI(type) {
-  const m = menuMeta[type];
-  if (!m) return;
-  document.getElementById('ust-' + type).innerHTML = `<span class="sdot sdot-on"></span><span class="s-live">Live ✓</span>`;
-  const btn = document.getElementById('ubtn-' + type);
-  btn.textContent = '↑ Update Menu';
-  btn.className = 'u-btn u-btn-done';
-  const fi = document.getElementById('ufi-' + type);
-  fi.style.display = 'block';
-  fi.innerHTML = `📄 ${m.filename}<br>${new Date(m.uploadedAt).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}`;
-  document.getElementById('udel-' + type).style.display = 'block';
-  document.getElementById('utime-' + type).textContent = 'Updated: ' + new Date(m.uploadedAt).toLocaleTimeString('en-IN');
-}
-
-async function removeMenu(type) {
-  if (!confirm('Remove ' + LABELS[type] + ' menu?')) return;
-  if (menuMeta[type]) addLog(type, menuMeta[type].filename, 'delete');
-  menuMeta[type] = null;
-  saveMeta();
-  document.getElementById('ust-' + type).innerHTML = `<span class="sdot sdot-off"></span><span class="s-none">No menu yet</span>`;
-  const btn = document.getElementById('ubtn-' + type);
-  btn.textContent = '+ Upload PDF / Image';
-  btn.className = 'u-btn u-btn-idle';
-  document.getElementById('ufi-' + type).style.display = 'none';
-  document.getElementById('udel-' + type).style.display = 'none';
-  document.getElementById('utime-' + type).textContent = '';
-  renderCustomerTab(type);
-  toast('🗑 ' + LABELS[type] + ' menu removed');
-}
-
-// ══ CUSTOMER VIEW ══
-function renderCustomerTab(type) {
-  const el = document.getElementById('ctab-' + type);
-  const m  = menuMeta[type];
-  if (!m || !m.url) {
-    el.innerHTML = `<div class="no-menu-box">
-      <span class="ico">📋</span>
-      <h3>Menu Coming Soon</h3>
-      <p>The ${LABELS[type]} menu hasn't been uploaded yet.<br>Please check back shortly or call us at<br><strong>+91-7088004440</strong></p>
-    </div>`;
-    return;
-  }
-  const isImage = m.mimetype && m.mimetype.startsWith('image/');
-  const isPDF   = m.mimetype === 'application/pdf';
-  const date    = new Date(m.uploadedAt).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
-
-  let html = `<div class="menu-file-bar">
-    <div><div class="mfb-name">📄 ${LABELS[type]} Menu</div><div class="mfb-date">Updated ${date}</div></div>
-    <a class="save-btn" href="${m.url}" target="_blank">↗ Open</a>
-  </div>`;
-
-  if (isImage) {
-    html += `<img class="menu-img" src="${m.url}" alt="${LABELS[type]} Menu">`;
-  } else if (isPDF) {
-    html += `<embed src="${m.url}" type="application/pdf" style="width:100%;height:78vh;border-radius:8px;display:block;border:none">
-    <p style="text-align:center;font-size:0.7rem;color:var(--muted);margin-top:0.6rem">
-      <a href="${m.url}" target="_blank" style="color:var(--royal);font-weight:600">📄 Open PDF in new tab</a>
-    </p>`;
-  }
-  el.innerHTML = html;
-}
-
-function showMenuTab(type, btn) {
-  document.querySelectorAll('.menu-section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.menu-nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('ctab-' + type).classList.add('active');
+function switchMenuType(type, btn) {
+  currentMenuType = type;
+  document.querySelectorAll('#menu-type-tabs .admin-tab:not(.admin-tab-add)').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  window.scrollTo({top:0, behavior:'smooth'});
+  document.querySelectorAll('.cat-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('admin-' + type).classList.add('active');
+  renderAdminCats(type);
 }
 
-// ══ QR GENERATION ══
-function generateQRs() {
-  ['restaurant','banquet','chaat'].forEach(type => {
-    new QRious({
-      element: document.getElementById('qr-' + type),
-      value: `${BASE_URL}/?tab=${type}`,
-      size: 140,
-      foreground: '#0D2744',
-      background: '#FFFFFF',
-      level: 'M'
+// ── RENDER ADMIN CATEGORIES ──
+function renderAdminCats(type) {
+  const cats = menuData[type].categories;
+  const tabsEl   = document.getElementById(type + '-cat-tabs');
+  const panelsEl = document.getElementById(type + '-cat-panels');
+
+  tabsEl.innerHTML = '';
+  panelsEl.innerHTML = '';
+
+  cats.forEach((cat, ci) => {
+    // Tab button
+    const tb = document.createElement('button');
+    tb.className = 'admin-tab' + (ci === 0 ? ' active' : '');
+    tb.textContent = cat.name;
+    tb.onclick = () => {
+      tabsEl.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
+      tb.classList.add('active');
+      panelsEl.querySelectorAll('.cat-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('panel-' + type + '-' + cat.id).classList.add('active');
+    };
+    tabsEl.appendChild(tb);
+
+    // Panel
+    const panel = document.createElement('div');
+    panel.className = 'cat-panel' + (ci === 0 ? ' active' : '');
+    panel.id = 'panel-' + type + '-' + cat.id;
+
+    panel.innerHTML = `
+      <div class="cat-header-row">
+        <input class="cat-name-input" value="${cat.name}" id="catname-${type}-${cat.id}" placeholder="Category name">
+        <button class="btn-rename" onclick="renameCat('${type}','${cat.id}')">✓ Rename</button>
+        <button class="btn-delete-cat" onclick="deleteCat('${type}','${cat.id}')">🗑 Delete</button>
+      </div>
+      <div class="item-list" id="items-${type}-${cat.id}">
+        ${cat.items.map(item => renderAdminItem(type, cat.id, item)).join('')}
+      </div>
+      <button class="add-item-btn" onclick="openAddItem('${type}','${cat.id}')">+ Add Item</button>
+    `;
+    panelsEl.appendChild(panel);
+  });
+}
+
+function renderAdminItem(type, catId, item) {
+  const dotClass = item.type === 'veg' ? 'veg' : 'nonveg';
+  const priceStr = item.price > 0 ? `₹${item.price}` : '<span style="font-size:0.62rem;color:var(--muted)">Included</span>';
+  return `<div class="admin-item" id="adminitem-${item.id}">
+    <span class="admin-item-drag">⠿</span>
+    <div class="veg-dot ${dotClass}"></div>
+    <div class="admin-item-info">
+      <div class="admin-item-name">${item.name}</div>
+      ${item.desc ? `<div class="admin-item-desc">${item.desc}</div>` : ''}
+    </div>
+    <div class="admin-item-price">${item.price > 0 ? item.price : ''}</div>
+    <div class="item-actions">
+      <button class="btn-edit" onclick="openEditItem('${type}','${catId}','${item.id}')">✏ Edit</button>
+      <button class="btn-del" onclick="deleteItem('${type}','${catId}','${item.id}')">🗑</button>
+    </div>
+  </div>`;
+}
+
+// ── CATEGORY ACTIONS ──
+function addCategory(type) {
+  editingCat = {type, catId: null, mode: 'add'};
+  document.getElementById('f-cat-name').value = '';
+  document.getElementById('cat-modal').classList.add('show');
+}
+function renameCat(type, catId) {
+  const val = document.getElementById('catname-' + type + '-' + catId).value.trim();
+  if (!val) return;
+  const cat = menuData[type].categories.find(c => c.id === catId);
+  if (cat) { cat.name = val; saveData(); renderAdminCats(type); toast('✓ Category renamed'); }
+}
+function deleteCat(type, catId) {
+  if (!confirm('Delete this category and all its items?')) return;
+  menuData[type].categories = menuData[type].categories.filter(c => c.id !== catId);
+  saveData(); renderAdminCats(type); toast('🗑 Category deleted');
+}
+function saveCatName() {
+  const name = document.getElementById('f-cat-name').value.trim();
+  if (!name) { toast('⚠ Enter a category name'); return; }
+  if (editingCat.mode === 'add') {
+    const newCat = { id: 'cat_' + Date.now(), name, items: [] };
+    menuData[editingCat.type].categories.push(newCat);
+    saveData(); renderAdminCats(editingCat.type);
+    toast('✓ Category "' + name + '" added!');
+  }
+  closeCatModal();
+}
+function closeCatModal() { document.getElementById('cat-modal').classList.remove('show'); }
+
+// ── ITEM ACTIONS ──
+function openAddItem(type, catId) {
+  editingItem = {type, catId, itemId: null};
+  document.getElementById('modal-title').textContent = 'Add New Item';
+  document.getElementById('f-name').value = '';
+  document.getElementById('f-price').value = '';
+  document.getElementById('f-desc').value = '';
+  document.getElementById('f-type').value = 'veg';
+  document.getElementById('item-modal').classList.add('show');
+}
+function openEditItem(type, catId, itemId) {
+  editingItem = {type, catId, itemId};
+  const cat  = menuData[type].categories.find(c => c.id === catId);
+  const item = cat.items.find(i => i.id === itemId);
+  document.getElementById('modal-title').textContent = 'Edit Item';
+  document.getElementById('f-name').value  = item.name;
+  document.getElementById('f-price').value = item.price || '';
+  document.getElementById('f-desc').value  = item.desc || '';
+  document.getElementById('f-type').value  = item.type;
+  document.getElementById('item-modal').classList.add('show');
+}
+function saveItem() {
+  const name  = document.getElementById('f-name').value.trim();
+  const price = parseInt(document.getElementById('f-price').value) || 0;
+  const desc  = document.getElementById('f-desc').value.trim();
+  const type  = document.getElementById('f-type').value;
+  if (!name) { toast('⚠ Item name is required'); return; }
+
+  const {type:mType, catId, itemId} = editingItem;
+  const cat = menuData[mType].categories.find(c => c.id === catId);
+
+  if (itemId) {
+    // Edit existing
+    const item = cat.items.find(i => i.id === itemId);
+    item.name = name; item.price = price; item.desc = desc; item.type = type;
+    toast('✓ Item updated!');
+  } else {
+    // Add new
+    cat.items.push({ id: 'item_' + Date.now(), name, price, desc, type });
+    toast('✓ Item added!');
+  }
+  saveData(); renderAdminCats(mType); closeModal();
+}
+function deleteItem(type, catId, itemId) {
+  if (!confirm('Delete this item?')) return;
+  const cat = menuData[type].categories.find(c => c.id === catId);
+  cat.items = cat.items.filter(i => i.id !== itemId);
+  saveData(); renderAdminCats(type); toast('🗑 Item deleted');
+}
+function closeModal() { document.getElementById('item-modal').classList.remove('show'); }
+
+// ── RENDER CUSTOMER VIEW ──
+function renderCustomer() {
+  ['kitty','birthday'].forEach(type => {
+    const tabsEl    = document.getElementById(type + '-cust-tabs');
+    const contentEl = document.getElementById(type + '-cust-content');
+    const cats = menuData[type].categories;
+    tabsEl.innerHTML = '';
+    contentEl.innerHTML = '';
+
+    if (!cats.length) {
+      contentEl.innerHTML = '<div class="empty-cat">No menu items yet. Check back soon!</div>';
+      return;
+    }
+
+    cats.forEach((cat, ci) => {
+      // Tab
+      const btn = document.createElement('button');
+      btn.className = 'c-cat-btn' + (ci === 0 ? ' active' : '');
+      btn.textContent = cat.name;
+      btn.onclick = () => {
+        tabsEl.querySelectorAll('.c-cat-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        contentEl.querySelectorAll('.c-section').forEach(s => s.classList.remove('active'));
+        document.getElementById('csec-' + type + '-' + cat.id).classList.add('active');
+        window.scrollTo({top:0, behavior:'smooth'});
+      };
+      tabsEl.appendChild(btn);
+
+      // Section
+      const sec = document.createElement('div');
+      sec.className = 'c-section' + (ci === 0 ? ' active' : '');
+      sec.id = 'csec-' + type + '-' + cat.id;
+
+      let itemsHtml = '';
+      if (!cat.items.length) {
+        itemsHtml = '<div class="empty-cat">No items in this category yet.</div>';
+      } else {
+        cat.items.forEach(item => {
+          const dotClass = item.type === 'veg' ? 'veg' : 'nonveg';
+          const priceHtml = item.price > 0
+            ? `<div class="c-item-price">${item.price}</div>`
+            : `<div style="font-size:0.62rem;color:var(--gold);font-weight:600;padding-top:0.1rem">Included</div>`;
+          itemsHtml += `<div class="c-item">
+            <div class="c-item-left">
+              <div class="c-item-name"><span class="vdot ${dotClass}"></span>${item.name}</div>
+              ${item.desc ? `<div class="c-item-desc">${item.desc}</div>` : ''}
+            </div>
+            ${priceHtml}
+          </div>`;
+        });
+      }
+
+      // Special info banner for kitty menu
+      let infoBanner = '';
+      if (type === 'kitty' && ci === 0) {
+        infoBanner = `<div style="background:var(--cream);border-left:3px solid var(--gold);padding:0.7rem 0.9rem;border-radius:0 6px 6px 0;margin-bottom:1rem;font-size:0.72rem;color:var(--muted)">
+          🕐 <strong style="color:var(--navy)">${menuData.kitty.info}</strong>
+        </div>`;
+      }
+      if (type === 'birthday' && ci === 0) {
+        infoBanner = `<div style="background:var(--cream);border-left:3px solid var(--gold);padding:0.7rem 0.9rem;border-radius:0 6px 6px 0;margin-bottom:1rem;font-size:0.72rem;color:var(--muted)">
+          ℹ️ <strong style="color:var(--navy)">${menuData.birthday.info}</strong>
+        </div>`;
+      }
+
+      sec.innerHTML = `
+        <div class="c-sec-title">
+          <span class="c-sec-eyebrow">${type === 'kitty' ? 'Kitty Menu' : 'Birthday Package'}</span>
+          <div class="c-sec-name">${cat.name}</div>
+        </div>
+        ${infoBanner}
+        ${itemsHtml}`;
+      contentEl.appendChild(sec);
     });
   });
 }
 
-function downloadQR(type, label) {
-  const canvas = document.getElementById('qr-' + type);
+function switchCustType(type, btn) {
+  document.querySelectorAll('.c-type-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.c-type-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('cust-' + type).classList.add('active');
+}
+
+// ── QR ──
+function generateQR() {
+  new QRious({
+    element: document.getElementById('main-qr'),
+    value: BASE_URL + '/?menu=banquet',
+    size: 100,
+    foreground: '#0D2744',
+    background: '#FFFFFF',
+    level: 'M'
+  });
+}
+
+function downloadQR() {
+  const canvas = document.getElementById('main-qr');
   const out = document.createElement('canvas');
   out.width = 400; out.height = 480;
   const ctx = out.getContext('2d');
@@ -526,98 +667,47 @@ function downloadQR(type, label) {
   ctx.fillText('FOOD HOUSE', 200, 30);
   ctx.fillStyle = 'rgba(200,224,240,0.8)'; ctx.font = '11px Arial,sans-serif';
   ctx.fillText('Kunjilal · Since 1947', 200, 48);
-  ctx.fillText(label + ' Menu', 200, 63);
+  ctx.fillText('Banquet Hall Menu', 200, 63);
   ctx.fillStyle = '#B8953F'; ctx.fillRect(0,70,400,3);
   ctx.drawImage(canvas, 70, 85, 260, 260);
   ctx.fillStyle = '#0D2744'; ctx.font = 'bold 14px Arial,sans-serif';
-  ctx.fillText('Scan to View Menu', 200, 385);
+  ctx.fillText('Scan to View Banquet Menu', 200, 385);
   ctx.fillStyle = '#4A6A88'; ctx.font = '11px Arial,sans-serif';
   ctx.fillText('Vidhya Nagar, Ramghat Road, Aligarh', 200, 405);
   ctx.fillText('+91-7088004440', 200, 422);
   ctx.strokeStyle = '#C8E0F0'; ctx.lineWidth = 2; ctx.strokeRect(1,1,398,478);
   const a = document.createElement('a');
   a.href = out.toDataURL('image/png');
-  a.download = 'FoodHouse-' + type + '-QR.png';
+  a.download = 'FoodHouse-Banquet-QR.png';
   a.click();
   toast('⬇ QR downloaded! Print & place on tables.');
 }
 
-// ══ TEAM ══
-function renderTeam() {
-  const list = document.getElementById('team-list');
-  list.innerHTML = '';
-  const colors = ['#1A4A7A','#2E6FA8','#B8953F','#166534','#6B3A1A'];
-  team.forEach((m,i) => {
-    const d = document.createElement('div');
-    d.className = 'member';
-    d.innerHTML = `<div class="member-l"><div class="avatar" style="background:${colors[i%5]}">${m.initials}</div><div><div class="member-name">${m.name}</div><div class="member-role">${m.role}</div></div></div>
-    ${i===0?'<span style="font-size:0.62rem;color:var(--gold);font-weight:600">👑 Owner</span>':`<button class="mem-rm" onclick="removeMember(${i})">✕</button>`}`;
-    list.appendChild(d);
-  });
-}
-function addMember() {
-  const name = document.getElementById('inp-name').value.trim();
-  const role = document.getElementById('inp-role').value.trim();
-  if (!name) return;
-  const initials = name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
-  team.push({name, role:role||'Staff', initials});
-  saveMeta(); renderTeam();
-  document.getElementById('inp-name').value='';
-  document.getElementById('inp-role').value='';
-  toast('✓ ' + name + ' added');
-}
-function removeMember(i) { team.splice(i,1); saveMeta(); renderTeam(); }
-
-// ══ LOGS ══
-function addLog(type, filename, action) {
-  logs.unshift({type,filename,action,time:new Date().toISOString()});
-  saveMeta(); renderLogs();
-}
-function renderLogs() {
-  const body = document.getElementById('log-body');
-  if (!logs.length) { body.innerHTML='<div class="log-empty">No activity yet.</div>'; return; }
-  body.innerHTML='';
-  logs.slice(0,40).forEach(log => {
-    const d = document.createElement('div'); d.className='log-row';
-    d.innerHTML=`<span class="ldot" style="background:${log.action==='upload'?'#4ade80':'#f87171'}"></span>
-    <span><strong>${LABELS[log.type]}</strong> ${log.action==='upload'?'updated':'removed'} — ${log.filename}</span>
-    <span class="log-time">${new Date(log.time).toLocaleString('en-IN')}</span>`;
-    body.appendChild(d);
-  });
-  document.getElementById('log-count').textContent = logs.length + ' entries';
-}
-
-// ══ TOAST ══
+// ── TOAST ──
 function toast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 3500);
+  setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-// ══ INIT ══
+// ── INIT ──
 window.addEventListener('DOMContentLoaded', () => {
-  loadMeta();
+  loadData();
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const tabParam  = urlParams.get('tab');
+  const params = new URLSearchParams(window.location.search);
+  const menu = params.get('menu');
 
-  if (tabParam && ['restaurant','banquet','chaat'].includes(tabParam)) {
-    // CUSTOMER MODE — hide topbar, show menu only
+  if (menu === 'banquet') {
+    // CUSTOMER MODE
     document.getElementById('topbar').style.display = 'none';
     document.getElementById('view-admin').style.display = 'none';
     document.getElementById('view-customer').classList.add('active');
-    for (const t of ['restaurant','banquet','chaat']) renderCustomerTab(t);
-    const tabBtn = document.querySelector(`.menu-nav-btn[onclick*="'${tabParam}'"]`);
-    if (tabBtn) showMenuTab(tabParam, tabBtn);
+    renderCustomer();
   } else {
     // ADMIN MODE
-    generateQRs();
-    for (const t of ['restaurant','banquet','chaat']) {
-      if (menuMeta[t]) updateAdminUI(t);
-      renderCustomerTab(t);
-    }
-    renderTeam();
-    renderLogs();
+    renderAdminCats('kitty');
+    renderAdminCats('birthday');
+    generateQR();
   }
 });
 </script>
