@@ -16,24 +16,29 @@ export default async function handler(req, res) {
     }));
 
     const sideText = imageList.length > 1
-      ? `There are ${imageList.length} images showing different sides of the same menu. Combine ALL items.`
+      ? `There are ${imageList.length} images showing different sides of the same menu. Combine ALL items from ALL images.`
       : 'There is 1 menu image.';
 
     content.push({
       type: 'text',
-      text: `Scan this restaurant menu for Food House, Aligarh, India. ${sideText}
+      text: `You are a menu scanner. ${sideText}
 
-Extract ALL categories and items. Return ONLY valid JSON:
-{"categories":[{"id":"cat1","name":"Category Name","items":[{"id":"item1","name":"Item Name","price":100,"type":"veg","desc":""}]}]}
+STRICT RULES - VERY IMPORTANT:
+1. ONLY extract items that are CLEARLY VISIBLE and READABLE in the image
+2. Do NOT guess, invent, or add any items not explicitly shown
+3. Do NOT add items from memory or training data
+4. If you cannot clearly read an item name or price, SKIP it
+5. ONLY include what you can actually see written in the menu image
 
-Rules:
+Return ONLY this JSON format, no other text:
+{"categories":[{"id":"c1","name":"Category Name","items":[{"id":"i1","name":"Exact Item Name As Written","price":100,"type":"veg","desc":""}]}]}
+
+More rules:
 - type: "veg" or "nonveg" only
-- price: number only (0 if not shown)
-- Extract every item grouped by category
-- Price @75/- means 75
-- Keep descriptions SHORT (max 5 words) or empty
-- Use short unique ids: c1,c2,i1,i2 etc
-- Do NOT add any text before or after the JSON`
+- price: exact number as shown (0 if not visible)
+- Keep desc empty unless clearly written
+- Use short ids: c1,c2,i1,i2 etc
+- Group items exactly as shown in the menu under their headings`
     });
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -52,25 +57,20 @@ Rules:
 
     const data = await response.json();
 
-    // Validate JSON before sending back
+    // Fix truncated JSON if needed
     if (data.content && data.content[0]) {
       const text = data.content[0].text;
-      // Try to find and fix truncated JSON
       let jsonStr = text.match(/\{[\s\S]*\}/)?.[0];
       if (jsonStr) {
         try {
-          JSON.parse(jsonStr); // Test if valid
+          JSON.parse(jsonStr);
         } catch(e) {
-          // Try to fix truncated JSON by closing open brackets
+          jsonStr = jsonStr.replace(/,\s*$/, '');
           let opens = (jsonStr.match(/\[/g)||[]).length - (jsonStr.match(/\]/g)||[]).length;
           let openBraces = (jsonStr.match(/\{/g)||[]).length - (jsonStr.match(/\}/g)||[]).length;
-          // Remove trailing comma if any
-          jsonStr = jsonStr.replace(/,\s*$/, '');
-          // Close any open arrays and objects
           for(let i=0; i<opens; i++) jsonStr += ']';
           for(let i=0; i<openBraces; i++) jsonStr += '}';
         }
-        // Return with fixed text
         data.content[0].text = jsonStr;
       }
     }
