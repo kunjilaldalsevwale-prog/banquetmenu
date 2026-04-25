@@ -401,8 +401,6 @@ function loadSaved() {
     }
     team = JSON.parse(localStorage.getItem(TEAM_KEY) || '[{"name":"Team Food House","role":"Owner","initials":"TF"}]');
     logs = JSON.parse(localStorage.getItem(LOG_KEY) || '[]');
-    renderTeam();
-    renderLogs();
   } catch(e) {}
 }
 
@@ -537,7 +535,7 @@ function generateQRs() {
     const canvas = document.getElementById('qr-' + type);
     // QR points to a data URI that switches the customer to this tab
     // Since this is a local file, we encode a message that makes sense
-    const qrText = `Food House - ${labels[type]}\nKunjilal Since 1947\nVidhya Nagar, Ramghat Road, Aligarh\nCall: +91-7088004440\n\nScan to view ${labels[type]}`;
+    const qrText = `https://banquetmenu.vercel.app/?tab=${type}`;
     try {
       new QRious({
         element: canvas,
@@ -678,8 +676,26 @@ function toast(msg) {
 
 // ══ INIT ══
 window.addEventListener('DOMContentLoaded', () => {
-  loadSaved();
-  generateQRs();
+  const urlParams = new URLSearchParams(window.location.search);
+  const tabParam = urlParams.get('tab');
+
+  if (tabParam && ['restaurant','banquet','chaat'].includes(tabParam)) {
+    // CUSTOMER MODE — hide topbar and admin completely, show only menu
+    document.querySelector('.topbar').style.display = 'none';
+    document.getElementById('view-admin').style.display = 'none';
+    document.getElementById('view-customer').style.display = 'block';
+    document.getElementById('view-customer').classList.add('active');
+    loadSaved();
+    // Open correct tab
+    const tabBtn = document.querySelector(`.menu-nav-btn[onclick*="${tabParam}"]`);
+    if (tabBtn) showMenuTab(tabParam, tabBtn);
+  } else {
+    // ADMIN MODE — normal app
+    loadSaved();
+    generateQRs();
+    renderTeam();
+    renderLogs();
+  }
   // Render empty customer tabs
   for (const t of ['restaurant','banquet','chaat']) {
     if (!menus[t]) renderCustomerTab(t);
