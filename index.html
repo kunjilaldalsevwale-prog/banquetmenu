@@ -304,7 +304,8 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 <script>
 // ══ CLOUDINARY CONFIG ══
 const CLOUD_NAME   = 'dtegieseu';
-const UPLOAD_PRESET = 'Foodhousemenu'; // unsigned preset we'll create
+const API_KEY      = '274222899338492';
+const API_SECRET   = 'mzRyr44o12tfZMVQvNN2QVtH_pA';
 const BASE_URL     = 'https://banquetmenu.vercel.app';
 const LABELS       = { restaurant:'Restaurant', banquet:'Banquet Hall', chaat:'Chaat Adda' };
 
@@ -364,12 +365,26 @@ async function handleFile(type, input) {
   const iv = setInterval(() => { prog = Math.min(prog + Math.random()*15, 85); fill.style.width = prog + '%'; }, 200);
 
   try {
+    // Generate signature using API secret
+    const timestamp = Math.round(new Date().getTime() / 1000);
+    const public_id = 'foodhouse_' + type + '_menu';
+    
+    // Create signature string
+    const str = `overwrite=true&public_id=${public_id}&timestamp=${timestamp}${API_SECRET}`;
+    
+    // Use SHA-1 hash via SubtleCrypto
+    const msgBuffer = new TextEncoder().encode(str);
+    const hashBuffer = await crypto.subtle.digest('SHA-1', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const signature = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('upload_preset', UPLOAD_PRESET);
-    formData.append('public_id', 'foodhouse_' + type + '_menu');
+    formData.append('api_key', API_KEY);
+    formData.append('timestamp', timestamp);
+    formData.append('public_id', public_id);
     formData.append('overwrite', 'true');
-    formData.append('invalidate', 'true');
+    formData.append('signature', signature);
 
     const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`, {
       method: 'POST',
@@ -400,17 +415,14 @@ async function handleFile(type, input) {
     } else {
       clearInterval(iv);
       modal.classList.remove('show');
-      // If upload preset doesn't exist, show setup instructions
-      if (data.error && data.error.message.includes('preset')) {
-        showPresetError();
-      } else {
-        toast('⚠ Upload failed: ' + (data.error?.message || 'Unknown error'));
-      }
+      toast('⚠ Upload failed: ' + (data.error?.message || 'Unknown error. Try again.'));
+      console.error('Cloudinary error:', data);
     }
   } catch(e) {
     clearInterval(iv);
     modal.classList.remove('show');
-    toast('⚠ Upload failed. Check internet connection.');
+    toast('⚠ Upload failed: ' + e.message);
+    console.error(e);
   }
   input.value = '';
 }
