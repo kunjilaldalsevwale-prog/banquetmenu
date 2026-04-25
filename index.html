@@ -523,31 +523,56 @@ async function processFile(files){
     clearInterval(iv);
     fill.style.width='100%';
 
+    let parsed = null;
+
+    // Try multiple ways to extract JSON from response
     if(result.content && result.content[0]){
       const text = result.content[0].text;
-      const jsonMatch = text.match(/\{[\s\S]*\}/);
-      if(jsonMatch){
-        const parsed = JSON.parse(jsonMatch[0]);
-        if(parsed.categories && parsed.categories.length > 0){
-          allMenus[currentMenu] = parsed;
-          saveData();
-          const total = parsed.categories.reduce((s,c)=>s+c.items.length,0);
-          setTimeout(async ()=>{
-            document.getElementById('scan-card').classList.remove('show');
-            document.getElementById('success-card').classList.add('show');
-            document.getElementById('success-detail').textContent = total + ' items found across ' + parsed.categories.length + ' categories!';
-            document.getElementById('editor-wrap').classList.add('show');
-            renderAdminCats();
-            updateCounts();
-            // Save to server immediately after scan
-            await saveData();
-            toast('✅ ' + MENU_NAMES[currentMenu] + ' menu saved! ' + total + ' items found.');
-          }, 500);
-          return;
+      console.log('AI Response:', text.substring(0, 200));
+
+      // Method 1: direct JSON match
+      try {
+        const jsonMatch = text.match(/\{[\s\S]*\}/);
+        if(jsonMatch) parsed = JSON.parse(jsonMatch[0]);
+      } catch(e1) {
+        // Method 2: find categories array specifically
+        try {
+          const catMatch = text.match(/"categories"\s*:\s*\[/);
+          if(catMatch) {
+            const start = text.indexOf('{');
+            let jsonStr = text.substring(start);
+            // Fix truncated JSON
+            jsonStr = jsonStr.replace(/,\s*$/, '').replace(/,\s*\]/, ']').replace(/,\s*\}/, '}');
+            let opens = (jsonStr.match(/\[/g)||[]).length - (jsonStr.match(/\]/g)||[]).length;
+            let openBraces = (jsonStr.match(/\{/g)||[]).length - (jsonStr.match(/\}/g)||[]).length;
+            for(let i=0;i<opens;i++) jsonStr += ']';
+            for(let i=0;i<openBraces;i++) jsonStr += '}';
+            parsed = JSON.parse(jsonStr);
+          }
+        } catch(e2) {
+          console.log('Parse error:', e2.message);
         }
       }
+    } else if(result.error) {
+      throw new Error('API Error: ' + result.error.message || JSON.stringify(result.error));
     }
-    throw new Error('No menu data found');
+
+    if(parsed && parsed.categories && parsed.categories.length > 0){
+      allMenus[currentMenu] = parsed;
+      const total = parsed.categories.reduce((s,c)=>s+c.items.length,0);
+      setTimeout(async ()=>{
+        document.getElementById('scan-card').classList.remove('show');
+        document.getElementById('success-card').classList.add('show');
+        document.getElementById('success-detail').textContent = total + ' items found across ' + parsed.categories.length + ' categories!';
+        document.getElementById('editor-wrap').classList.add('show');
+        renderAdminCats();
+        updateCounts();
+        await saveData();
+        toast('✅ ' + MENU_NAMES[currentMenu] + ' menu saved! ' + total + ' items found.');
+      }, 500);
+      return;
+    }
+    throw new Error('No menu data found. Please try a clearer photo.');
   }catch(e){
     clearInterval(iv);
     document.getElementById('scan-card').classList.remove('show');
