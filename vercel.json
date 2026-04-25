@@ -2,6 +2,9 @@
   "functions": {
     "api/scan.js": {
       "maxDuration": 30
+    },
+    "api/menu.js": {
+      "maxDuration": 10
     }
   }
 }
