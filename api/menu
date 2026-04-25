@@ -1,6 +1,4 @@
-import { put, head, del } from '@vercel/blob';
-
-const BLOB_KEY = 'foodhouse-menus.json';
+import { createClient } from '@vercel/edge-config';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -8,49 +6,42 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  const token = process.env.BLOB_READ_WRITE_TOKEN;
+  const empty = { restaurant:{categories:[]}, banquet:{categories:[]}, chaat:{categories:[]} };
 
-  // GET — load menus from Blob
   if (req.method === 'GET') {
     try {
-      const { blobs } = await (await import('@vercel/blob')).list({ token });
-      const menuBlob = blobs.find(b => b.pathname === BLOB_KEY);
-      if (menuBlob) {
-        const response = await fetch(menuBlob.url);
-        const data = await response.json();
-        return res.status(200).json(data);
-      }
-      return res.status(200).json({
-        restaurant: { categories: [] },
-        banquet: { categories: [] },
-        chaat: { categories: [] }
-      });
-    } catch (e) {
-      console.error('GET error:', e);
-      return res.status(200).json({
-        restaurant: { categories: [] },
-        banquet: { categories: [] },
-        chaat: { categories: [] }
-      });
+      const { get } = await import('@vercel/edge-config');
+      const menus = await get('foodhouse_menus');
+      return res.status(200).json(menus || empty);
+    } catch(e) {
+      return res.status(200).json(empty);
     }
   }
 
-  // POST — save menus to Blob
   if (req.method === 'POST') {
     try {
       const { menus } = req.body;
-      if (!menus) return res.status(400).json({ error: 'No menu data' });
+      if (!menus) return res.status(400).json({ error: 'No data' });
 
-      const blob = await put(BLOB_KEY, JSON.stringify(menus), {
-        access: 'public',
-        contentType: 'application/json',
-        token,
-        addRandomSuffix: false
+      // Get edge config ID from connection string
+      const edgeConfigId = process.env.EDGE_CONFIG?.match(/ecfg_[^?]+/)?.[0];
+      if (!edgeConfigId) return res.status(500).json({ error: 'No Edge Config ID' });
+
+      const r = await fetch(`https://api.vercel.com/v1/edge-config/${edgeConfigId}/items`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${process.env.VERCEL_TOKEN}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          items: [{ operation: 'upsert', key: 'foodhouse_menus', value: menus }]
+        })
       });
 
-      return res.status(200).json({ success: true, url: blob.url });
-    } catch (e) {
-      console.error('POST error:', e);
+      const data = await r.json();
+      if (r.ok) return res.status(200).json({ success: true });
+      return res.status(500).json({ error: JSON.stringify(data) });
+    } catch(e) {
       return res.status(500).json({ error: e.message });
     }
   }
