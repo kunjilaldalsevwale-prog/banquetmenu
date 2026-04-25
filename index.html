@@ -160,6 +160,12 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 .save-menu-btn:active{transform:translateY(0)}
 .save-menu-btn.saving{background:var(--muted);cursor:not-allowed}
 .save-menu-btn.saved{background:linear-gradient(135deg,var(--green),#14532d);color:white}
+.save-bar{position:fixed;bottom:0;left:0;right:0;background:var(--navy);padding:0.8rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;border-top:2px solid var(--gold);z-index:150}
+.save-bar-text{font-size:0.7rem;color:rgba(200,224,240,0.7)}
+.save-bar-btn{padding:0.6rem 1.5rem;background:var(--gold);color:var(--navy);border:none;border-radius:6px;font-family:'Cinzel',serif;font-size:0.75rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:0.4rem;white-space:nowrap}
+.save-bar-btn:hover{background:var(--gold2)}
+.save-bar-btn.saving{background:var(--royal);color:white;pointer-events:none}
+.save-bar-btn.saved{background:var(--green-bg);color:var(--green);border:1px solid var(--green-bd)}
 .toast{position:fixed;bottom:1.2rem;left:50%;transform:translateX(-50%) translateY(50px);background:var(--navy);color:white;padding:0.7rem 1.3rem;border-radius:8px;font-size:0.75rem;font-weight:500;border-left:3px solid var(--gold2);opacity:0;transition:all 0.3s;z-index:999;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
@@ -311,6 +317,14 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
     <a href="https://wa.me/917088004440">💬 WhatsApp</a>
   </div>
 </div>
+</div>
+
+<!-- SAVE BAR -->
+<div class="save-bar" id="save-bar" style="display:none">
+  <div class="save-bar-text">💡 Remember to save after making changes</div>
+  <button class="save-bar-btn" id="save-btn" onclick="manualSave()">
+    💾 Save Menu
+  </button>
 </div>
 
 <!-- ITEM MODAL -->
@@ -467,9 +481,14 @@ async function processFile(files){
   if (!Array.isArray(files)) files = [files];
   files = files.slice(0, 2); // max 2 images
 
+  // Clear current menu for this type before scanning
+  allMenus[currentMenu] = { categories: [] };
+
   document.getElementById('scan-card').classList.add('show');
   document.getElementById('success-card').classList.remove('show');
   document.getElementById('editor-wrap').classList.remove('show');
+  document.getElementById('cat-tabs').innerHTML = '';
+  document.getElementById('cat-panels').innerHTML = '';
 
   const fill = document.getElementById('scan-fill');
   const sub  = document.getElementById('scan-sub');
@@ -667,7 +686,7 @@ function saveItem(){
   }else{
     cat.items.push({id:'item_'+Date.now(),name,price,desc,type});toast('✓ Added!');
   }
-  saveData();renderAdminCats();updateCounts();closeModal();
+  saveData();renderAdminCats();updateCounts();closeModal();showSaveBar();
 }
 function deleteItem(catId,itemId){
   if(!confirm('Delete this item?'))return;
@@ -791,6 +810,31 @@ async function manualSave(){
   }
 }
 
+async function manualSave(){
+  const btn = document.getElementById('save-btn');
+  btn.textContent = '⏳ Saving...';
+  btn.className = 'save-bar-btn saving';
+  try {
+    await saveData();
+    btn.textContent = '✅ Saved!';
+    btn.className = 'save-bar-btn saved';
+    toast('✅ Menu saved successfully!');
+    setTimeout(()=>{
+      btn.textContent = '💾 Save Menu';
+      btn.className = 'save-bar-btn';
+    }, 3000);
+  } catch(e) {
+    btn.textContent = '💾 Save Menu';
+    btn.className = 'save-bar-btn';
+    toast('⚠ Save failed. Try again.');
+  }
+}
+
+function showSaveBar(){
+  const bar = document.getElementById('save-bar');
+  if(bar) bar.style.display = 'flex';
+}
+
 function toast(msg){
   const t=document.getElementById('toast');
   t.textContent=msg;t.classList.add('show');
@@ -813,6 +857,7 @@ window.addEventListener('DOMContentLoaded', async ()=>{
     // ADMIN MODE
     generateQRs();
     updateCounts();
+    showSaveBar();
     // Show restaurant menu by default if it has items
     if(allMenus.restaurant.categories.length>0){
       document.getElementById('editor-wrap').classList.add('show');
