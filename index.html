@@ -362,15 +362,35 @@ let editingItem = null;
 const restaurantPreload = {"categories":[{"id":"thali","name":"Thali (थाली)","items":[{"id":"t1","name":"Dal Thali","price":295,"type":"veg","desc":"Dal, Mix Vegetable, Rice & Salad, Pickle, Papad, Sweet — 5pm to 7pm"},{"id":"t2","name":"Spl Thali","price":375,"type":"veg","desc":"Baby Laccha Paratha, Dal, Mix Vegetable, Kofte, Baby Naan, Rice, Salad, Pickle, Papad, Sweet"},{"id":"t3","name":"Shahi Thali","price":475,"type":"veg","desc":"Baby Laccha Paratha, Dal Makhani, Mix Vegetables, Rice, Salad, Pickle, Papad, Sweet"},{"id":"t4","name":"Deluxe Thali","price":295,"type":"veg","desc":"Dal, Paneer Dish, Mix Vegetables, Rice, Salad, Pickle, Papad, Sweet"}]},{"id":"mini_meals","name":"Mini Meals (मिनी भोजन)","items":[{"id":"mm1","name":"Dal Makhani + Fried Rice + Baby Naan","price":220,"type":"veg","desc":""},{"id":"mm2","name":"Chilly Paneer + Fried Rice + Baby Naan","price":225,"type":"veg","desc":""},{"id":"mm3","name":"American Kulcha + Chhole","price":250,"type":"veg","desc":""},{"id":"mm4","name":"Manchurian + Fried Rice + Baby Naan","price":250,"type":"veg","desc":""},{"id":"mm5","name":"Shahi Paneer + Jeera Rice + Baby Naan","price":240,"type":"veg","desc":""},{"id":"mm6","name":"Dal Paneer + Boondi Raita + Baby Naan","price":295,"type":"veg","desc":""},{"id":"mm7","name":"Veg Biryani + Raita","price":370,"type":"veg","desc":""}]},{"id":"soup","name":"Soup (सूप)","items":[{"id":"so1","name":"Mushroom Tikka","price":130,"type":"veg","desc":""},{"id":"so2","name":"Tandoori Platter","price":140,"type":"veg","desc":""},{"id":"so3","name":"Tomato Soup","price":140,"type":"veg","desc":""},{"id":"so4","name":"Hot & Sour Soup","price":140,"type":"veg","desc":""},{"id":"so5","name":"Sweet Corn Soup","price":140,"type":"veg","desc":""},{"id":"so6","name":"Manchow Soup","price":140,"type":"veg","desc":""}]},{"id":"indian_mains","name":"Indian Mains (इंडियन मेन्स)","items":[{"id":"im1","name":"Chana Masala","price":295,"type":"veg","desc":""},{"id":"im2","name":"Mix Veg","price":295,"type":"veg","desc":""},{"id":"im3","name":"Veg Jalfrezi","price":295,"type":"veg","desc":""},{"id":"im4","name":"Veg Kolhapuri","price":295,"type":"veg","desc":""},{"id":"im5","name":"Veg Navratan Korma","price":335,"type":"veg","desc":""},{"id":"im6","name":"Veg Makhanwala","price":335,"type":"veg","desc":""},{"id":"im7","name":"Shah Paneer","price":355,"type":"veg","desc":""},{"id":"im8","name":"Paneer Butter Masala","price":355,"type":"veg","desc":""},{"id":"im9","name":"Kadhai Mushroom","price":355,"type":"veg","desc":""},{"id":"im10","name":"Paneer Lababdar","price":355,"type":"veg","desc":""},{"id":"im11","name":"Angara Paneer","price":355,"type":"veg","desc":""},{"id":"im12","name":"Paneer Kolhapuri","price":355,"type":"veg","desc":""},{"id":"im13","name":"Paneer Do Pyaza","price":355,"type":"veg","desc":""},{"id":"im14","name":"Matar Mushroom","price":355,"type":"veg","desc":""},{"id":"im15","name":"Paneer Bhurji","price":355,"type":"veg","desc":""},{"id":"im16","name":"Kashmir Dum Aloo","price":355,"type":"veg","desc":""},{"id":"im17","name":"Malai Kofta","price":355,"type":"veg","desc":""},{"id":"im18","name":"Punjab Dum Aloo","price":355,"type":"veg","desc":""},{"id":"im19","name":"Jeera Rice","price":215,"type":"veg","desc":""},{"id":"im20","name":"Veg Pulao","price":295,"type":"veg","desc":""},{"id":"im21","name":"Veg Dum Biryani","price":320,"type":"veg","desc":""},{"id":"im22","name":"Daal Tadka","price":295,"type":"veg","desc":""},{"id":"im23","name":"Daal Punjabi","price":295,"type":"veg","desc":""},{"id":"im24","name":"Daal Makhani","price":295,"type":"veg","desc":""},{"id":"im25","name":"Daal Panchmel","price":235,"type":"veg","desc":""},{"id":"im26","name":"Aloo Jeera","price":235,"type":"veg","desc":""},{"id":"im27","name":"Aloo Gobi","price":295,"type":"veg","desc":""}]},{"id":"breads","name":"Breads (ब्रेड्स)","items":[{"id":"br1","name":"Tandoori Roti","price":25,"type":"veg","desc":""},{"id":"br2","name":"Tandoori Butter Roti","price":35,"type":"veg","desc":""},{"id":"br3","name":"Missi Roti","price":55,"type":"veg","desc":""},{"id":"br4","name":"Plain Naan","price":55,"type":"veg","desc":""},{"id":"br5","name":"Butter Naan","price":65,"type":"veg","desc":""},{"id":"br6","name":"Garlic Naan","price":80,"type":"veg","desc":""},{"id":"br7","name":"Laccha Paratha","price":80,"type":"veg","desc":""},{"id":"br8","name":"Kulcha (Onion / Aloo / Paneer)","price":105,"type":"veg","desc":""}]},{"id":"tandoori","name":"Tandoori Snacks (तंदूरी नाश्ता)","items":[{"id":"ts1","name":"Tandoori Paneer Tikka","price":295,"type":"veg","desc":""},{"id":"ts2","name":"Malai Paneer Tikka","price":295,"type":"veg","desc":""},{"id":"ts3","name":"Dahi ke Gulal","price":250,"type":"veg","desc":""},{"id":"ts4","name":"Tandoori Soya Aloo","price":250,"type":"veg","desc":""},{"id":"ts5","name":"Veg Seekh Kebab","price":260,"type":"veg","desc":""},{"id":"ts6","name":"South Indian Platter","price":370,"type":"veg","desc":""},{"id":"ts7","name":"Tandoori Platter","price":295,"type":"veg","desc":""}]},{"id":"raita","name":"Raita & Salad (रायता & सलाद)","items":[{"id":"rs1","name":"Plain Papad (2 Pcs)","price":60,"type":"veg","desc":""},{"id":"rs2","name":"Masala Papad (2 Pcs)","price":99,"type":"veg","desc":""},{"id":"rs3","name":"Green Salad","price":100,"type":"veg","desc":""},{"id":"rs4","name":"Boondi Raita","price":155,"type":"veg","desc":""},{"id":"rs5","name":"Pineapple Raita","price":155,"type":"veg","desc":""},{"id":"rs6","name":"Mix Veg Raita","price":155,"type":"veg","desc":""},{"id":"rs7","name":"Tadka Raita","price":155,"type":"veg","desc":""}]},{"id":"chaat","name":"Chatpati Chaat (चटपटी चाट)","items":[{"id":"ch1","name":"Aloo Tikki","price":60,"type":"veg","desc":"Available 2pm–9pm"},{"id":"ch2","name":"Pani Puri","price":70,"type":"veg","desc":""},{"id":"ch3","name":"Dahi Bhalla","price":90,"type":"veg","desc":""},{"id":"ch4","name":"Gupchup Chaat","price":100,"type":"veg","desc":""},{"id":"ch5","name":"Papdi Chaat","price":80,"type":"veg","desc":""},{"id":"ch6","name":"Bhelpuri","price":120,"type":"veg","desc":""},{"id":"ch7","name":"Rajkachori","price":140,"type":"veg","desc":""},{"id":"ch8","name":"Chole Bhature","price":180,"type":"veg","desc":"Available 2pm–9pm"}]},{"id":"south_indian","name":"South Indian (साउथ इंडियन)","items":[{"id":"si1","name":"Idli Sambhar (4pc)","price":160,"type":"veg","desc":"Available 2pm–9pm"},{"id":"si2","name":"Vada Sambhar (4pc)","price":190,"type":"veg","desc":""},{"id":"si3","name":"Plain Dosa","price":210,"type":"veg","desc":""},{"id":"si4","name":"Masala Dosa","price":230,"type":"veg","desc":""},{"id":"si5","name":"Mysore Masala Dosa","price":270,"type":"veg","desc":""},{"id":"si6","name":"Cheese N Paneer Dosa","price":270,"type":"veg","desc":""},{"id":"si7","name":"Jimmy Dosa","price":210,"type":"veg","desc":""},{"id":"si8","name":"Rawa Plain Dosa","price":210,"type":"veg","desc":""},{"id":"si9","name":"Rawa Masala Dosa","price":230,"type":"veg","desc":""},{"id":"si10","name":"Onion Rawa Masala Dosa","price":230,"type":"veg","desc":""},{"id":"si11","name":"Onion Masala Dosa","price":230,"type":"veg","desc":""},{"id":"si12","name":"Mix Veg Uttapam","price":270,"type":"veg","desc":"Mix Veg, Onion, Tomato"},{"id":"si13","name":"South Indian Platter","price":360,"type":"veg","desc":""}]}]};
 
 // LOAD / SAVE
-function loadData(){
+async function loadData(){
+  // ALWAYS load from server first — this ensures all devices see same menu
+  try{
+    const r = await fetch('/api/menu');
+    if(r.ok){
+      const data = await r.json();
+      const hasData = Object.values(data).some(m=>m.categories&&m.categories.length>0);
+      if(hasData){ allMenus=data; return; }
+    }
+  }catch(e){ console.log('Server load failed:', e); }
+  // Fallback: localStorage
   try{
     const s=localStorage.getItem(STORE_KEY);
     if(s){ allMenus=JSON.parse(s); return; }
   }catch(e){}
+  // Last resort: preload
   allMenus.restaurant = restaurantPreload;
-  saveData();
+  await saveData();
 }
-function saveData(){
+async function saveData(){
+  // Save to server
+  try{
+    await fetch('/api/menu',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({menus:allMenus})
+    });
+  }catch(e){ console.log('Server save failed:',e); }
+  // Also localStorage as backup
   try{ localStorage.setItem(STORE_KEY,JSON.stringify(allMenus)); }catch(e){}
 }
 
@@ -743,8 +763,8 @@ function toast(msg){
 }
 
 // INIT
-window.addEventListener('DOMContentLoaded', ()=>{
-  loadData();
+window.addEventListener('DOMContentLoaded', async ()=>{
+  await loadData();
   const params=new URLSearchParams(window.location.search);
   const menuParam=params.get('menu');
 
