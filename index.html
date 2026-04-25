@@ -454,25 +454,10 @@ async function processFile(file){
     const base64 = await fileToBase64(file);
     const mediaType = file.type || 'image/jpeg';
 
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const response = await fetch('/api/scan', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': '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',
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 3000,
-        messages: [{
-          role: 'user',
-          content: [
-            { type: 'image', source: { type: 'base64', media_type: mediaType, data: base64 } },
-            { type: 'text', text: `You are scanning a restaurant menu for Food House, Aligarh, India. Extract ALL categories and items. Return ONLY valid JSON: {"categories":[{"id":"cat1","name":"Category Name","items":[{"id":"item1","name":"Item Name","price":100,"type":"veg","desc":"description"}]}]} Rules: type must be veg or nonveg, price is number only, extract every item, group by category headers, price @75/- means 75, use unique ids.` }
-          ]
-        }]
-      })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image: base64, mediaType: mediaType })
     });
 
     const result = await response.json();
@@ -775,4 +760,51 @@ window.addEventListener('DOMContentLoaded',()=>{
 });
 </script>
 </body>
-</html>
+</html>{
+  "functions": {
+    "api/scan.js": {
+      "maxDuration": 30
+    }
+  },
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}export default async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+
+  try {
+    const { image, mediaType } = req.body;
+    if (!image) return res.status(400).json({ error: 'No image provided' });
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': process.env.ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 3000,
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'image', source: { type: 'base64', media_type: mediaType || 'image/jpeg', data: image } },
+            { type: 'text', text: `Scan this restaurant menu image for Food House, Aligarh, India. Extract ALL categories and items. Return ONLY valid JSON with no other text:
+{"categories":[{"id":"cat1","name":"Category Name","items":[{"id":"item1","name":"Item Name","price":100,"type":"veg","desc":"description if visible"}]}]}
+Rules: type must be "veg" or "nonveg", price is a number (0 if not shown), extract every single item, group by category headers, price @75/- means 75, use unique ids like cat1 cat2 item1 item2.` }
+          ]
+        }]
+      })
+    });
+
+    const data = await response.json();
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+}
