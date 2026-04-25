@@ -155,6 +155,11 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 .f-btn-save{padding:0.5rem 1.2rem;background:var(--navy);color:var(--gold2);border:none;border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer;font-family:'Raleway',sans-serif}
 .f-btn-cancel{padding:0.5rem 1rem;background:none;color:var(--muted);border:1px solid var(--pale);border-radius:6px;font-size:0.7rem;cursor:pointer;font-family:'Raleway',sans-serif}
 
+.save-menu-btn{display:block;width:100%;padding:0.9rem;background:linear-gradient(135deg,var(--royal),var(--navy));color:var(--gold2);border:none;border-radius:10px;font-family:'Cinzel',serif;font-size:0.9rem;font-weight:600;letter-spacing:0.1em;cursor:pointer;margin-bottom:1.4rem;transition:all 0.2s;box-shadow:0 4px 15px rgba(13,39,68,0.3)}
+.save-menu-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(13,39,68,0.4)}
+.save-menu-btn:active{transform:translateY(0)}
+.save-menu-btn.saving{background:var(--muted);cursor:not-allowed}
+.save-menu-btn.saved{background:linear-gradient(135deg,var(--green),#14532d);color:white}
 .toast{position:fixed;bottom:1.2rem;left:50%;transform:translateX(-50%) translateY(50px);background:var(--navy);color:white;padding:0.7rem 1.3rem;border-radius:8px;font-size:0.75rem;font-weight:500;border-left:3px solid var(--gold2);opacity:0;transition:all 0.3s;z-index:999;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
@@ -256,6 +261,11 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
       <button onclick="document.getElementById('menu-file').click()" style="padding:0.5rem 1.2rem;background:var(--royal);color:white;border:none;border-radius:6px;font-size:0.7rem;font-weight:600;cursor:pointer;font-family:'Raleway',sans-serif">Upload New Menu Photo</button>
     </div>
   </div>
+
+  <!-- SAVE BUTTON -->
+  <button class="save-menu-btn" id="save-menu-btn" onclick="manualSave()">
+    💾 Save Menu to Server
+  </button>
 
   <!-- QR CODES -->
   <div class="sec-hd">📱 QR Codes — Download & Print for Tables</div>
@@ -756,6 +766,29 @@ function downloadQR(type,label){
   a.download='FoodHouse-'+type+'-QR.png';
   a.click();
   toast('⬇ '+label+' QR downloaded!');
+}
+
+async function manualSave(){
+  const btn = document.getElementById('save-menu-btn');
+  btn.textContent = '⏳ Saving...';
+  btn.className = 'save-menu-btn saving';
+  btn.disabled = true;
+  try {
+    await saveData();
+    btn.textContent = '✅ Menu Saved Successfully!';
+    btn.className = 'save-menu-btn saved';
+    toast('✅ Menu saved! Customers can see it now.');
+    setTimeout(()=>{
+      btn.textContent = '💾 Save Menu to Server';
+      btn.className = 'save-menu-btn';
+      btn.disabled = false;
+    }, 3000);
+  } catch(e) {
+    btn.textContent = '⚠ Save Failed — Try Again';
+    btn.className = 'save-menu-btn';
+    btn.disabled = false;
+    toast('⚠ Could not save. Check connection.');
+  }
 }
 
 function toast(msg){
