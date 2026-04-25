@@ -304,7 +304,7 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 <script>
 // ══ CLOUDINARY CONFIG ══
 const CLOUD_NAME   = 'dtegieseu';
-const UPLOAD_PRESET = 'foodhouse_menu'; // unsigned preset we'll create
+const UPLOAD_PRESET = 'Foodhousemenu'; // unsigned preset we'll create
 const BASE_URL     = 'https://banquetmenu.vercel.app';
 const LABELS       = { restaurant:'Restaurant', banquet:'Banquet Hall', chaat:'Chaat Adda' };
 
@@ -369,6 +369,7 @@ async function handleFile(type, input) {
     formData.append('upload_preset', UPLOAD_PRESET);
     formData.append('public_id', 'foodhouse_' + type + '_menu');
     formData.append('overwrite', 'true');
+    formData.append('invalidate', 'true');
 
     const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`, {
       method: 'POST',
