@@ -1,46 +1,57 @@
-import { createClient } from '@vercel/edge-config';
-
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
+  const token = process.env.BLOB_READ_WRITE_TOKEN;
   const empty = { restaurant:{categories:[]}, banquet:{categories:[]}, chaat:{categories:[]} };
 
+  if (!token) {
+    return res.status(500).json({ error: 'BLOB_READ_WRITE_TOKEN not set', env: Object.keys(process.env).filter(k => k.includes('BLOB')) });
+  }
+
+  // GET
   if (req.method === 'GET') {
     try {
-      const { get } = await import('@vercel/edge-config');
-      const menus = await get('foodhouse_menus');
-      return res.status(200).json(menus || empty);
-    } catch(e) {
+      // List all blobs
+      const listRes = await fetch(`https://blob.vercel-storage.com?prefix=foodhouse`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const listData = await listRes.json();
+      const blob = listData.blobs?.find(b => b.pathname === 'foodhouse-menus.json');
+
+      if (blob) {
+        const dataRes = await fetch(blob.url);
+        const data = await dataRes.json();
+        return res.status(200).json(data);
+      }
       return res.status(200).json(empty);
+    } catch(e) {
+      return res.status(200).json({ ...empty, _error: e.message });
     }
   }
 
+  // POST
   if (req.method === 'POST') {
     try {
       const { menus } = req.body;
-      if (!menus) return res.status(400).json({ error: 'No data' });
+      if (!menus) return res.status(400).json({ error: 'No menu data' });
 
-      // Get edge config ID from connection string
-      const edgeConfigId = process.env.EDGE_CONFIG?.match(/ecfg_[^?]+/)?.[0];
-      if (!edgeConfigId) return res.status(500).json({ error: 'No Edge Config ID' });
-
-      const r = await fetch(`https://api.vercel.com/v1/edge-config/${edgeConfigId}/items`, {
-        method: 'PATCH',
+      const putRes = await fetch(`https://blob.vercel-storage.com/foodhouse-menus.json`, {
+        method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${process.env.VERCEL_TOKEN}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'x-content-type': 'application/json',
+          'x-add-random-suffix': '0'
         },
-        body: JSON.stringify({
-          items: [{ operation: 'upsert', key: 'foodhouse_menus', value: menus }]
-        })
+        body: JSON.stringify(menus)
       });
 
-      const data = await r.json();
-      if (r.ok) return res.status(200).json({ success: true });
-      return res.status(500).json({ error: JSON.stringify(data) });
+      const putData = await putRes.json();
+      if (putRes.ok) return res.status(200).json({ success: true, url: putData.url });
+      return res.status(500).json({ error: putData });
     } catch(e) {
       return res.status(500).json({ error: e.message });
     }
