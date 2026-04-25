@@ -1,6 +1,9 @@
 {
   "functions": {
-    "api/*.js": {
+    "api/scan.js": {
+      "maxDuration": 60
+    },
+    "api/menu.js": {
       "maxDuration": 30
     }
   }
