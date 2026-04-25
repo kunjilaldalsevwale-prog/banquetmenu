@@ -217,11 +217,11 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
     ondragover="event.preventDefault();this.classList.add('drag')"
     ondragleave="this.classList.remove('drag')"
     ondrop="event.preventDefault();this.classList.remove('drag');handleDrop(event)">
-    <input type="file" id="menu-file" accept="image/*,.pdf" onchange="handleUpload(this)">
+    <input type="file" id="menu-file" accept="image/*" multiple onchange="handleUpload(this)">
     <span class="upload-zone-icon">📸</span>
-    <h3>Upload Your Menu Photo</h3>
-    <p>Take a photo of your printed menu or upload an image<br>AI will read every item, category and price automatically</p>
-    <span class="upload-hint">✨ Powered by Claude AI · Supports JPG, PNG · Instant scanning</span>
+    <h3>Upload Your Menu Photo(s)</h3>
+    <p>Upload 1 or 2 images for double-sided menus<br>AI will read every item, category and price automatically</p>
+    <span class="upload-hint">✨ Powered by Claude AI · Select multiple images · Instant scanning</span>
   </div>
 
   <!-- SCAN STATE -->
@@ -429,10 +429,14 @@ function updateCounts(){
 }
 
 // AI UPLOAD
-function handleDrop(e){ const f=e.dataTransfer.files[0]; if(f) processFile(f); }
-function handleUpload(input){ const f=input.files[0]; if(f) processFile(f); input.value=''; }
+function handleDrop(e){ const files=Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith("image/")); if(files.length) processFile(files); }
+function handleUpload(input){ const files=Array.from(input.files); if(files.length) processFile(files); input.value=''; }
 
-async function processFile(file){
+async function processFile(files){
+  // Support single file or array of files
+  if (!Array.isArray(files)) files = [files];
+  files = files.slice(0, 2); // max 2 images
+
   document.getElementById('scan-card').classList.add('show');
   document.getElementById('success-card').classList.remove('show');
   document.getElementById('editor-wrap').classList.remove('show');
@@ -440,9 +444,12 @@ async function processFile(file){
   const fill = document.getElementById('scan-fill');
   const sub  = document.getElementById('scan-sub');
   const title = document.getElementById('scan-title');
-  title.textContent = 'AI is Reading Your ' + MENU_NAMES[currentMenu] + ' Menu...';
+  const sideText = files.length > 1 ? ' ('+files.length+' sides)' : '';
+  title.textContent = 'AI is Reading Your ' + MENU_NAMES[currentMenu] + ' Menu' + sideText + '...';
 
-  const steps = ['Reading menu image...','Identifying categories...','Extracting menu items...','Reading prices...','Building digital menu...'];
+  const steps = files.length > 1
+    ? ['Reading side 1...','Reading side 2...','Combining all items...','Extracting prices...','Building digital menu...']
+    : ['Reading menu image...','Identifying categories...','Extracting menu items...','Reading prices...','Building digital menu...'];
   let prog=0, stepIdx=0;
   const iv = setInterval(()=>{
     prog = Math.min(prog + Math.random()*12, 88);
@@ -451,13 +458,16 @@ async function processFile(file){
   }, 300);
 
   try{
-    const base64 = await fileToBase64(file);
-    const mediaType = file.type || 'image/jpeg';
+    // Convert all files to base64
+    const images = await Promise.all(files.map(async f => ({
+      base64: await fileToBase64(f),
+      mediaType: f.type || 'image/jpeg'
+    })));
 
     const response = await fetch('/api/scan', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ image: base64, mediaType: mediaType })
+      body: JSON.stringify({ images: images })
     });
 
     const result = await response.json();
