@@ -36,6 +36,7 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 .live-pill{display:inline-flex;align-items:center;gap:0.3rem;background:rgba(46,204,113,0.12);border:1px solid rgba(46,204,113,0.35);color:#4ade80;font-size:0.55rem;padding:2px 7px;border-radius:20px;margin-top:0.35rem;font-weight:600}
 .live-dot{width:5px;height:5px;border-radius:50%;background:#4ade80;animation:blink 1.4s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
 
 /* MENU TYPE SELECTOR */
 .menu-selector{display:grid;grid-template-columns:repeat(3,1fr);gap:0.8rem;margin-bottom:1.3rem}
@@ -166,6 +167,21 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 .save-bar-btn:hover{background:var(--gold2)}
 .save-bar-btn.saving{background:var(--royal);color:white;pointer-events:none}
 .save-bar-btn.saved{background:var(--green-bg);color:var(--green);border:1px solid var(--green-bd)}
+/* PASSCODE SCREEN */
+.passcode-screen{position:fixed;inset:0;background:#0D2744;z-index:500;display:flex;align-items:center;justify-content:center;padding:1rem}
+.passcode-box{background:white;border-radius:16px;padding:2rem;width:100%;max-width:340px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.4)}
+.passcode-logo{font-family:'Cinzel',serif;font-size:1.2rem;font-weight:700;color:#0D2744;margin-bottom:0.3rem}
+.passcode-sub{font-size:0.7rem;color:#4A6A88;margin-bottom:1.5rem;letter-spacing:0.1em;text-transform:uppercase}
+.passcode-title{font-size:0.75rem;font-weight:600;color:#4A6A88;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.8rem}
+.passcode-dots{display:flex;justify-content:center;gap:0.8rem;margin-bottom:1.2rem}
+.passcode-dot{width:14px;height:14px;border-radius:50%;border:2px solid #C8E0F0;background:white;transition:all 0.2s}
+.passcode-dot.filled{background:#0D2744;border-color:#0D2744}
+.passcode-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.6rem;margin-bottom:0.8rem}
+.passcode-btn{padding:1rem;background:#f8f9fa;border:1px solid #e9ecef;border-radius:10px;font-size:1.3rem;font-weight:600;color:#0D2744;cursor:pointer;font-family:'Raleway',sans-serif;transition:all 0.15s}
+.passcode-btn:active{background:#0D2744;color:white;transform:scale(0.95)}
+.passcode-clear{padding:1rem;background:#fee2e2;border:1px solid #fca5a5;border-radius:10px;font-size:1rem;color:#991b1b;cursor:pointer;font-family:'Raleway',sans-serif;transition:all 0.15s}
+.passcode-error{font-size:0.72rem;color:#991b1b;margin-top:0.5rem;min-height:1rem;font-weight:600}
+.passcode-screen.hidden{display:none}
 .toast{position:fixed;bottom:1.2rem;left:50%;transform:translateX(-50%) translateY(50px);background:var(--navy);color:white;padding:0.7rem 1.3rem;border-radius:8px;font-size:0.75rem;font-weight:500;border-left:3px solid var(--gold2);opacity:0;transition:all 0.3s;z-index:999;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
@@ -360,6 +376,36 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
       <button class="f-btn-cancel" onclick="closeCatModal()">Cancel</button>
       <button class="f-btn-save" onclick="saveCatName()">💾 Save</button>
     </div>
+  </div>
+</div>
+
+<!-- PASSCODE SCREEN -->
+<div class="passcode-screen" id="passcode-screen">
+  <div class="passcode-box">
+    <div class="passcode-logo">🏛 Food House</div>
+    <div class="passcode-sub">Admin Panel</div>
+    <div class="passcode-title">Enter Passcode</div>
+    <div class="passcode-dots">
+      <div class="passcode-dot" id="dot-0"></div>
+      <div class="passcode-dot" id="dot-1"></div>
+      <div class="passcode-dot" id="dot-2"></div>
+      <div class="passcode-dot" id="dot-3"></div>
+    </div>
+    <div class="passcode-grid">
+      <button class="passcode-btn" onclick="enterDigit('1')">1</button>
+      <button class="passcode-btn" onclick="enterDigit('2')">2</button>
+      <button class="passcode-btn" onclick="enterDigit('3')">3</button>
+      <button class="passcode-btn" onclick="enterDigit('4')">4</button>
+      <button class="passcode-btn" onclick="enterDigit('5')">5</button>
+      <button class="passcode-btn" onclick="enterDigit('6')">6</button>
+      <button class="passcode-btn" onclick="enterDigit('7')">7</button>
+      <button class="passcode-btn" onclick="enterDigit('8')">8</button>
+      <button class="passcode-btn" onclick="enterDigit('9')">9</button>
+      <button class="passcode-clear" onclick="clearDigit()">⌫</button>
+      <button class="passcode-btn" onclick="enterDigit('0')">0</button>
+      <button class="passcode-btn" onclick="enterDigit('')" style="visibility:hidden"></button>
+    </div>
+    <div class="passcode-error" id="passcode-error"></div>
   </div>
 </div>
 
@@ -866,19 +912,69 @@ function toast(msg){
 }
 
 // INIT
+// ── PASSCODE ──
+const ADMIN_PASSCODE = '1947'; // Change this to your preferred passcode
+let currentPin = '';
+
+function enterDigit(d) {
+  if (currentPin.length >= 4) return;
+  currentPin += d;
+  updateDots();
+  if (currentPin.length === 4) {
+    setTimeout(checkPasscode, 150);
+  }
+}
+
+function clearDigit() {
+  currentPin = currentPin.slice(0, -1);
+  updateDots();
+  document.getElementById('passcode-error').textContent = '';
+}
+
+function updateDots() {
+  for (let i = 0; i < 4; i++) {
+    const dot = document.getElementById('dot-' + i);
+    if (i < currentPin.length) {
+      dot.classList.add('filled');
+    } else {
+      dot.classList.remove('filled');
+    }
+  }
+}
+
+function checkPasscode() {
+  if (currentPin === ADMIN_PASSCODE) {
+    document.getElementById('passcode-screen').classList.add('hidden');
+    sessionStorage.setItem('fh_admin_auth', '1');
+  } else {
+    document.getElementById('passcode-error').textContent = '❌ Wrong passcode. Try again.';
+    currentPin = '';
+    updateDots();
+    // Shake animation
+    const box = document.querySelector('.passcode-box');
+    box.style.animation = 'shake 0.4s ease';
+    setTimeout(() => box.style.animation = '', 400);
+  }
+}
+
 window.addEventListener('DOMContentLoaded', async ()=>{
   await loadData();
   const params=new URLSearchParams(window.location.search);
   const menuParam=params.get('menu');
 
   if(menuParam&&['restaurant','banquet','chaat'].includes(menuParam)){
-    // CUSTOMER MODE
+    // CUSTOMER MODE - hide passcode screen
+    document.getElementById('passcode-screen').classList.add('hidden');
     document.getElementById('topbar').style.display='none';
     document.getElementById('view-admin').style.display='none';
     document.getElementById('view-customer').classList.add('active');
     renderCustomer();
   } else {
-    // ADMIN MODE
+    // ADMIN MODE - check passcode
+    if (sessionStorage.getItem('fh_admin_auth') === '1') {
+      document.getElementById('passcode-screen').classList.add('hidden');
+    }
+    // passcode screen shows by default
     generateQRs();
     updateCounts();
     showSaveBar();
