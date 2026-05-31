@@ -198,7 +198,7 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 .save-bar-btn.saving{background:var(--royal);color:white;pointer-events:none}
 .save-bar-btn.saved{background:var(--green-bg);color:var(--green);border:1px solid var(--green-bd)}
 /* PASSCODE SCREEN */
-.passcode-screen{position:fixed;inset:0;background:#0D2744;z-index:500;display:flex;align-items:center;justify-content:center;padding:1rem}
+.passcode-screen{position:fixed;inset:0;background:#0D2744;z-index:500;display:none;align-items:center;justify-content:center;padding:1rem}
 .passcode-box{background:white;border-radius:16px;padding:2rem;width:100%;max-width:340px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.4)}
 .passcode-logo{font-family:'Cinzel',serif;font-size:1.2rem;font-weight:700;color:#0D2744;margin-bottom:0.3rem}
 .passcode-sub{font-size:0.7rem;color:#4A6A88;margin-bottom:1.5rem;letter-spacing:0.1em;text-transform:uppercase}
@@ -217,28 +217,10 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 
 @media(max-width:560px){.menu-selector{grid-template-columns:1fr}.qr-grid{grid-template-columns:1fr}.f-row{grid-template-columns:1fr}.welcome{flex-direction:column;text-align:center}}
 </style>
-<style id="customer-hide">
-/* Will be removed if admin mode */
-.passcode-screen, .topbar, #view-admin, .save-bar { display: none !important; }
-</style>
-<script>
-// Remove hiding CSS immediately if this is admin mode (no ?menu= param)
-var _mp = new URLSearchParams(location.search).get('menu');
-if(!_mp || !['restaurant','banquet','chaat'].includes(_mp)){
-  document.getElementById('customer-hide').remove();
-}
-</script>
+
 </head>
 <body>
-<script>
-// Instantly hide admin if customer mode - prevents flash
-(function(){
-  const p = new URLSearchParams(window.location.search).get('menu');
-  if(p && ['restaurant','banquet','chaat'].includes(p)){
-    document.documentElement.style.setProperty('--hide-admin','none');
-  }
-})();
-</script>
+
 <div class="topbar" id="topbar">
   <div>
     <div class="tb-brand">🏛 Food House</div>
@@ -1061,11 +1043,13 @@ window.addEventListener('DOMContentLoaded', async ()=>{
     document.getElementById('view-customer').classList.add('active');
     renderCustomer();
   } else {
-    // ADMIN MODE - check passcode
+    // ADMIN MODE
+    const screen = document.getElementById('passcode-screen');
     if (sessionStorage.getItem('fh_admin_auth') === '1') {
-      document.getElementById('passcode-screen').classList.add('hidden');
+      screen.style.display = 'none';
+    } else {
+      screen.style.display = 'flex';
     }
-    // passcode screen shows by default
     generateQRs();
     updateCounts();
     showSaveBar();
