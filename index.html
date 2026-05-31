@@ -1029,23 +1029,23 @@ function checkPasscode() {
 }
 
 window.addEventListener('DOMContentLoaded', async ()=>{
-  await loadData();
-  const params=new URLSearchParams(window.location.search);
-  const menuParam=params.get('menu');
+  const params = new URLSearchParams(window.location.search);
+  const menuParam = params.get('menu');
 
-  if(menuParam&&['restaurant','banquet','chaat'].includes(menuParam)){
-    // CUSTOMER MODE - hide everything instantly
-    document.body.setAttribute('data-customer','true');
-    document.getElementById('passcode-screen').classList.add('hidden');
-    document.getElementById('topbar').style.display='none';
-    document.getElementById('view-admin').style.display='none';
-    document.getElementById('save-bar').style.display='none';
-    document.getElementById('view-customer').classList.add('active');
+  if(menuParam && ['restaurant','banquet','chaat'].includes(menuParam)){
+    // CUSTOMER MODE — show menu immediately, load data in background
+    document.getElementById('topbar').style.display = 'none';
+    document.getElementById('view-admin').style.display = 'none';
+    document.getElementById('passcode-screen').style.display = 'none';
+    document.getElementById('save-bar').style.display = 'none';
+    document.getElementById('view-customer').style.display = 'block';
+    await loadData();
     renderCustomer();
   } else {
     // ADMIN MODE
+    await loadData();
     const screen = document.getElementById('passcode-screen');
-    if (sessionStorage.getItem('fh_admin_auth') === '1') {
+    if(sessionStorage.getItem('fh_admin_auth') === '1'){
       screen.style.display = 'none';
     } else {
       screen.style.display = 'flex';
@@ -1053,12 +1053,11 @@ window.addEventListener('DOMContentLoaded', async ()=>{
     generateQRs();
     updateCounts();
     showSaveBar();
-    // Show restaurant menu by default if it has items
-    if(allMenus.restaurant.categories.length>0){
+    if(allMenus.restaurant.categories.length > 0){
       document.getElementById('editor-wrap').classList.add('show');
       document.getElementById('success-card').classList.add('show');
-      const total=allMenus.restaurant.categories.reduce((s,c)=>s+c.items.length,0);
-      document.getElementById('success-detail').textContent=total+' items across '+allMenus.restaurant.categories.length+' categories';
+      const total = allMenus.restaurant.categories.reduce((s,c)=>s+c.items.length,0);
+      document.getElementById('success-detail').textContent = total+' items across '+allMenus.restaurant.categories.length+' categories';
       renderAdminCats();
     }
   }
