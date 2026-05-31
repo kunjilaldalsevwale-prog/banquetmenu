@@ -1037,7 +1037,7 @@ window.addEventListener('DOMContentLoaded', async ()=>{
     document.getElementById('topbar').style.display = 'none';
     document.getElementById('view-admin').style.display = 'none';
     document.getElementById('passcode-screen').style.display = 'none';
-    document.getElementById('save-bar').style.display = 'none';
+    const sb=document.querySelector('.save-bar'); if(sb) sb.style.display='none';
     document.getElementById('view-customer').style.display = 'block';
     await loadData();
     renderCustomer();
