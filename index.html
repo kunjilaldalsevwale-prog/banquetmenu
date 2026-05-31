@@ -9,6 +9,14 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
+  --hide-admin: block;
+}
+#passcode-screen[data-customer="true"],
+body[data-customer="true"] #passcode-screen,
+body[data-customer="true"] .topbar,
+body[data-customer="true"] #view-admin,
+body[data-customer="true"] .save-bar{display:none!important}
+:root{
   --navy:#0D2744;--royal:#1A4A7A;--mid:#2E6FA8;--gold:#B8953F;--gold2:#D4AC5C;
   --pale:#C8E0F0;--ivory:#FBF8F2;--cream:#F5F0E8;--white:#fff;
   --muted:#4A6A88;--text:#0A1E35;
@@ -209,9 +217,28 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 
 @media(max-width:560px){.menu-selector{grid-template-columns:1fr}.qr-grid{grid-template-columns:1fr}.f-row{grid-template-columns:1fr}.welcome{flex-direction:column;text-align:center}}
 </style>
+<style id="customer-hide">
+/* Will be removed if admin mode */
+.passcode-screen, .topbar, #view-admin, .save-bar { display: none !important; }
+</style>
+<script>
+// Remove hiding CSS immediately if this is admin mode (no ?menu= param)
+var _mp = new URLSearchParams(location.search).get('menu');
+if(!_mp || !['restaurant','banquet','chaat'].includes(_mp)){
+  document.getElementById('customer-hide').remove();
+}
+</script>
 </head>
 <body>
-
+<script>
+// Instantly hide admin if customer mode - prevents flash
+(function(){
+  const p = new URLSearchParams(window.location.search).get('menu');
+  if(p && ['restaurant','banquet','chaat'].includes(p)){
+    document.documentElement.style.setProperty('--hide-admin','none');
+  }
+})();
+</script>
 <div class="topbar" id="topbar">
   <div>
     <div class="tb-brand">🏛 Food House</div>
@@ -1025,10 +1052,12 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   const menuParam=params.get('menu');
 
   if(menuParam&&['restaurant','banquet','chaat'].includes(menuParam)){
-    // CUSTOMER MODE - hide passcode screen
+    // CUSTOMER MODE - hide everything instantly
+    document.body.setAttribute('data-customer','true');
     document.getElementById('passcode-screen').classList.add('hidden');
     document.getElementById('topbar').style.display='none';
     document.getElementById('view-admin').style.display='none';
+    document.getElementById('save-bar').style.display='none';
     document.getElementById('view-customer').classList.add('active');
     renderCustomer();
   } else {
