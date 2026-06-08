@@ -321,7 +321,20 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
   </button>
 
   <!-- QR CODES -->
-  <div class="sec-hd">📱 QR Codes — Download & Print for Tables</div>
+  <div class="sec-hd">🖼 Banner Size</div>
+<div style="background:var(--white);border:1px solid var(--pale);border-radius:10px;padding:1rem;margin-bottom:1.3rem">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem">
+    <label style="font-size:0.72rem;font-weight:600;color:var(--navy)">Banner Width</label>
+    <span style="font-size:0.72rem;font-weight:700;color:var(--royal)" id="banner-size-label">88%</span>
+  </div>
+  <input type="range" min="40" max="100" value="88" step="2" id="banner-slider"
+    style="width:100%;accent-color:#0D2744"
+    oninput="updateBannerSize(this.value)">
+  <div style="display:flex;justify-content:space-between;font-size:0.58rem;color:var(--muted);margin-top:0.2rem">
+    <span>Small</span><span>Medium</span><span>Full Width</span>
+  </div>
+</div>
+<div class="sec-hd">📱 QR Codes — Download & Print for Tables</div>
   <div class="qr-grid">
     <div class="qr-card">
       <div class="qr-card-title">🍛 Restaurant</div>
@@ -805,6 +818,10 @@ function closeModal(){document.getElementById('item-modal').classList.remove('sh
 
 // CUSTOMER RENDER
 function renderCustomer(){
+  // Apply saved banner size
+  const savedSize = localStorage.getItem('fh_banner_size') || '88';
+  const bannerImg = document.querySelector('.c-hero img');
+  if(bannerImg) bannerImg.style.width = savedSize + '%';
   const params=new URLSearchParams(window.location.search);
   const menuType=params.get('menu')||'restaurant';
   const cats=allMenus[menuType]?.categories||[];
@@ -976,6 +993,15 @@ function switchCatDropdown(catId){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
+function updateBannerSize(val){
+  document.getElementById('banner-size-label').textContent = val + '%';
+  // Update the banner image size
+  const bannerImg = document.querySelector('.c-hero img');
+  if(bannerImg) bannerImg.style.width = val + '%';
+  // Save preference
+  localStorage.setItem('fh_banner_size', val);
+}
+
 function toast(msg){
   const t=document.getElementById('toast');
   t.textContent=msg;t.classList.add('show');
@@ -1051,6 +1077,12 @@ window.addEventListener('DOMContentLoaded', async ()=>{
       screen.style.display = 'flex';
     }
     generateQRs();
+    // Load saved banner size
+    const savedSize = localStorage.getItem('fh_banner_size');
+    if(savedSize){
+      const slider = document.getElementById('banner-slider');
+      if(slider){ slider.value = savedSize; updateBannerSize(savedSize); }
+    }
     updateCounts();
     showSaveBar();
     if(allMenus.restaurant.categories.length > 0){
