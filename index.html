@@ -359,7 +359,7 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
   <!-- CATEGORY NAV -->
   <div class="c-cat-nav">
     <div class="c-cat-header" onclick="toggleCatPanel()">
-      <span class="c-cat-header-text" id="active-cat-name">☰ &nbsp;SELECT CATEGORY</span>
+      <span class="c-cat-header-text" id="active-cat-name">☰ &nbsp;MENU</span>
       <span class="c-cat-header-arrow" id="cat-arrow">▼</span>
     </div>
     <div class="c-cat-panel" id="cat-panel">
@@ -834,7 +834,7 @@ function renderCustomer(){
       tile.classList.add('active');
       contentEl.querySelectorAll('.c-section').forEach(s=>s.classList.remove('active'));
       document.getElementById('csec-'+cat.id).classList.add('active');
-      document.getElementById('active-cat-name').innerHTML='☰ &nbsp;'+cat.name.split('(')[0].trim().toUpperCase();
+      document.getElementById('active-cat-name').innerHTML='☰ &nbsp;MENU';
       document.getElementById('cat-panel').classList.remove('open');
       document.getElementById('cat-arrow').classList.remove('open');
       window.scrollTo({top:0,behavior:'smooth'});
