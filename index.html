@@ -1215,14 +1215,20 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   const menuParam = params.get('menu');
 
   if(menuParam && ['restaurant','banquet','chaat'].includes(menuParam)){
-    // CUSTOMER MODE — show menu immediately, load data in background
+    // CUSTOMER MODE
     document.getElementById('topbar').style.display = 'none';
     document.getElementById('view-admin').style.display = 'none';
     document.getElementById('passcode-screen').style.display = 'none';
     const sb=document.querySelector('.save-bar'); if(sb) sb.style.display='none';
     document.getElementById('view-customer').style.display = 'block';
-    await loadData();
+    // Show preload immediately so menu appears instantly
+    if(menuParam === 'restaurant') allMenus.restaurant = restaurantPreload;
     renderCustomer();
+    // Then load fresh data from server in background
+    try {
+      await loadData();
+      renderCustomer(); // re-render with fresh data
+    } catch(e) {}
   } else {
     // ADMIN MODE
     await loadData();
