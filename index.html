@@ -403,15 +403,29 @@ async function loadData(){
     const r=await fetch('/api/menu',{cache:'no-store'});
     if(r.ok){
       const data=await r.json();
-      if(data.menuList) menuList=data.menuList;
-      if(data.menus){allMenus=data.menus;return;}
-      const hasData=Object.values(data).some(m=>m&&m.categories&&m.categories.length>0);
-      if(hasData){allMenus=data;return;}
+      // NEW format: {menuList:[...], menus:{...}}
+      if(data.menuList && data.menus){
+        menuList=data.menuList;
+        allMenus=data.menus;
+        return;
+      }
+      // OLD format: {restaurant:{...}, banquet:{...}, chaat:{...}}
+      // Migrate it - keep the menu data, use default menuList
+      if(data.restaurant || data.banquet || data.chaat){
+        allMenus = data;
+        // menuList stays as default
+        return;
+      }
     }
   }catch(e){console.log('Server load failed:',e);}
+  // Try localStorage
   try{
     const s=localStorage.getItem(STORE_KEY);
-    if(s){const p=JSON.parse(s);if(p.menuList)menuList=p.menuList;if(p.menus){allMenus=p.menus;return;}allMenus=p;return;}
+    if(s){
+      const p=JSON.parse(s);
+      if(p.menuList && p.menus){menuList=p.menuList;allMenus=p.menus;return;}
+      if(p.restaurant || p.banquet || p.chaat){allMenus=p;return;}
+    }
   }catch(e){}
   allMenus.restaurant=restaurantPreload;
   await saveData();
