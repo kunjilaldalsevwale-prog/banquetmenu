@@ -631,6 +631,12 @@ function renderCustomer(){
   const contentEl=document.getElementById('cust-content');
   tabsEl.innerHTML='';contentEl.innerHTML='';
   document.getElementById('active-cat-name').innerHTML='🏠 &nbsp;HOME';
+  // Check if this menu exists in menuList at all
+  const menuExists = menuList.some(m=>m.id===menuType);
+  if(!cats.length && !menuExists && menuType !== 'restaurant' && menuType !== 'banquet' && menuType !== 'chaat'){
+    contentEl.innerHTML=`<div class="no-menu-box"><span class="ico">⏳</span><h3>Loading Menu...</h3><p>Please wait a moment</p></div>`;
+    return;
+  }
   if(!cats.length){
     contentEl.innerHTML=`<div class="no-menu-box"><span class="ico">${MENU_ICONS[menuType]||'📋'}</span><h3>Menu Coming Soon</h3><p>Please call us at <strong>+91-7088004440</strong></p></div>`;
     return;
@@ -659,7 +665,7 @@ function renderCustomer(){
       const priceHtml=item.price>0?`<div class="c-item-price">${item.price}</div>`:`<div class="c-item-price" style="font-size:0.7rem;color:#8B6355">MRP</div>`;
       return `<div class="c-item"><div class="c-item-left"><div class="c-vdot ${dc}"></div><div class="c-item-info"><div class="c-item-name">${item.name}</div>${item.desc?`<div class="c-item-desc">${item.desc}</div>`:''}</div></div>${priceHtml}</div>`;
     }).join('');
-    sec.innerHTML=`<div class="c-sec-header"><div class="c-sec-title-wrap"><span class="c-sec-eyebrow">${(menuList.find(m=>m.id===menuType)||{name:menuType}).name}</span><div class="c-sec-name">${cat.name.split('(')[0].trim()}</div></div>${ornamentSVG}</div><div class="c-items-wrap">${itemsHtml}</div>`;
+    sec.innerHTML=`<div class="c-sec-header"><div class="c-sec-title-wrap"><span class="c-sec-eyebrow">${(menuList.find(m=>m.id===menuType)||{name:menuType.charAt(0).toUpperCase()+menuType.slice(1)}).name}</span><div class="c-sec-name">${cat.name.split('(')[0].trim()}</div></div>${ornamentSVG}</div><div class="c-items-wrap">${itemsHtml}</div>`;
     contentEl.appendChild(sec);
   });
   // Apply banner size
@@ -739,11 +745,19 @@ window.addEventListener('DOMContentLoaded', async ()=>{
     document.getElementById('passcode-screen').style.display='none';
     document.getElementById('save-bar').style.display='none';
     document.getElementById('view-customer').classList.add('active');
-    // Show preload instantly for restaurant
-    if(menuParam==='restaurant') allMenus.restaurant=restaurantPreload;
-    renderCustomer();
-    // Load from server (gets menuList + all menus including custom ones)
-    try{await loadData();renderCustomer();}catch(e){}
+    // For restaurant, show preload instantly while server loads
+    if(menuParam==='restaurant'){
+      allMenus.restaurant = restaurantPreload;
+      renderCustomer();
+    }
+    // ALWAYS load from server to get menuList + custom menus
+    try{
+      await loadData();
+      renderCustomer(); // re-render with full server data
+    }catch(e){
+      // fallback: render whatever we have
+      renderCustomer();
+    }
   } else {
     // ADMIN MODE
     await loadData();
