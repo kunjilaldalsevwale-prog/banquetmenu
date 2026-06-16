@@ -732,17 +732,17 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   const params=new URLSearchParams(window.location.search);
   const menuParam=params.get('menu');
 
-  if(menuParam&&['restaurant','banquet','chaat'].includes(menuParam)){
+  if(menuParam){
     // CUSTOMER MODE — hide admin immediately, show menu
     document.getElementById('topbar').style.display='none';
     document.getElementById('view-admin').classList.remove('active');
     document.getElementById('passcode-screen').style.display='none';
     document.getElementById('save-bar').style.display='none';
     document.getElementById('view-customer').classList.add('active');
-    // Show preload instantly
+    // Show preload instantly for restaurant
     if(menuParam==='restaurant') allMenus.restaurant=restaurantPreload;
     renderCustomer();
-    // Refresh from server in background
+    // Load from server (gets menuList + all menus including custom ones)
     try{await loadData();renderCustomer();}catch(e){}
   } else {
     // ADMIN MODE
