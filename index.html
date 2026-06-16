@@ -264,6 +264,16 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
   <!-- BANNER SECTION -->
   <div id="banner-section" style="background:var(--cream);border:1px solid var(--pale);border-radius:10px;padding:1rem;margin-bottom:1rem;display:none">
     <div style="font-family:Cinzel,serif;font-size:0.72rem;color:var(--navy);margin-bottom:0.6rem;font-weight:600">🖼 Menu Banner — Upload & Crop</div>
+    <div style="background:white;border:1px solid var(--pale);border-radius:8px;padding:0.7rem;margin-bottom:0.7rem">
+      <div style="font-family:Cinzel,serif;font-size:0.65rem;color:var(--navy);margin-bottom:0.5rem;font-weight:600">📍 Restaurant Info</div>
+      <label class="f-label">Restaurant Name</label>
+      <input class="f-input" id="edit-restname" placeholder="e.g. Kunjilal Food House" style="margin-bottom:0.4rem">
+      <label class="f-label">Address</label>
+      <input class="f-input" id="edit-address" placeholder="e.g. Vidhya Nagar, Ramghat Road" style="margin-bottom:0.4rem">
+      <label class="f-label">Phone</label>
+      <input class="f-input" id="edit-phone" placeholder="e.g. +917088004440" style="margin-bottom:0.4rem">
+      <button onclick="saveMenuInfo()" style="padding:0.4rem 1rem;background:var(--navy);color:var(--gold2);border:none;border-radius:6px;font-size:0.65rem;font-weight:600;cursor:pointer;font-family:Raleway,sans-serif">💾 Save Info</button>
+    </div>
     <input type="file" id="banner-file-input" accept="image/*" style="display:none" onchange="loadBannerImage(this)">
     <button onclick="document.getElementById('banner-file-input').click()" style="padding:0.4rem 0.9rem;background:var(--royal);color:white;border:none;border-radius:6px;font-size:0.65rem;font-weight:600;cursor:pointer;font-family:Raleway,sans-serif">📁 Upload Banner Image</button>
     <div style="font-size:0.6rem;color:var(--muted);margin-top:0.3rem">Upload an image then drag to select the region for the banner</div>
@@ -333,9 +343,9 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
   <div class="c-content" id="cust-content"></div>
   <div class="c-footer">
     <strong>${menuMeta.restname||'Kunjilal Food House'}</strong><br>
-    ${menuMeta.address||'Vidhya Nagar, Ramghat Road, Aligarh'}<br>
+    ${menuMeta.address||'Vidhya Nagar, Ramghat Road, Aligarh, UP'}<br>
     <a href="tel:${menuMeta.phone||'+917088004440'}">📞 ${menuMeta.phone||'+91-7088004440'}</a> &nbsp;·&nbsp;
-    <a href="https://wa.me/${(menuMeta.phone||'+917088004440').replace(/[^0-9]/g,'')}">💬 WhatsApp</a>
+    <a href="https://wa.me/${(menuMeta.phone||'917088004440').replace(/[^0-9]/g,'')}">💬 WhatsApp</a><br><br>
     <div style="font-size:0.72rem;font-weight:700;color:#2C1810;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.5rem">Also Available On</div>
     <img src="data:image/jpeg;base64,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" alt="Zomato and Swiggy" style="width:65%;max-width:240px;border-radius:8px">
   </div>
@@ -517,6 +527,10 @@ function selectMenu(type,btn){
   }
   document.getElementById('scan-card').classList.remove('show');
   document.getElementById('banner-section').style.display='block';
+  const meta=menuList.find(m=>m.id===currentMenu)||{};
+  document.getElementById('edit-restname').value=meta.restname||'';
+  document.getElementById('edit-address').value=meta.address||'';
+  document.getElementById('edit-phone').value=meta.phone||'';
   const hasBanner=!!(allMenus[currentMenu]?.banner);
   document.getElementById('banner-set-indicator').style.display=hasBanner?'block':'none';
   document.getElementById('banner-preview').style.display='none';
@@ -583,7 +597,7 @@ function saveNewMenu(){
   const icon=document.getElementById('f-menu-icon').value.trim()||'🍽';
   if(!name){toast('⚠ Enter a menu name');return;}
   const id='menu_'+Date.now();
- const restname=document.getElementById('f-menu-restname').value.trim()||name;
+  const restname=document.getElementById('f-menu-restname').value.trim()||name;
   const address=document.getElementById('f-menu-address').value.trim();
   const phone=document.getElementById('f-menu-phone').value.trim();
   menuList.push({id,name,icon,restname,address,phone});
@@ -707,7 +721,7 @@ function renderCustomer(){
   tabsEl.innerHTML='';contentEl.innerHTML='';
   document.getElementById('active-cat-name').innerHTML='🏠 &nbsp;HOME';
   applyMenuTheme(menuType);
-  const menuMeta=menuList.find(m=>m.id===menuType)||{restname:'Kunjilal Food House',address:'Vidhya Nagar, Ramghat Road, Aligarh',phone:'+917088004440'};
+  const menuMeta=menuList.find(m=>m.id===menuType)||{restname:'Kunjilal Food House',address:'Vidhya Nagar, Ramghat Road, Aligarh, UP',phone:'+917088004440'};
   // Check if this menu exists in menuList at all
   const menuExists = menuList.some(m=>m.id===menuType);
   if(!cats.length && !menuExists && menuType !== 'restaurant' && menuType !== 'banquet' && menuType !== 'chaat'){
@@ -916,6 +930,20 @@ function applyMenuTheme(menuType){
   s.textContent=`.cw{background:${t.bg}!important}.c-hero{background:${t.bg}!important}.c-cat-nav,.c-sec-header{background:${t.primary}!important}.c-sec-name,.c-cat-header-text{color:${t.bg}!important}.c-item-price{color:${t.primary}!important}.c-dia{background:${t.accent}!important}.c-item-name{font-family:${ff}!important}.c-cat-tile.active{background:${t.bg}!important;color:${t.primary}!important}.c-footer{background:${t.bg}!important}.c-addr{color:${t.primary}99!important}`;
   const bannerImg=document.getElementById('banner-img');
   if(bannerImg&&menuData.banner){bannerImg.src='data:image/jpeg;base64,'+menuData.banner;}
+}
+
+function saveMenuInfo(){
+  const restname=document.getElementById('edit-restname').value.trim();
+  const address=document.getElementById('edit-address').value.trim();
+  const phone=document.getElementById('edit-phone').value.trim();
+  const idx=menuList.findIndex(m=>m.id===currentMenu);
+  if(idx>=0){
+    menuList[idx].restname=restname||menuList[idx].restname;
+    menuList[idx].address=address||menuList[idx].address;
+    menuList[idx].phone=phone||menuList[idx].phone;
+  }
+  saveData();
+  toast('✅ Info saved!');
 }
 
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3500);}
