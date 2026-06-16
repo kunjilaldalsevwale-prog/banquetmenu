@@ -203,27 +203,11 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
       <div class="live-pill"><span class="live-dot"></span>Claude AI · Instant Scanning</div>
     </div>
   </div>
-  <div class="sec-hd">Select Menu to Manage</div>
-  <div class="menu-selector">
-    <div class="menu-sel-btn active" onclick="selectMenu('restaurant',this)">
-      <span class="menu-sel-icon">🍛</span>
-      <span class="menu-sel-name">Restaurant</span>
-      <span class="menu-sel-count" id="count-restaurant">No items yet</span>
-      <span class="menu-sel-status" id="sel-status-restaurant"></span>
-    </div>
-    <div class="menu-sel-btn" onclick="selectMenu('banquet',this)">
-      <span class="menu-sel-icon">🏛</span>
-      <span class="menu-sel-name">Banquet Hall</span>
-      <span class="menu-sel-count" id="count-banquet">No items yet</span>
-      <span class="menu-sel-status" id="sel-status-banquet"></span>
-    </div>
-    <div class="menu-sel-btn" onclick="selectMenu('chaat',this)">
-      <span class="menu-sel-icon">🌶</span>
-      <span class="menu-sel-name">Chaat Adda</span>
-      <span class="menu-sel-count" id="count-chaat">No items yet</span>
-      <span class="menu-sel-status" id="sel-status-chaat"></span>
-    </div>
+  <div class="sec-hd">
+    <span>Select Menu to Manage</span>
+    <button class="admin-tab admin-tab-add" onclick="openAddMenuModal()">+ Add Menu</button>
   </div>
+  <div class="menu-selector" id="menu-selector-grid"></div>
   <div class="sec-hd"><span id="upload-sec-title">📸 Upload Restaurant Menu</span></div>
   <div class="upload-zone" id="upload-zone"
     onclick="document.getElementById('menu-file').click()"
@@ -278,26 +262,7 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 
   <!-- QR CODES -->
   <div class="sec-hd">📱 QR Codes — Download & Print for Tables</div>
-  <div class="qr-grid">
-    <div class="qr-card">
-      <div class="qr-card-title">🍛 Restaurant</div>
-      <div class="qr-canvas-wrap"><canvas id="qr-restaurant" width="120" height="120"></canvas></div>
-      <button class="qr-dl-btn" onclick="downloadQR('restaurant','Restaurant')">⬇ Download QR</button>
-      <span class="qr-status" id="qrstatus-restaurant"></span>
-    </div>
-    <div class="qr-card">
-      <div class="qr-card-title">🏛 Banquet Hall</div>
-      <div class="qr-canvas-wrap"><canvas id="qr-banquet" width="120" height="120"></canvas></div>
-      <button class="qr-dl-btn" onclick="downloadQR('banquet','Banquet Hall')">⬇ Download QR</button>
-      <span class="qr-status" id="qrstatus-banquet"></span>
-    </div>
-    <div class="qr-card">
-      <div class="qr-card-title">🌶 Chaat Adda</div>
-      <div class="qr-canvas-wrap"><canvas id="qr-chaat" width="120" height="120"></canvas></div>
-      <button class="qr-dl-btn" onclick="downloadQR('chaat','Chaat Adda')">⬇ Download QR</button>
-      <span class="qr-status" id="qrstatus-chaat"></span>
-    </div>
-  </div>
+  <div class="qr-grid" id="qr-grid-dynamic"></div>
 </div>
 </div>
 
@@ -366,6 +331,21 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
     </div>
   </div>
 </div>
+<!-- ADD MENU MODAL -->
+<div class="modal-bg" id="add-menu-modal">
+  <div class="modal-box">
+    <div class="modal-title">Add New Menu</div>
+    <label class="f-label">Menu Name *</label>
+    <input class="f-input" id="f-menu-name" placeholder="e.g. Rooftop Cafe, Lunch Menu...">
+    <label class="f-label">Icon (emoji)</label>
+    <input class="f-input" id="f-menu-icon" placeholder="e.g. 🍕 🥗 ☕" value="🍽">
+    <div class="f-btn-row">
+      <button class="f-btn-cancel" onclick="closeAddMenuModal()">Cancel</button>
+      <button class="f-btn-save" onclick="saveNewMenu()">✓ Create Menu</button>
+    </div>
+  </div>
+</div>
+
 <div class="passcode-screen" id="passcode-screen">
   <div class="passcode-box">
     <div class="passcode-logo">🏛 Food House</div>
@@ -406,6 +386,12 @@ const STORE_KEY = 'fh_all_menus_v1';
 const MENU_NAMES = { restaurant:'Restaurant', banquet:'Banquet Hall', chaat:'Chaat Adda' };
 const MENU_ICONS = { restaurant:'🍛', banquet:'🏛', chaat:'🌶' };
 
+// menuList = [{id, name, icon}]
+let menuList = [
+  {id:'restaurant', name:'Restaurant', icon:'🍛'},
+  {id:'banquet',    name:'Banquet Hall', icon:'🏛'},
+  {id:'chaat',      name:'Chaat Adda',   icon:'🌶'}
+];
 let allMenus = { restaurant:{categories:[]}, banquet:{categories:[]}, chaat:{categories:[]} };
 let currentMenu = 'restaurant';
 let editingItem = null;
@@ -415,15 +401,25 @@ const restaurantPreload = {"categories": [{"id": "c1", "name": "Soups", "items":
 async function loadData(){
   try{
     const r=await fetch('/api/menu',{cache:'no-store'});
-    if(r.ok){const data=await r.json();const hasData=Object.values(data).some(m=>m.categories&&m.categories.length>0);if(hasData){allMenus=data;return;}}
+    if(r.ok){
+      const data=await r.json();
+      if(data.menuList) menuList=data.menuList;
+      if(data.menus){allMenus=data.menus;return;}
+      const hasData=Object.values(data).some(m=>m&&m.categories&&m.categories.length>0);
+      if(hasData){allMenus=data;return;}
+    }
   }catch(e){console.log('Server load failed:',e);}
-  try{const s=localStorage.getItem(STORE_KEY);if(s){allMenus=JSON.parse(s);return;}}catch(e){}
+  try{
+    const s=localStorage.getItem(STORE_KEY);
+    if(s){const p=JSON.parse(s);if(p.menuList)menuList=p.menuList;if(p.menus){allMenus=p.menus;return;}allMenus=p;return;}
+  }catch(e){}
   allMenus.restaurant=restaurantPreload;
   await saveData();
 }
 async function saveData(){
-  try{await fetch('/api/menu',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({menus:allMenus})});}catch(e){console.log('Server save failed:',e);}
-  try{localStorage.setItem(STORE_KEY,JSON.stringify(allMenus));}catch(e){}
+  const payload={menuList, menus:allMenus};
+  try{await fetch('/api/menu',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});}catch(e){console.log('Server save failed:',e);}
+  try{localStorage.setItem(STORE_KEY,JSON.stringify(payload));}catch(e){}
 }
 
 function switchView(v,btn){
@@ -437,10 +433,12 @@ function switchView(v,btn){
 
 function selectMenu(type,btn){
   currentMenu=type;
+  const menuDef=menuList.find(m=>m.id===type)||{name:type,icon:'🍽'};
   document.querySelectorAll('.menu-sel-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('upload-sec-title').textContent='📸 Upload '+MENU_NAMES[type]+' Menu';
-  document.getElementById('editor-title').textContent='Edit '+MENU_NAMES[type]+' Menu';
+  if(btn)btn.classList.add('active');
+  document.getElementById('upload-sec-title').textContent='📸 Upload '+menuDef.name+' Menu';
+  document.getElementById('editor-title').textContent='Edit '+menuDef.name+' Menu';
+  if(!allMenus[type])allMenus[type]={categories:[]};
   const cats=allMenus[type].categories;
   if(cats.length>0){
     document.getElementById('editor-wrap').classList.add('show');
@@ -455,17 +453,80 @@ function selectMenu(type,btn){
   document.getElementById('scan-card').classList.remove('show');
 }
 
-function updateCounts(){
-  ['restaurant','banquet','chaat'].forEach(type=>{
-    const cats=allMenus[type].categories;
+function renderMenuSelector(){
+  const grid=document.getElementById('menu-selector-grid');
+  if(!grid)return;
+  grid.innerHTML='';
+  menuList.forEach((m,i)=>{
+    const cats=allMenus[m.id]?.categories||[];
     const total=cats.reduce((s,c)=>s+c.items.length,0);
-    const countEl=document.getElementById('count-'+type);
-    const statusEl=document.getElementById('sel-status-'+type);
-    if(total>0){countEl.textContent=total+' items · '+cats.length+' categories';statusEl.textContent='✓ Live';statusEl.className='menu-sel-status status-live';}
-    else{countEl.textContent='No items yet';statusEl.textContent='○ Empty';statusEl.className='menu-sel-status status-empty';}
-    const qrEl=document.getElementById('qrstatus-'+type);
-    if(qrEl)qrEl.textContent=total>0?'✓ '+total+' items ready':'○ No menu yet';
+    const isActive=m.id===currentMenu;
+    const btn=document.createElement('div');
+    btn.className='menu-sel-btn'+(isActive?' active':'');
+    btn.innerHTML=`<span class="menu-sel-icon">${m.icon}</span>
+      <span class="menu-sel-name">${m.name}</span>
+      <span class="menu-sel-count">${total>0?total+' items · '+cats.length+' cat':'No items yet'}</span>
+      <span class="menu-sel-status ${total>0?'status-live':'status-empty'}">${total>0?'✓ Live':'○ Empty'}</span>
+      ${menuList.length>1?`<span onclick="event.stopPropagation();deleteMenu('${m.id}')" style="font-size:0.6rem;color:var(--red);margin-top:0.3rem;cursor:pointer;display:block">🗑 Remove</span>`:''}`;
+    btn.onclick=()=>selectMenu(m.id,btn);
+    grid.appendChild(btn);
   });
+}
+
+function renderQRGrid(){
+  const grid=document.getElementById('qr-grid-dynamic');
+  if(!grid)return;
+  grid.innerHTML='';
+  menuList.forEach(m=>{
+    const cats=allMenus[m.id]?.categories||[];
+    const total=cats.reduce((s,c)=>s+c.items.length,0);
+    const card=document.createElement('div');
+    card.className='qr-card';
+    card.innerHTML=`<div class="qr-card-title">${m.icon} ${m.name}</div>
+      <div class="qr-canvas-wrap"><canvas id="qr-${m.id}" width="120" height="120"></canvas></div>
+      <button class="qr-dl-btn" onclick="downloadQR('${m.id}','${m.name}')">⬇ Download QR</button>
+      <span class="qr-status">${total>0?'✓ '+total+' items ready':'○ No menu yet'}</span>`;
+    grid.appendChild(card);
+    // generate QR
+    setTimeout(()=>{
+      new QRious({element:document.getElementById('qr-'+m.id),value:BASE_URL+'/?menu='+m.id,size:120,foreground:'#0D2744',background:'#FFFFFF',level:'M'});
+    },50);
+  });
+}
+
+function updateCounts(){
+  renderMenuSelector();
+  renderQRGrid();
+}
+
+// Add/Delete menu
+function openAddMenuModal(){
+  document.getElementById('f-menu-name').value='';
+  document.getElementById('f-menu-icon').value='🍽';
+  document.getElementById('add-menu-modal').classList.add('show');
+}
+function closeAddMenuModal(){document.getElementById('add-menu-modal').classList.remove('show');}
+function saveNewMenu(){
+  const name=document.getElementById('f-menu-name').value.trim();
+  const icon=document.getElementById('f-menu-icon').value.trim()||'🍽';
+  if(!name){toast('⚠ Enter a menu name');return;}
+  const id='menu_'+Date.now();
+  menuList.push({id,name,icon});
+  allMenus[id]={categories:[]};
+  saveData();
+  renderMenuSelector();
+  renderQRGrid();
+  closeAddMenuModal();
+  toast('✅ "'+name+'" menu created!');
+}
+function deleteMenu(id){
+  if(menuList.length<=1){toast('⚠ Cannot delete the only menu');return;}
+  if(!confirm('Delete this menu and all its items?'))return;
+  menuList=menuList.filter(m=>m.id!==id);
+  delete allMenus[id];
+  if(currentMenu===id)currentMenu=menuList[0].id;
+  saveData();renderMenuSelector();renderQRGrid();
+  toast('🗑 Menu deleted');
 }
 
 function handleDrop(e){const files=Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith("image/"));if(files.length)processFile(files);}
@@ -598,7 +659,7 @@ function renderCustomer(){
       const priceHtml=item.price>0?`<div class="c-item-price">${item.price}</div>`:`<div class="c-item-price" style="font-size:0.7rem;color:#8B6355">MRP</div>`;
       return `<div class="c-item"><div class="c-item-left"><div class="c-vdot ${dc}"></div><div class="c-item-info"><div class="c-item-name">${item.name}</div>${item.desc?`<div class="c-item-desc">${item.desc}</div>`:''}</div></div>${priceHtml}</div>`;
     }).join('');
-    sec.innerHTML=`<div class="c-sec-header"><div class="c-sec-title-wrap"><span class="c-sec-eyebrow">${MENU_NAMES[menuType]||'Menu'}</span><div class="c-sec-name">${cat.name.split('(')[0].trim()}</div></div>${ornamentSVG}</div><div class="c-items-wrap">${itemsHtml}</div>`;
+    sec.innerHTML=`<div class="c-sec-header"><div class="c-sec-title-wrap"><span class="c-sec-eyebrow">${(menuList.find(m=>m.id===menuType)||{name:menuType}).name}</span><div class="c-sec-name">${cat.name.split('(')[0].trim()}</div></div>${ornamentSVG}</div><div class="c-items-wrap">${itemsHtml}</div>`;
     contentEl.appendChild(sec);
   });
   // Apply banner size
@@ -607,11 +668,7 @@ function renderCustomer(){
   if(bannerImg)bannerImg.style.width=savedSize+'%';
 }
 
-function generateQRs(){
-  ['restaurant','banquet','chaat'].forEach(type=>{
-    new QRious({element:document.getElementById('qr-'+type),value:BASE_URL+'/?menu='+type,size:120,foreground:'#0D2744',background:'#FFFFFF',level:'M'});
-  });
-}
+function generateQRs(){ renderQRGrid(); }
 
 function downloadQR(type,label){
   const canvas=document.getElementById('qr-'+type);
@@ -696,6 +753,7 @@ window.addEventListener('DOMContentLoaded', async ()=>{
     } else {
       document.getElementById('passcode-screen').style.display='flex';
     }
+    renderMenuSelector();
     generateQRs();
     // Restore banner size
     const savedSize=localStorage.getItem('fh_banner_size');
