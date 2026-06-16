@@ -969,19 +969,12 @@ window.addEventListener('DOMContentLoaded', async ()=>{
     document.getElementById('passcode-screen').style.display='none';
     document.getElementById('save-bar').style.display='none';
     document.getElementById('view-customer').classList.add('active');
-    // For restaurant, show preload instantly while server loads
-    if(menuParam==='restaurant'){
-      allMenus.restaurant = restaurantPreload;
-      renderCustomer();
+    // Load from server first, then render
+    try{ await loadData(); }catch(e){
+      // fallback for restaurant only
+      if(menuParam==='restaurant') allMenus.restaurant=restaurantPreload;
     }
-    // ALWAYS load from server to get menuList + custom menus
-    try{
-      await loadData();
-      renderCustomer(); // re-render with full server data
-    }catch(e){
-      // fallback: render whatever we have
-      renderCustomer();
-    }
+    renderCustomer();
   } else {
     // ADMIN MODE
     await loadData();
