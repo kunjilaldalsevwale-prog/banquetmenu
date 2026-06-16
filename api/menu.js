@@ -7,25 +7,36 @@ export default async function handler(req, res) {
   const REDIS_URL   = process.env.UPSTASH_REDIS_REST_URL;
   const REDIS_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
   const KEY = 'foodhouse_menus';
-  const empty = { restaurant:{categories:[]}, banquet:{categories:[]}, chaat:{categories:[]} };
 
-  if (!REDIS_URL || !REDIS_TOKEN) {
-    return res.status(500).json({ error: 'Redis not configured', vars: Object.keys(process.env).filter(k=>k.includes('UPSTASH')) });
-  }
-
-  const redisReq = async (cmd) => {
-    const r = await fetch(`${REDIS_URL}/${cmd}`, {
-      headers: { Authorization: `Bearer ${REDIS_TOKEN}` }
-    });
-    return r.json();
+  const defaultMenuList = [
+    {id:'restaurant', name:'Restaurant',  icon:'🍛'},
+    {id:'banquet',    name:'Banquet Hall', icon:'🏛'},
+    {id:'chaat',      name:'Chaat Adda',   icon:'🌶'}
+  ];
+  const empty = {
+    menuList: defaultMenuList,
+    menus: { restaurant:{categories:[]}, banquet:{categories:[]}, chaat:{categories:[]} }
   };
 
-  // GET — load menu from Redis
+  if (!REDIS_URL || !REDIS_TOKEN) {
+    return res.status(500).json({ error: 'Redis not configured' });
+  }
+
+  // GET
   if (req.method === 'GET') {
     try {
-      const data = await redisReq(`get/${KEY}`);
+      const r = await fetch(`${REDIS_URL}/get/${KEY}`, {
+        headers: { Authorization: `Bearer ${REDIS_TOKEN}` }
+      });
+      const data = await r.json();
       if (data.result) {
-        return res.status(200).json(JSON.parse(data.result));
+        const parsed = JSON.parse(data.result);
+        // Handle old format (no menuList)
+        if (!parsed.menuList && !parsed.menus) {
+          return res.status(200).json({ menuList: defaultMenuList, menus: parsed });
+        }
+        if (!parsed.menuList) parsed.menuList = defaultMenuList;
+        return res.status(200).json(parsed);
       }
       return res.status(200).json(empty);
     } catch(e) {
@@ -33,19 +44,30 @@ export default async function handler(req, res) {
     }
   }
 
-  // POST — save menu to Redis
+  // POST - save both menuList and menus
   if (req.method === 'POST') {
     try {
-      const { menus } = req.body;
+      const { menuList, menus } = req.body;
       if (!menus) return res.status(400).json({ error: 'No data' });
 
-      const encoded = encodeURIComponent(JSON.stringify(menus));
-      const data = await redisReq(`set/${KEY}/${encoded}`);
+      const payload = {
+        menuList: menuList || defaultMenuList,
+        menus: menus
+      };
+      const value = JSON.stringify(payload);
 
-      if (data.result === 'OK') {
-        return res.status(200).json({ success: true });
-      }
-      return res.status(500).json({ error: 'Redis set failed', data });
+      const r = await fetch(`${REDIS_URL}/pipeline`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${REDIS_TOKEN}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify([["SET", KEY, value]])
+      });
+
+      const result = await r.json();
+      if (r.ok) return res.status(200).json({ success: true });
+      return res.status(500).json({ error: result });
     } catch(e) {
       return res.status(500).json({ error: e.message });
     }
