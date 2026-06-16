@@ -21,27 +21,25 @@ export default async function handler(req, res) {
 
     content.push({
       type: 'text',
-      text: `You are scanning a restaurant menu image for Food House, Aligarh, India. ${sideText}
+      text: `You are a menu scanner. ${sideText}
 
-YOUR JOB: Extract ONLY what is physically written/printed in this menu image.
+STRICT RULES - VERY IMPORTANT:
+1. ONLY extract items that are CLEARLY VISIBLE and READABLE in the image
+2. Do NOT guess, invent, or add any items not explicitly shown
+3. Do NOT add items from memory or training data
+4. If you cannot clearly read an item name or price, SKIP it
+5. ONLY include what you can actually see written in the menu image
 
-IMPORTANT RULES:
-1. Extract ONLY items you can actually see in the image - do not add any items from your training data
-2. Use the EXACT names as written in the menu - do not rename or reword items
-3. Use the EXACT prices shown - do not guess prices
-4. If an item name is partially unclear, extract what you CAN read
-5. If a price is unclear, set it to 0
-6. Do NOT add popular dishes that are not visible in this image
-7. Only create categories that actually appear as headings in the menu
+Return ONLY this JSON format, no other text:
+{"categories":[{"id":"c1","name":"Category Name","items":[{"id":"i1","name":"Exact Item Name As Written","price":100,"type":"veg","desc":""}]}],"theme":{"primary":"#8B1A1A","accent":"#B8953F","bg":"#FBF5E6","font":"serif"}}
 
-Return ONLY this JSON, no explanation, no extra text:
-{"categories":[{"id":"c1","name":"Category Name","items":[{"id":"i1","name":"Item Name","price":100,"type":"veg","desc":""}]}]}
-
-Format rules:
+More rules:
 - type: "veg" or "nonveg" only
-- price: number only, 0 if not clearly visible
-- desc: empty string unless description is clearly printed
-- ids: short unique like c1,c2,i1,i2`
+- price: exact number as shown (0 if not visible)
+- Keep desc empty unless clearly written
+- Use short ids: c1,c2,i1,i2 etc
+- Group items exactly as shown in the menu under their headings
+- For theme: extract the DOMINANT colors from the menu design. primary=main header/title color, accent=highlight/gold color, bg=background color. font=serif/sans/decorative based on the menu typography`
     });
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -52,7 +50,7 @@ Format rules:
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
+        model: 'claude-sonnet-4-5',
         max_tokens: 8000,
         messages: [{ role: 'user', content }]
       })
@@ -60,6 +58,7 @@ Format rules:
 
     const data = await response.json();
 
+    // Fix truncated JSON if needed
     if (data.content && data.content[0]) {
       const text = data.content[0].text;
       let jsonStr = text.match(/\{[\s\S]*\}/)?.[0];
