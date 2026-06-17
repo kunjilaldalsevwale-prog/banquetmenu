@@ -535,6 +535,7 @@ function selectMenu(type, btn){
 // UPDATE SELECTOR COUNTS
 function updateCounts(){
   ['restaurant','banquet','chaat'].forEach(type=>{
+    if(!allMenus[type]) allMenus[type]={categories:[]};
     const cats = allMenus[type].categories;
     const total = cats.reduce((s,c)=>s+c.items.length,0);
     const countEl = document.getElementById('count-'+type);
@@ -612,17 +613,19 @@ async function processFile(files){
       const text = result.content[0].text;
       console.log('AI Response:', text.substring(0, 200));
 
+// Strip markdown code blocks if present
+      const cleaned = text.replace(/```json\s*/g,'').replace(/```\s*/g,'').trim();
       // Method 1: direct JSON match
       try {
-        const jsonMatch = text.match(/\{[\s\S]*\}/);
+        const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
         if(jsonMatch) parsed = JSON.parse(jsonMatch[0]);
       } catch(e1) {
         // Method 2: find categories array specifically
         try {
           const catMatch = text.match(/"categories"\s*:\s*\[/);
           if(catMatch) {
-            const start = text.indexOf('{');
-            let jsonStr = text.substring(start);
+const start = cleaned.indexOf('{');
+            let jsonStr = cleaned.substring(start);
             // Fix truncated JSON
             jsonStr = jsonStr.replace(/,\s*$/, '').replace(/,\s*\]/, ']').replace(/,\s*\}/, '}');
             let opens = (jsonStr.match(/\[/g)||[]).length - (jsonStr.match(/\]/g)||[]).length;
