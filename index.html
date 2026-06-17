@@ -697,8 +697,8 @@ async function processFile(files){
             for(let i=0;i<op;i++)j2+=']';
             for(let i=0;i<ob;i++)j2+='}';
             try{parsed=JSON.parse(j2);}catch(e3){console.log('Parse error:',e3.message);}
-        }
-      }
+          }catch(e2){}
+        }catch(e1){}
     }
     if(parsed&&parsed.categories&&parsed.categories.length>0){
       allMenus[currentMenu]=parsed;
