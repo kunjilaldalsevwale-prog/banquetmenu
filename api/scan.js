@@ -1,67 +1,1010 @@
-export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Food House — Menu Manager</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Raleway:wght@300;400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0D2744;--royal:#1A4A7A;--mid:#2E6FA8;--gold:#B8953F;--gold2:#D4AC5C;
+  --pale:#C8E0F0;--ivory:#FBF8F2;--cream:#F5F0E8;--white:#fff;
+  --muted:#4A6A88;--text:#0A1E35;
+  --green:#166534;--green-bg:#dcfce7;--green-bd:#86efac;
+  --red:#991b1b;--red-bg:#fee2e2;--red-bd:#fca5a5;
+  --orange:#92400e;--orange-bg:#fef3c7;--orange-bd:#fcd34d;
+}
+body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);min-height:100vh;-webkit-tap-highlight-color:transparent}
 
+/* TOPBAR */
+.topbar{background:var(--navy);height:52px;padding:0 1rem;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:200}
+.tb-brand{font-family:'Cinzel',serif;font-size:0.82rem;font-weight:700;color:var(--gold2)}
+.tb-sub{font-size:0.48rem;color:rgba(200,224,240,0.5);letter-spacing:0.15em;text-transform:uppercase}
+.tb-toggle{display:flex;background:rgba(255,255,255,0.08);border-radius:6px;overflow:hidden;border:1px solid rgba(184,149,63,0.3)}
+.tb-btn{padding:0.38rem 0.75rem;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;border:none;background:none;color:rgba(200,224,240,0.6);cursor:pointer;font-weight:600;font-family:'Raleway',sans-serif;transition:all 0.2s;white-space:nowrap}
+.tb-btn.active{background:var(--gold);color:var(--navy)}
+.view{display:none}.view.active{display:block}
+
+/* ADMIN */
+.aw{max-width:860px;margin:0 auto;padding:1.2rem 1rem 5rem}
+.welcome{background:var(--navy);border-radius:12px;padding:1.3rem 1.4rem;margin-bottom:1.3rem;display:flex;gap:1rem;align-items:center;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50'%3E%3Ccircle cx='25' cy='25' r='8' fill='none' stroke='%235B9FD4' stroke-width='0.5' opacity='0.15'/%3E%3C/svg%3E")}
+.w-icon{font-size:1.8rem;width:48px;height:48px;background:var(--gold);border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none}
+.w-title{font-family:'Cinzel',serif;font-size:1rem;color:var(--white);margin-bottom:0.2rem}
+.w-sub{font-size:0.7rem;color:rgba(200,224,240,0.65);line-height:1.5}
+.live-pill{display:inline-flex;align-items:center;gap:0.3rem;background:rgba(46,204,113,0.12);border:1px solid rgba(46,204,113,0.35);color:#4ade80;font-size:0.55rem;padding:2px 7px;border-radius:20px;margin-top:0.35rem;font-weight:600}
+.live-dot{width:5px;height:5px;border-radius:50%;background:#4ade80;animation:blink 1.4s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+
+/* MENU TYPE SELECTOR */
+.menu-selector{display:grid;grid-template-columns:repeat(3,1fr);gap:0.8rem;margin-bottom:1.3rem}
+.menu-sel-btn{background:var(--white);border:2px solid var(--pale);border-radius:10px;padding:0.9rem 0.5rem;text-align:center;cursor:pointer;transition:all 0.2s;font-family:'Raleway',sans-serif}
+.menu-sel-btn:hover{border-color:var(--mid)}
+.menu-sel-btn.active{border-color:var(--gold);background:linear-gradient(135deg,#fffdf5,#fff8e1)}
+.menu-sel-icon{font-size:1.5rem;display:block;margin-bottom:0.3rem}
+.menu-sel-name{font-family:'Cinzel',serif;font-size:0.72rem;font-weight:600;color:var(--navy);display:block;margin-bottom:0.2rem}
+.menu-sel-count{font-size:0.58rem;color:var(--muted)}
+.menu-sel-status{font-size:0.55rem;font-weight:600;margin-top:0.25rem;display:block}
+.status-live{color:var(--green)}.status-empty{color:var(--red)}
+
+/* UPLOAD ZONE */
+.sec-hd{font-family:'Cinzel',serif;font-size:0.78rem;font-weight:600;color:var(--navy);letter-spacing:0.1em;text-transform:uppercase;padding-bottom:0.5rem;border-bottom:2px solid var(--pale);margin-bottom:0.9rem;display:flex;align-items:center;justify-content:space-between}
+.upload-zone{border:2px dashed var(--pale);border-radius:12px;padding:1.8rem 1.2rem;text-align:center;background:var(--white);cursor:pointer;transition:all 0.2s;margin-bottom:1rem}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--royal);background:rgba(26,74,122,0.03)}
+.upload-zone input{display:none}
+.upload-zone-icon{font-size:2rem;margin-bottom:0.5rem;display:block}
+.upload-zone h3{font-family:'Cinzel',serif;font-size:0.95rem;color:var(--navy);margin-bottom:0.3rem}
+.upload-zone p{font-size:0.7rem;color:var(--muted);line-height:1.5}
+.upload-hint{font-size:0.62rem;color:var(--gold);margin-top:0.4rem;font-weight:600;display:block}
+
+/* SCAN STATE */
+.scan-card{background:var(--navy);border-radius:12px;padding:1.5rem;text-align:center;display:none;margin-bottom:1rem}
+.scan-card.show{display:block}
+.scan-spinner{font-size:2rem;animation:spin 1s linear infinite;display:block;margin-bottom:0.6rem}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.scan-title{font-family:'Cinzel',serif;font-size:0.95rem;color:var(--gold2);margin-bottom:0.25rem}
+.scan-sub{font-size:0.7rem;color:rgba(200,224,240,0.65);line-height:1.5}
+.scan-bar{height:4px;background:rgba(255,255,255,0.1);border-radius:2px;margin-top:0.8rem;overflow:hidden}
+.scan-fill{height:100%;background:linear-gradient(to right,var(--royal),var(--gold));border-radius:2px;width:0;transition:width 0.4s}
+
+/* SUCCESS */
+.success-card{background:var(--green-bg);border:1px solid var(--green-bd);border-radius:10px;padding:0.9rem 1.1rem;margin-bottom:1rem;display:none;align-items:center;gap:0.8rem}
+.success-card.show{display:flex}
+
+/* EDITOR */
+.editor-wrap{display:none}
+.editor-wrap.show{display:block}
+.admin-tabs{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:1rem}
+.admin-tab{padding:0.4rem 0.8rem;font-size:0.62rem;letter-spacing:0.06em;text-transform:uppercase;border:1px solid var(--pale);background:var(--white);color:var(--muted);cursor:pointer;border-radius:6px;font-weight:600;font-family:'Raleway',sans-serif;transition:all 0.2s}
+.admin-tab.active{background:var(--navy);color:var(--gold2);border-color:var(--navy)}
+.admin-tab-add{background:var(--gold);color:var(--navy);border-color:var(--gold)}
+.cat-panel{display:none}.cat-panel.active{display:block}
+.item-list{display:grid;gap:0.5rem;margin-bottom:0.8rem}
+.admin-item{background:var(--white);border:1px solid var(--pale);border-radius:8px;padding:0.65rem 0.85rem;display:flex;align-items:center;gap:0.6rem}
+.admin-item-info{flex:1;min-width:0}
+.admin-item-name{font-size:0.82rem;font-weight:600;color:var(--text)}
+.admin-item-desc{font-size:0.65rem;color:var(--muted);font-style:italic;margin-top:0.1rem}
+.admin-item-price{font-family:'Cinzel',serif;font-size:0.88rem;font-weight:600;color:var(--navy);white-space:nowrap}
+.item-actions{display:flex;gap:0.3rem;flex:none}
+.btn-edit{padding:3px 7px;background:var(--orange-bg);color:var(--orange);border:1px solid var(--orange-bd);border-radius:4px;font-size:0.58rem;cursor:pointer;font-weight:600;font-family:'Raleway',sans-serif}
+.btn-del{padding:3px 7px;background:var(--red-bg);color:var(--red);border:1px solid var(--red-bd);border-radius:4px;font-size:0.58rem;cursor:pointer;font-weight:600;font-family:'Raleway',sans-serif}
+.vdot{width:8px;height:8px;border-radius:2px;border:1px solid;flex:none}
+.vdot.veg{background:#dcfce7;border-color:#4ade80}
+.vdot.nonveg{background:#fee2e2;border-color:#f87171}
+.add-item-btn{width:100%;padding:0.5rem;background:none;border:2px dashed var(--pale);border-radius:8px;color:var(--muted);font-size:0.68rem;font-weight:600;cursor:pointer;font-family:'Raleway',sans-serif;transition:all 0.2s}
+.add-item-btn:hover{border-color:var(--royal);color:var(--royal)}
+.cat-header-row{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.7rem;flex-wrap:wrap}
+.cat-name-input{flex:1;min-width:120px;border:1px solid var(--pale);border-radius:5px;padding:0.38rem 0.6rem;font-size:0.8rem;font-family:'Cinzel',serif;color:var(--navy);background:var(--white);outline:none;font-weight:600}
+.btn-rename{padding:0.38rem 0.7rem;background:var(--royal);color:white;border:none;border-radius:5px;font-size:0.6rem;font-weight:600;cursor:pointer;font-family:'Raleway',sans-serif}
+.btn-delete-cat{padding:0.38rem 0.7rem;background:var(--red-bg);color:var(--red);border:1px solid var(--red-bd);border-radius:5px;font-size:0.6rem;font-weight:600;cursor:pointer;font-family:'Raleway',sans-serif}
+
+/* QR */
+.qr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.8rem;margin-bottom:1rem}
+.qr-card{background:var(--white);border:1px solid var(--pale);border-radius:10px;padding:0.9rem;text-align:center}
+.qr-card-title{font-size:0.65rem;font-weight:700;color:var(--navy);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem}
+.qr-canvas-wrap{display:flex;justify-content:center;margin-bottom:0.5rem}
+.qr-canvas-wrap canvas{border-radius:6px;border:1px solid var(--pale)}
+.qr-dl-btn{width:100%;padding:0.45rem;background:var(--navy);color:var(--gold2);border:none;border-radius:5px;font-size:0.6rem;font-weight:700;cursor:pointer;font-family:'Raleway',sans-serif}
+.qr-status{font-size:0.58rem;margin-top:0.3rem;display:block}
+
+/* CUSTOMER */
+.cw{max-width:520px;margin:0 auto;background:#FBF5E6;min-height:100vh}
+.c-hero{background:#FBF5E6;text-align:center;padding:1.5rem 1.2rem 1.2rem;border-bottom:3px solid #8B1A1A}
+.c-addr{font-size:0.62rem;color:#8B6355;margin-top:0.4rem;letter-spacing:0.05em}
+.c-div{display:flex;align-items:center;gap:0.5rem;justify-content:center;margin:0.5rem 0}
+.c-line{flex:1;max-width:60px;height:1px;background:rgba(139,26,26,0.2)}
+.c-dia{width:5px;height:5px;background:#B8953F;transform:rotate(45deg)}
+
+/* CATEGORY NAV */
+.c-cat-nav{background:#8B1A1A;border-bottom:3px solid #5C0F0F;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.3)}
+.c-cat-header{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1rem;cursor:pointer;user-select:none}
+.c-cat-header-text{font-size:0.8rem;font-weight:700;color:#FBF5E6;font-family:'Cinzel',serif;letter-spacing:0.1em;text-transform:uppercase}
+.c-cat-header-arrow{color:#FBF5E6;font-size:0.9rem;transition:transform 0.3s}
+.c-cat-header-arrow.open{transform:rotate(180deg)}
+.c-cat-panel{display:none;padding:0.6rem 0.8rem 0.8rem;background:#7A1515}
+.c-cat-panel.open{display:block}
+.c-cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.4rem}
+.c-cat-tile{padding:0.55rem 0.3rem;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:5px;font-size:0.58rem;font-weight:700;color:rgba(255,245,230,0.8);cursor:pointer;text-align:center;font-family:'Cinzel',serif;transition:all 0.2s;letter-spacing:0.04em;text-transform:uppercase;line-height:1.3}
+.c-cat-tile.active{background:#FBF5E6;color:#8B1A1A;border-color:#FBF5E6}
+.c-cat-tile:hover{background:rgba(255,255,255,0.2);color:white}
+
+/* MENU CONTENT */
+.c-content{padding:0 0 5rem}
+.c-section{display:none}
+.c-section.active{display:block;animation:fadeUp 0.2s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+.c-sec-header{background:#8B1A1A;padding:0.8rem 1rem;display:flex;align-items:center;gap:0.6rem;position:relative}
+.c-sec-header::after{content:'';position:absolute;bottom:-6px;left:1rem;right:1rem;height:1px;background:rgba(139,26,26,0.2)}
+.c-sec-title-wrap{flex:1}
+.c-sec-eyebrow{font-size:0.48rem;letter-spacing:0.3em;text-transform:uppercase;color:rgba(255,245,230,0.55);display:block;margin-bottom:0.1rem}
+.c-sec-name{font-family:'Cinzel',serif;font-size:1.15rem;font-weight:700;color:#FBF5E6;letter-spacing:0.05em}
+.c-sec-ornament{width:32px;height:32px;opacity:0.25}
+
+.c-items-wrap{padding:0.8rem 1rem}
+.c-item{display:flex;align-items:start;justify-content:space-between;gap:0.8rem;padding:0.75rem 0;border-bottom:1px solid rgba(139,26,26,0.12)}
+.c-item:last-child{border-bottom:none}
+.c-item-left{flex:1;min-width:0;display:flex;align-items:start;gap:0.5rem}
+.c-vdot{width:10px;height:10px;border-radius:2px;border:1.5px solid;flex:none;margin-top:4px}
+.c-vdot.veg{background:#dcfce7;border-color:#16a34a}
+.c-vdot.nonveg{background:#fee2e2;border-color:#dc2626}
+.c-item-info{flex:1}
+.c-item-name{font-family:'EB Garamond',serif;font-size:1.05rem;font-weight:500;color:#2C1810;line-height:1.3}
+.c-item-desc{font-size:0.68rem;color:#8B6355;margin-top:0.15rem;font-style:italic;line-height:1.4}
+.c-item-price{font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:#8B1A1A;white-space:nowrap;padding-top:0.1rem}
+.c-item-price::before{content:'₹';font-size:0.7rem;opacity:0.7;margin-right:1px}
+
+.no-menu-box{text-align:center;padding:4rem 1.5rem;background:#FBF5E6}
+.no-menu-box .ico{font-size:3rem;display:block;margin-bottom:1rem}
+.no-menu-box h3{font-family:'Cinzel',serif;font-size:1.1rem;color:#8B1A1A;margin-bottom:0.4rem}
+.no-menu-box p{font-size:0.75rem;color:#8B6355;line-height:1.7}
+.c-footer{text-align:center;padding:1.5rem 1rem;font-size:0.65rem;color:#8B6355;line-height:2.2;border-top:2px solid rgba(139,26,26,0.15);background:#FBF5E6}
+.c-footer strong{color:#8B1A1A;font-family:'Cinzel',serif}
+.c-footer a{color:#8B1A1A;text-decoration:none;font-weight:700}
+
+/* MODALS */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(10,30,53,0.7);z-index:300;align-items:center;justify-content:center;padding:1rem}
+.modal-bg.show{display:flex}
+.modal-box{background:white;border-radius:12px;padding:1.5rem;width:100%;max-width:380px}
+.modal-title{font-family:'Cinzel',serif;font-size:1rem;color:var(--navy);margin-bottom:1rem;padding-bottom:0.6rem;border-bottom:1px solid var(--pale)}
+.f-label{font-size:0.6rem;font-weight:600;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.2rem;display:block}
+.f-input{width:100%;border:1px solid var(--pale);border-radius:5px;padding:0.45rem 0.6rem;font-size:0.8rem;font-family:'Raleway',sans-serif;color:var(--text);background:var(--white);outline:none;margin-bottom:0.7rem}
+.f-input:focus{border-color:var(--royal)}
+.f-select{width:100%;border:1px solid var(--pale);border-radius:5px;padding:0.45rem 0.6rem;font-size:0.8rem;font-family:'Raleway',sans-serif;color:var(--text);background:var(--white);outline:none;margin-bottom:0.7rem}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem}
+.f-btn-row{display:flex;gap:0.5rem;justify-content:flex-end;margin-top:0.5rem}
+.f-btn-save{padding:0.5rem 1.2rem;background:var(--navy);color:var(--gold2);border:none;border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer;font-family:'Raleway',sans-serif}
+.f-btn-cancel{padding:0.5rem 1rem;background:none;color:var(--muted);border:1px solid var(--pale);border-radius:6px;font-size:0.7rem;cursor:pointer;font-family:'Raleway',sans-serif}
+
+/* SAVE BAR */
+.save-bar{position:fixed;bottom:0;left:0;right:0;background:var(--navy);padding:0.8rem 1rem;display:none;align-items:center;justify-content:space-between;gap:1rem;border-top:2px solid var(--gold);z-index:150}
+.save-bar-text{font-size:0.7rem;color:rgba(200,224,240,0.7)}
+.save-bar-btn{padding:0.6rem 1.5rem;background:var(--gold);color:var(--navy);border:none;border-radius:6px;font-family:'Cinzel',serif;font-size:0.75rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:0.4rem;white-space:nowrap}
+.save-bar-btn:hover{background:var(--gold2)}
+.save-bar-btn.saving{background:var(--royal);color:white;pointer-events:none}
+.save-bar-btn.saved{background:var(--green-bg);color:var(--green);border:1px solid var(--green-bd)}
+
+/* PASSCODE SCREEN */
+.passcode-screen{position:fixed;inset:0;background:#0D2744;z-index:500;display:none;align-items:center;justify-content:center;padding:1rem}
+.passcode-box{background:white;border-radius:16px;padding:2rem;width:100%;max-width:340px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.4)}
+.passcode-logo{font-family:'Cinzel',serif;font-size:1.2rem;font-weight:700;color:#0D2744;margin-bottom:0.3rem}
+.passcode-sub{font-size:0.7rem;color:#4A6A88;margin-bottom:1.5rem;letter-spacing:0.1em;text-transform:uppercase}
+.passcode-title{font-size:0.75rem;font-weight:600;color:#4A6A88;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.8rem}
+.passcode-dots{display:flex;justify-content:center;gap:0.8rem;margin-bottom:1.2rem}
+.passcode-dot{width:14px;height:14px;border-radius:50%;border:2px solid #C8E0F0;background:white;transition:all 0.2s}
+.passcode-dot.filled{background:#0D2744;border-color:#0D2744}
+.passcode-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.6rem;margin-bottom:0.8rem}
+.passcode-btn{padding:1rem;background:#f8f9fa;border:1px solid #e9ecef;border-radius:10px;font-size:1.3rem;font-weight:600;color:#0D2744;cursor:pointer;font-family:'Raleway',sans-serif;transition:all 0.15s}
+.passcode-btn:active{background:#0D2744;color:white;transform:scale(0.95)}
+.passcode-clear{padding:1rem;background:#fee2e2;border:1px solid #fca5a5;border-radius:10px;font-size:1rem;color:#991b1b;cursor:pointer;font-family:'Raleway',sans-serif;transition:all 0.15s}
+.passcode-error{font-size:0.72rem;color:#991b1b;margin-top:0.5rem;min-height:1rem;font-weight:600}
+.passcode-screen.hidden{display:none}
+
+.toast{position:fixed;bottom:1.2rem;left:50%;transform:translateX(-50%) translateY(50px);background:var(--navy);color:white;padding:0.7rem 1.3rem;border-radius:8px;font-size:0.75rem;font-weight:500;border-left:3px solid var(--gold2);opacity:0;transition:all 0.3s;z-index:999;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:560px){.menu-selector{grid-template-columns:1fr}.qr-grid{grid-template-columns:1fr}.f-row{grid-template-columns:1fr}.welcome{flex-direction:column;text-align:center}}
+</style>
+</head>
+<body>
+
+<div class="topbar" id="topbar">
+  <div>
+    <div class="tb-brand">🏛 Food House</div>
+    <div class="tb-sub">Smart Menu Manager</div>
+  </div>
+  <div class="tb-toggle">
+    <button class="tb-btn active" onclick="switchView('admin',this)">⚙ Admin</button>
+    <button class="tb-btn" onclick="switchView('customer',this)">👁 Preview</button>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="view-admin" class="view active">
+<div class="aw">
+
+  <div class="welcome">
+    <div class="w-icon">✨</div>
+    <div>
+      <div class="w-title">AI-Powered Menu Builder</div>
+      <div class="w-sub">Upload a photo of any menu — AI reads it and builds the digital menu automatically. Edit anytime.</div>
+      <div class="live-pill"><span class="live-dot"></span>Claude AI · Instant Scanning</div>
+    </div>
+  </div>
+
+  <!-- MENU SELECTOR -->
+  <div class="sec-hd">Select Menu to Manage</div>
+  <div class="menu-selector">
+    <div class="menu-sel-btn active" onclick="selectMenu('restaurant',this)">
+      <span class="menu-sel-icon">🍛</span>
+      <span class="menu-sel-name">Restaurant</span>
+      <span class="menu-sel-count" id="count-restaurant">No items yet</span>
+      <span class="menu-sel-status" id="sel-status-restaurant"></span>
+    </div>
+    <div class="menu-sel-btn" onclick="selectMenu('banquet',this)">
+      <span class="menu-sel-icon">🏛</span>
+      <span class="menu-sel-name">Banquet Hall</span>
+      <span class="menu-sel-count" id="count-banquet">No items yet</span>
+      <span class="menu-sel-status" id="sel-status-banquet"></span>
+    </div>
+    <div class="menu-sel-btn" onclick="selectMenu('chaat',this)">
+      <span class="menu-sel-icon">🌶</span>
+      <span class="menu-sel-name">Chaat Adda</span>
+      <span class="menu-sel-count" id="count-chaat">No items yet</span>
+      <span class="menu-sel-status" id="sel-status-chaat"></span>
+    </div>
+  </div>
+
+  <!-- UPLOAD ZONE -->
+  <div class="sec-hd"><span id="upload-sec-title">📸 Upload Restaurant Menu</span></div>
+  <div class="upload-zone" id="upload-zone"
+    onclick="document.getElementById('menu-file').click()"
+    ondragover="event.preventDefault();this.classList.add('drag')"
+    ondragleave="this.classList.remove('drag')"
+    ondrop="event.preventDefault();this.classList.remove('drag');handleDrop(event)">
+    <input type="file" id="menu-file" accept="image/*" multiple onchange="handleUpload(this)">
+    <span class="upload-zone-icon">📸</span>
+    <h3>Upload Your Menu Photo(s)</h3>
+    <p>Upload 1 or 2 images for double-sided menus<br>AI will read every item, category and price automatically</p>
+    <span class="upload-hint">✨ Powered by Claude AI · Select multiple images · Instant scanning</span>
+  </div>
+
+  <!-- SCAN STATE -->
+  <div class="scan-card" id="scan-card">
+    <span class="scan-spinner">🔍</span>
+    <div class="scan-title" id="scan-title">AI is Reading Your Menu...</div>
+    <div class="scan-sub" id="scan-sub">Scanning menu image and extracting items, categories and prices</div>
+    <div class="scan-bar"><div class="scan-fill" id="scan-fill"></div></div>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="success-card" id="success-card">
+    <span style="font-size:1.5rem">✅</span>
+    <div>
+      <div style="font-size:0.85rem;font-weight:700;color:var(--green)">Menu Built Successfully!</div>
+      <div style="font-size:0.7rem;color:var(--green);opacity:0.85" id="success-detail"></div>
+    </div>
+  </div>
+
+  <!-- EDITOR -->
+  <div class="editor-wrap" id="editor-wrap">
+    <div class="sec-hd">
+      <span id="editor-title">Edit Menu</span>
+      <button class="admin-tab admin-tab-add" onclick="addCategory()">+ Add Category</button>
+    </div>
+    <div class="admin-tabs" id="cat-tabs"></div>
+    <div id="cat-panels"></div>
+
+    <!-- RE-UPLOAD -->
+    <div style="background:var(--cream);border:1px solid var(--pale);border-radius:10px;padding:1rem;text-align:center;margin-top:1rem;margin-bottom:1.5rem">
+      <p style="font-size:0.72rem;color:var(--muted);margin-bottom:0.5rem">📸 Got a new menu? Upload a new photo to re-scan with AI</p>
+      <button onclick="document.getElementById('menu-file').click()" style="padding:0.5rem 1.2rem;background:var(--royal);color:white;border:none;border-radius:6px;font-size:0.7rem;font-weight:600;cursor:pointer;font-family:'Raleway',sans-serif">Upload New Menu Photo</button>
+    </div>
+  </div>
+
+  <!-- QR CODES -->
+  <div class="sec-hd">📱 QR Codes — Download &amp; Print for Tables</div>
+  <div class="qr-grid">
+    <div class="qr-card">
+      <div class="qr-card-title">🍛 Restaurant</div>
+      <div class="qr-canvas-wrap"><canvas id="qr-restaurant" width="120" height="120"></canvas></div>
+      <button class="qr-dl-btn" onclick="downloadQR('restaurant','Restaurant')">⬇ Download QR</button>
+      <span class="qr-status" id="qrstatus-restaurant"></span>
+    </div>
+    <div class="qr-card">
+      <div class="qr-card-title">🏛 Banquet Hall</div>
+      <div class="qr-canvas-wrap"><canvas id="qr-banquet" width="120" height="120"></canvas></div>
+      <button class="qr-dl-btn" onclick="downloadQR('banquet','Banquet Hall')">⬇ Download QR</button>
+      <span class="qr-status" id="qrstatus-banquet"></span>
+    </div>
+    <div class="qr-card">
+      <div class="qr-card-title">🌶 Chaat Adda</div>
+      <div class="qr-canvas-wrap"><canvas id="qr-chaat" width="120" height="120"></canvas></div>
+      <button class="qr-dl-btn" onclick="downloadQR('chaat','Chaat Adda')">⬇ Download QR</button>
+      <span class="qr-status" id="qrstatus-chaat"></span>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- CUSTOMER VIEW -->
+<div id="view-customer" class="view">
+<div class="cw">
+  <div class="c-hero">
+    <img src="https://raw.githubusercontent.com/kunjilaldalsevwale-prog/banquetmenu/main/logo.png" alt="Kunjilal Food House" style="width:88%;max-width:400px;display:block;margin:0 auto 0.5rem">
+    <div class="c-div"><span class="c-line"></span><span class="c-dia"></span><span class="c-line"></span></div>
+    <div class="c-addr">Vidhya Nagar, Ramghat Road, Aligarh &nbsp;·&nbsp; +91-7088004440</div>
+  </div>
+  <div class="c-cat-nav">
+    <div class="c-cat-header" onclick="toggleCatPanel()">
+      <span class="c-cat-header-text" id="active-cat-name">☰ &nbsp;MENU</span>
+      <span class="c-cat-header-arrow" id="cat-arrow">▼</span>
+    </div>
+    <div class="c-cat-panel" id="cat-panel">
+      <div class="c-cat-grid" id="cust-cat-nav"></div>
+    </div>
+  </div>
+  <div class="c-content" id="cust-content"></div>
+  <div class="c-footer">
+    <strong>Kunjilal Food House</strong><br>
+    Vidhya Nagar, Ramghat Road, Aligarh, UP<br>
+    <a href="tel:+917088004440">📞 +91-7088004440</a> &nbsp;·&nbsp;
+    <a href="https://wa.me/917088004440">💬 WhatsApp</a>
+  </div>
+</div>
+</div>
+
+<!-- ITEM MODAL -->
+<div class="modal-bg" id="item-modal">
+  <div class="modal-box">
+    <div class="modal-title" id="modal-title">Add Item</div>
+    <div class="f-row">
+      <div><label class="f-label">Item Name *</label><input class="f-input" id="f-name" placeholder="e.g. Paneer Tikka"></div>
+      <div><label class="f-label">Price (₹)</label><input class="f-input" id="f-price" type="number" placeholder="220"></div>
+    </div>
+    <div class="f-row">
+      <div><label class="f-label">Type</label>
+        <select class="f-select" id="f-type">
+          <option value="veg">🟢 Veg</option>
+          <option value="nonveg">🔴 Non-Veg</option>
+        </select>
+      </div>
+      <div><label class="f-label">Description</label><input class="f-input" id="f-desc" placeholder="Optional"></div>
+    </div>
+    <div class="f-btn-row">
+      <button class="f-btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="f-btn-save" onclick="saveItem()">💾 Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- CAT MODAL -->
+<div class="modal-bg" id="cat-modal">
+  <div class="modal-box">
+    <div class="modal-title">Add Category</div>
+    <label class="f-label">Category Name *</label>
+    <input class="f-input" id="f-cat-name" placeholder="e.g. Starters, Desserts...">
+    <div class="f-btn-row">
+      <button class="f-btn-cancel" onclick="closeCatModal()">Cancel</button>
+      <button class="f-btn-save" onclick="saveCatName()">💾 Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- PASSCODE SCREEN -->
+<div class="passcode-screen" id="passcode-screen">
+  <div class="passcode-box">
+    <div class="passcode-logo">🏛 Food House</div>
+    <div class="passcode-sub">Admin Panel</div>
+    <div class="passcode-title">Enter Passcode</div>
+    <div class="passcode-dots">
+      <div class="passcode-dot" id="dot-0"></div>
+      <div class="passcode-dot" id="dot-1"></div>
+      <div class="passcode-dot" id="dot-2"></div>
+      <div class="passcode-dot" id="dot-3"></div>
+    </div>
+    <div class="passcode-grid">
+      <button class="passcode-btn" onclick="enterDigit('1')">1</button>
+      <button class="passcode-btn" onclick="enterDigit('2')">2</button>
+      <button class="passcode-btn" onclick="enterDigit('3')">3</button>
+      <button class="passcode-btn" onclick="enterDigit('4')">4</button>
+      <button class="passcode-btn" onclick="enterDigit('5')">5</button>
+      <button class="passcode-btn" onclick="enterDigit('6')">6</button>
+      <button class="passcode-btn" onclick="enterDigit('7')">7</button>
+      <button class="passcode-btn" onclick="enterDigit('8')">8</button>
+      <button class="passcode-btn" onclick="enterDigit('9')">9</button>
+      <button class="passcode-clear" onclick="clearDigit()">⌫</button>
+      <button class="passcode-btn" onclick="enterDigit('0')">0</button>
+      <button class="passcode-btn" style="visibility:hidden"></button>
+    </div>
+    <div class="passcode-error" id="passcode-error"></div>
+  </div>
+</div>
+
+<!-- SAVE BAR — must be in <body>, NOT inside <script> -->
+<div class="save-bar" id="save-bar">
+  <span class="save-bar-text">Unsaved changes — save to make live for customers</span>
+  <button class="save-bar-btn" id="save-btn" onclick="manualSave()">💾 Save Menu</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const BASE_URL  = 'https://banquetmenu.vercel.app';
+const STORE_KEY = 'fh_all_menus_v1';
+const MENU_NAMES = { restaurant:'Restaurant', banquet:'Banquet Hall', chaat:'Chaat Adda' };
+const MENU_ICONS = { restaurant:'🍛', banquet:'🏛', chaat:'🌶' };
+
+let allMenus = {
+  restaurant: { categories: [] },
+  banquet:    { categories: [] },
+  chaat:      { categories: [] }
+};
+
+let currentMenu = 'restaurant';
+let editingItem  = null;
+
+const restaurantPreload = {"categories": [{"id": "c1", "name": "Soups", "items": [{"id": "i1", "name": "Tomato", "price": 130, "type": "veg", "desc": ""}, {"id": "i2", "name": "Hot and Sour", "price": 140, "type": "veg", "desc": ""}, {"id": "i3", "name": "Sweet Corn", "price": 140, "type": "veg", "desc": ""}, {"id": "i4", "name": "Manchaow", "price": 140, "type": "veg", "desc": ""}]}, {"id": "c2", "name": "Beverages", "items": [{"id": "i5", "name": "Tea", "price": 0, "type": "veg", "desc": ""}, {"id": "i6", "name": "Masala Tea", "price": 60, "type": "veg", "desc": ""}, {"id": "i7", "name": "Green Tea", "price": 50, "type": "veg", "desc": ""}, {"id": "i8", "name": "Hot Coffee", "price": 90, "type": "veg", "desc": ""}, {"id": "i9", "name": "Black Coffee", "price": 0, "type": "veg", "desc": ""}, {"id": "i10", "name": "Cold Coffee", "price": 130, "type": "veg", "desc": ""}, {"id": "i11", "name": "Cold Coffee with Icecream", "price": 180, "type": "veg", "desc": ""}, {"id": "i12", "name": "Lassi (Sweet / Salty)", "price": 70, "type": "veg", "desc": ""}, {"id": "i13", "name": "Buttermilk (Chaach)", "price": 70, "type": "veg", "desc": ""}, {"id": "i14", "name": "Jeera Shikanji", "price": 75, "type": "veg", "desc": ""}, {"id": "i15", "name": "Fresh Lime Soda", "price": 85, "type": "veg", "desc": ""}, {"id": "i16", "name": "Virgin Mojito", "price": 120, "type": "veg", "desc": ""}, {"id": "i17", "name": "Vanilla Shake", "price": 190, "type": "veg", "desc": ""}, {"id": "i18", "name": "Chocolate Shake", "price": 190, "type": "veg", "desc": ""}, {"id": "i19", "name": "Strawberry Shake", "price": 190, "type": "veg", "desc": ""}, {"id": "i20", "name": "Oreo Shake", "price": 190, "type": "veg", "desc": ""}, {"id": "i21", "name": "Bubblem Gum Shake", "price": 190, "type": "veg", "desc": ""}, {"id": "i22", "name": "Aerated Drinks", "price": 0, "type": "veg", "desc": "MRP"}, {"id": "i23", "name": "Mineral Water", "price": 0, "type": "veg", "desc": "MRP"}]}, {"id": "c3", "name": "Chatpati Chaat", "items": [{"id": "i24", "name": "Pani Puri", "price": 60, "type": "veg", "desc": ""}, {"id": "i25", "name": "Dahi Bhalla", "price": 70, "type": "veg", "desc": ""}, {"id": "i26", "name": "Gupchup Chaat", "price": 90, "type": "veg", "desc": ""}, {"id": "i27", "name": "Bhelpuri", "price": 100, "type": "veg", "desc": ""}, {"id": "i28", "name": "Papdi Chaat", "price": 80, "type": "veg", "desc": ""}, {"id": "i29", "name": "Rajkachori", "price": 120, "type": "veg", "desc": ""}, {"id": "i30", "name": "Aloo Tikki", "price": 70, "type": "veg", "desc": "Open 2pm-9pm"}, {"id": "i31", "name": "Pao Bhaji", "price": 140, "type": "veg", "desc": "Open 2pm-9pm"}, {"id": "i32", "name": "Chole Bhature", "price": 180, "type": "veg", "desc": "Open 2pm-9pm"}]}, {"id": "c4", "name": "Indian Mains", "items": [{"id": "i33", "name": "Daal Tadka", "price": 235, "type": "veg", "desc": ""}, {"id": "i34", "name": "Daal Makhani", "price": 295, "type": "veg", "desc": ""}, {"id": "i35", "name": "Daal Punjabi", "price": 295, "type": "veg", "desc": ""}, {"id": "i36", "name": "Aloo Jeera", "price": 235, "type": "veg", "desc": ""}, {"id": "i37", "name": "Mix Veg", "price": 295, "type": "veg", "desc": ""}, {"id": "i38", "name": "Chana Masala", "price": 295, "type": "veg", "desc": ""}, {"id": "i39", "name": "Veg Kolhaputi", "price": 295, "type": "veg", "desc": ""}, {"id": "i40", "name": "Veg Jalfrezi", "price": 295, "type": "veg", "desc": ""}, {"id": "i41", "name": "Veg Jaipuri", "price": 295, "type": "veg", "desc": ""}, {"id": "i42", "name": "Veg Navratan Korma", "price": 295, "type": "veg", "desc": ""}, {"id": "i43", "name": "Matar Mushroom", "price": 335, "type": "veg", "desc": ""}, {"id": "i44", "name": "Shahi Paneer", "price": 355, "type": "veg", "desc": "Chef's Special"}, {"id": "i45", "name": "Kadhai Paneer", "price": 355, "type": "veg", "desc": ""}, {"id": "i46", "name": "Paneer Butter Masala", "price": 355, "type": "veg", "desc": ""}, {"id": "i47", "name": "Paneer Lababdar", "price": 355, "type": "veg", "desc": "Best Seller"}, {"id": "i48", "name": "Angara Paneer", "price": 355, "type": "veg", "desc": ""}, {"id": "i49", "name": "Paneer Kolhapuri", "price": 355, "type": "veg", "desc": ""}, {"id": "i50", "name": "Paneer Do Pyaza", "price": 355, "type": "veg", "desc": ""}, {"id": "i51", "name": "Malai Kotta", "price": 355, "type": "veg", "desc": ""}, {"id": "i52", "name": "Kashmiri Dum Aloo", "price": 355, "type": "veg", "desc": ""}, {"id": "i53", "name": "Punjabi Dum Aloo", "price": 320, "type": "veg", "desc": ""}, {"id": "i54", "name": "Paneer Bhurji", "price": 375, "type": "veg", "desc": ""}]}, {"id": "c_rice", "name": "Rice", "items": [{"id": "r1", "name": "Jeera Rice", "price": 175, "type": "veg", "desc": ""}, {"id": "r2", "name": "Veg Pulao", "price": 215, "type": "veg", "desc": ""}, {"id": "r3", "name": "Veg Dum Biryani", "price": 295, "type": "veg", "desc": ""}]}, {"id": "c5", "name": "Breads", "items": [{"id": "i58", "name": "Tandoori Roti", "price": 25, "type": "veg", "desc": "Closed 5pm-7pm"}, {"id": "i59", "name": "Tandoori Butter Roti", "price": 35, "type": "veg", "desc": ""}, {"id": "i60", "name": "Missi Roti", "price": 55, "type": "veg", "desc": ""}, {"id": "i61", "name": "Plain Naan", "price": 55, "type": "veg", "desc": ""}, {"id": "i62", "name": "Butter Naan", "price": 65, "type": "veg", "desc": ""}, {"id": "i63", "name": "Lachha Paratha", "price": 65, "type": "veg", "desc": ""}, {"id": "i64", "name": "Garlic Naan", "price": 80, "type": "veg", "desc": ""}, {"id": "i65", "name": "Kulcha (Onion / Aloo / Paneer)", "price": 105, "type": "veg", "desc": ""}, {"id": "i66", "name": "Stuff Naan", "price": 0, "type": "veg", "desc": ""}]}, {"id": "c6", "name": "Add-Ons", "items": [{"id": "i67", "name": "Plain Papad", "price": 60, "type": "veg", "desc": ""}, {"id": "i68", "name": "Masala Papad", "price": 100, "type": "veg", "desc": ""}, {"id": "i69", "name": "Green Salad", "price": 99, "type": "veg", "desc": ""}, {"id": "i70", "name": "Boondi Raita", "price": 155, "type": "veg", "desc": ""}, {"id": "i71", "name": "Pineapple Raita", "price": 155, "type": "veg", "desc": ""}, {"id": "i72", "name": "Mix Veg Raita", "price": 155, "type": "veg", "desc": ""}, {"id": "i73", "name": "Tadka Raita", "price": 155, "type": "veg", "desc": ""}]}, {"id": "c7", "name": "South Indian", "items": [{"id": "i74", "name": "Idli Sambhar (4pc)", "price": 160, "type": "veg", "desc": ""}, {"id": "i75", "name": "Vada Sambhar (4pc)", "price": 0, "type": "veg", "desc": ""}, {"id": "i76", "name": "Plain Dosa", "price": 190, "type": "veg", "desc": ""}, {"id": "i77", "name": "Masala Dosa", "price": 210, "type": "veg", "desc": "Best Seller"}, {"id": "i78", "name": "Mysore Masala Dosa", "price": 230, "type": "veg", "desc": ""}, {"id": "i79", "name": "Paneer Cheese Dosa", "price": 270, "type": "veg", "desc": ""}, {"id": "i80", "name": "Jimmy Dosa", "price": 270, "type": "veg", "desc": ""}, {"id": "i81", "name": "Rawa Plain Dosa", "price": 210, "type": "veg", "desc": ""}, {"id": "i82", "name": "Pawa Masala Dosa", "price": 230, "type": "veg", "desc": ""}, {"id": "i83", "name": "Onion Rawa Dosa", "price": 230, "type": "veg", "desc": ""}, {"id": "i84", "name": "Onion Rawa Masala Dosa", "price": 270, "type": "veg", "desc": ""}, {"id": "i85", "name": "Mix Veg Uttapam", "price": 210, "type": "veg", "desc": "Mix Veg, Onion, Tomato"}, {"id": "i86", "name": "South Indian Platter", "price": 360, "type": "veg", "desc": "Vada, Idli, Mini Mix Uttapam, Mini Dosa"}]}, {"id": "c8", "name": "Pasta", "items": [{"id": "i87", "name": "Red Sauce Pasta", "price": 275, "type": "veg", "desc": ""}, {"id": "i88", "name": "White Sauce Pasta", "price": 275, "type": "veg", "desc": ""}, {"id": "i89", "name": "Pink Sauce Pasta", "price": 275, "type": "veg", "desc": ""}]}, {"id": "c9", "name": "Sizzler", "items": [{"id": "i90", "name": "Vegetable Sizzler", "price": 390, "type": "veg", "desc": ""}, {"id": "i91", "name": "Chinese Sizzler", "price": 390, "type": "veg", "desc": ""}]}, {"id": "c10", "name": "Tandoori Snacks", "items": [{"id": "i92", "name": "Veg Seekh Kabab", "price": 250, "type": "veg", "desc": "Closed 5pm-7pm"}, {"id": "i93", "name": "Veg Cutlet", "price": 250, "type": "veg", "desc": ""}, {"id": "i94", "name": "Dahi Ke Cutlet", "price": 250, "type": "veg", "desc": ""}, {"id": "i95", "name": "Tandoori Stuff Aloo", "price": 250, "type": "veg", "desc": ""}, {"id": "i96", "name": "Tandoori Paneer Tikka", "price": 295, "type": "veg", "desc": ""}, {"id": "i97", "name": "Malai Paneer Tikka", "price": 295, "type": "veg", "desc": ""}, {"id": "i98", "name": "Mushroom Tikka", "price": 295, "type": "veg", "desc": ""}, {"id": "i99", "name": "Tandoori Platter", "price": 370, "type": "veg", "desc": "Tandoori Stuff Aloo, Paneer Tikka, Mushroom Tikka, Veg Seekh Kabab"}]}, {"id": "c11", "name": "Mini Meals", "items": [{"id": "i100", "name": "Daal Makhani + Rice / Baby Naan", "price": 220, "type": "veg", "desc": ""}, {"id": "i101", "name": "Amritsari Kulcha + Chole", "price": 225, "type": "veg", "desc": ""}, {"id": "i102", "name": "Shahi Paneer + Jeera Rice / Baby Naan", "price": 240, "type": "veg", "desc": ""}, {"id": "i103", "name": "Chilly Paneer + Fried Rice / Noodle", "price": 250, "type": "veg", "desc": ""}, {"id": "i104", "name": "Manchurian + Fried Rice / Noodle", "price": 250, "type": "veg", "desc": ""}, {"id": "i105", "name": "Veg Biryani + Boondi Raita", "price": 295, "type": "veg", "desc": ""}]}, {"id": "c12", "name": "Thali", "items": [{"id": "i106", "name": "Deluxe Thali", "price": 295, "type": "veg", "desc": "Daal, Shahi Paneer, Tandoori Roti, Rice, Salad, Pickle, Sweet"}, {"id": "i107", "name": "Special Thali", "price": 375, "type": "veg", "desc": "Daal, Shahi Paneer, Mix Vegetable, 1 Baby Naan, 1 Baby Lachha Paratha, Rice, Salad, Raita, Pickle, Papad, Sweet"}, {"id": "i108", "name": "Shahi Thali", "price": 475, "type": "veg", "desc": "Daal, Shahi Paneer, Mix Vegetable, Kofta, 1 Baby Naan, 1 Baby Lachha Paratha, Rice, Salad, Raita, Pickle, Papad, Fresh Lime Soda, Sweet"}]}, {"id": "c13", "name": "Chinese", "items": [{"id": "i109", "name": "Spring Roll", "price": 215, "type": "veg", "desc": ""}, {"id": "i110", "name": "Honey Chilly Potato", "price": 215, "type": "veg", "desc": ""}, {"id": "i111", "name": "Chowmein", "price": 215, "type": "veg", "desc": ""}, {"id": "i112", "name": "Hakka Noodles", "price": 240, "type": "veg", "desc": ""}, {"id": "i113", "name": "Chilly Garlic Noodle", "price": 240, "type": "veg", "desc": ""}, {"id": "i114", "name": "Manchurian Dry / Gravy", "price": 260, "type": "veg", "desc": ""}, {"id": "i115", "name": "Veg Fried Rice", "price": 195, "type": "veg", "desc": ""}, {"id": "i116", "name": "Crispy Corn", "price": 260, "type": "veg", "desc": ""}, {"id": "i117", "name": "Chilly Paneer Dry / Gravy", "price": 280, "type": "veg", "desc": ""}, {"id": "i118", "name": "Chilly Mushroom", "price": 280, "type": "veg", "desc": ""}]}, {"id": "c14", "name": "Continental", "items": [{"id": "i119", "name": "Veg Burger", "price": 120, "type": "veg", "desc": ""}, {"id": "i120", "name": "Veg Cheese Burger", "price": 140, "type": "veg", "desc": ""}, {"id": "i121", "name": "Veg Sandwich", "price": 120, "type": "veg", "desc": ""}, {"id": "i122", "name": "Veg Grilled Sandwich", "price": 140, "type": "veg", "desc": ""}, {"id": "i123", "name": "Club Sandwich", "price": 180, "type": "veg", "desc": ""}, {"id": "i124", "name": "French Fries", "price": 115, "type": "veg", "desc": ""}, {"id": "i125", "name": "Cheese Pizza", "price": 250, "type": "veg", "desc": ""}, {"id": "i126", "name": "Farm Veggie Pizza", "price": 280, "type": "veg", "desc": ""}, {"id": "i127", "name": "Punjabi Paneer Pizza", "price": 300, "type": "veg", "desc": ""}]}, {"id": "c15", "name": "Dessert", "items": [{"id": "i128", "name": "Rasgulla (Plate)", "price": 52, "type": "veg", "desc": ""}, {"id": "i129", "name": "Rajbhog (Plate)", "price": 60, "type": "veg", "desc": ""}, {"id": "i130", "name": "Rasmalai (Plate)", "price": 90, "type": "veg", "desc": ""}, {"id": "i131", "name": "Ice Cream Scoop", "price": 75, "type": "veg", "desc": ""}, {"id": "i132", "name": "Single Sundaes", "price": 155, "type": "veg", "desc": ""}, {"id": "i133", "name": "Hot Choco Fudge", "price": 160, "type": "veg", "desc": ""}, {"id": "i134", "name": "Fruity Sundaes", "price": 160, "type": "veg", "desc": ""}]}]};
+
+// ── DATA ──
+async function loadData() {
   try {
-    const { images, image, mediaType } = req.body;
-    const imageList = images || [{ base64: image, mediaType: mediaType || 'image/jpeg' }];
-    if (!imageList || imageList.length === 0) return res.status(400).json({ error: 'No image provided' });
+    const r = await fetch('/api/menu', { cache: 'no-store' });
+    if (r.ok) {
+      const data = await r.json();
+      // API returns { menuList, menus } or legacy flat format
+      const menus = data.menus || data;
+      const hasData = Object.values(menus).some(m => m.categories && m.categories.length > 0);
+      if (hasData) { allMenus = menus; return; }
+    }
+  } catch(e) { console.log('Server load failed:', e); }
+  try {
+    const s = localStorage.getItem(STORE_KEY);
+    if (s) { allMenus = JSON.parse(s); return; }
+  } catch(e) {}
+  // Last resort: preload
+  allMenus.restaurant = restaurantPreload;
+  await saveData();
+}
 
-    const content = imageList.map(img => ({
-      type: 'image',
-      source: { type: 'base64', media_type: img.mediaType || 'image/jpeg', data: img.base64 }
-    }));
-
-    content.push({
-      type: 'text',
-      text: `Extract menu items from this image. Return ONLY valid JSON:
-{"categories":[{"id":"c1","name":"Category","items":[{"id":"i1","name":"Item","price":100,"type":"veg","desc":""}]}],"theme":{"primary":"#8B1A1A","accent":"#B8953F","bg":"#FBF5E6","font":"serif"}}
-Rules: type=veg/nonveg, price=number(0 if unclear), desc=empty unless written, ids=c1/i1 format, theme=dominant colors from menu design`
-    });
-
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 55000);
-
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+async function saveData() {
+  const payload = JSON.stringify({ menus: allMenus });
+  // Server save
+  try {
+    const r = await fetch('/api/menu', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-max_tokens: 4000,
-        messages: [{ role: 'user', content }]
-      }),
-      signal: controller.signal
+      headers: { 'Content-Type': 'application/json' },
+      body: payload
     });
-
-    clearTimeout(timeout);
-    const data = await response.json();
-
-    if (data.content && data.content[0]) {
-      let text = data.content[0].text;
-      let jsonStr = text.match(/\{[\s\S]*/)?.[0] || '';
-      // Fix truncated JSON
-      jsonStr = jsonStr.replace(/,\s*"[^"]*":\s*$/, '')  // remove trailing incomplete key
-                       .replace(/,\s*$/, '');              // remove trailing comma
-      let opens = (jsonStr.match(/\[/g)||[]).length - (jsonStr.match(/\]/g)||[]).length;
-      let braces = (jsonStr.match(/\{/g)||[]).length - (jsonStr.match(/\}/g)||[]).length;
-      for(let i=0;i<opens;i++) jsonStr+=']';
-      for(let i=0;i<braces;i++) jsonStr+='}';
-      try { JSON.parse(jsonStr); data.content[0].text = jsonStr; }
-      catch(e) { data.content[0].text = text; }
-    }
-
-    return res.status(200).json(data);
-  } catch (error) {
-    if (error.name === 'AbortError') {
-      return res.status(504).json({ error: 'Scan timed out. Try a clearer or smaller photo.' });
-    }
-    return res.status(500).json({ error: error.message });
+    if (!r.ok) throw new Error('Server returned ' + r.status);
+  } catch(e) {
+    console.log('Server save failed:', e);
+    throw e; // re-throw so manualSave() catch block fires
+  } finally {
+    // Always save locally as backup regardless of server outcome
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(allMenus)); } catch(e) {}
   }
 }
+
+// ── VIEWS ──
+function switchView(v, btn) {
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tb-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('view-' + v).classList.add('active');
+  btn.classList.add('active');
+  if (v === 'customer') renderCustomer();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── MENU SELECTION ──
+function selectMenu(type, btn) {
+  currentMenu = type;
+  document.querySelectorAll('.menu-sel-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('upload-sec-title').textContent = '📸 Upload ' + MENU_NAMES[type] + ' Menu';
+  document.getElementById('editor-title').textContent = 'Edit ' + MENU_NAMES[type] + ' Menu';
+  const cats = allMenus[type].categories;
+  if (cats.length > 0) {
+    document.getElementById('editor-wrap').classList.add('show');
+    document.getElementById('success-card').classList.add('show');
+    const total = cats.reduce((s, c) => s + c.items.length, 0);
+    document.getElementById('success-detail').textContent = total + ' items across ' + cats.length + ' categories';
+    renderAdminCats();
+  } else {
+    document.getElementById('editor-wrap').classList.remove('show');
+    document.getElementById('success-card').classList.remove('show');
+  }
+  document.getElementById('scan-card').classList.remove('show');
+}
+
+function updateCounts() {
+  ['restaurant', 'banquet', 'chaat'].forEach(type => {
+    if (!allMenus[type]) allMenus[type] = { categories: [] };
+    const cats  = allMenus[type].categories;
+    const total = cats.reduce((s, c) => s + c.items.length, 0);
+    const countEl  = document.getElementById('count-' + type);
+    const statusEl = document.getElementById('sel-status-' + type);
+    if (total > 0) {
+      countEl.textContent  = total + ' items · ' + cats.length + ' categories';
+      statusEl.textContent = '✓ Live';
+      statusEl.className   = 'menu-sel-status status-live';
+    } else {
+      countEl.textContent  = 'No items yet';
+      statusEl.textContent = '○ Empty';
+      statusEl.className   = 'menu-sel-status status-empty';
+    }
+    const qrEl = document.getElementById('qrstatus-' + type);
+    if (qrEl) qrEl.textContent = total > 0 ? '✓ ' + total + ' items ready' : '○ No menu yet';
+  });
+}
+
+// ── UPLOAD ──
+function handleDrop(e) {
+  const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+  if (files.length) processFile(files);
+}
+function handleUpload(input) {
+  const files = Array.from(input.files);
+  if (files.length) processFile(files);
+  input.value = '';
+}
+
+async function processFile(files) {
+  if (!Array.isArray(files)) files = [files];
+  files = files.slice(0, 2);
+
+  allMenus[currentMenu] = { categories: [] };
+  document.getElementById('scan-card').classList.add('show');
+  document.getElementById('success-card').classList.remove('show');
+  document.getElementById('editor-wrap').classList.remove('show');
+  document.getElementById('cat-tabs').innerHTML   = '';
+  document.getElementById('cat-panels').innerHTML = '';
+
+  const fill  = document.getElementById('scan-fill');
+  const sub   = document.getElementById('scan-sub');
+  const title = document.getElementById('scan-title');
+  title.textContent = 'AI is Reading Your ' + MENU_NAMES[currentMenu] + ' Menu' + (files.length > 1 ? ' (' + files.length + ' sides)' : '') + '...';
+
+  const steps = files.length > 1
+    ? ['Reading side 1...', 'Reading side 2...', 'Combining all items...', 'Extracting prices...', 'Building digital menu...']
+    : ['Reading menu image...', 'Identifying categories...', 'Extracting menu items...', 'Reading prices...', 'Building digital menu...'];
+  let prog = 0, stepIdx = 0;
+  const iv = setInterval(() => {
+    prog = Math.min(prog + Math.random() * 12, 88);
+    fill.style.width = prog + '%';
+    if (stepIdx < steps.length && prog > stepIdx * 18) { sub.textContent = steps[stepIdx++]; }
+  }, 300);
+
+  try {
+    const images = await Promise.all(files.map(async f => ({
+      base64: await fileToBase64(f),
+      mediaType: f.type || 'image/jpeg'
+    })));
+
+    const response = await fetch('/api/scan', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ images })
+    });
+    const result = await response.json();
+    clearInterval(iv);
+    fill.style.width = '100%';
+
+    let parsed = null;
+
+    if (result.content && result.content[0]) {
+      let text = result.content[0].text;
+      console.log('AI Response:', text.substring(0, 200));
+      text = text.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+
+      // Method 1: direct parse
+      try {
+        const jsonMatch = text.match(/\{[\s\S]*\}/);
+        if (jsonMatch) parsed = JSON.parse(jsonMatch[0]);
+      } catch (e1) {
+        // Method 2: repair truncated JSON
+        try {
+          let jsonStr = text.substring(text.indexOf('{'));
+          jsonStr = jsonStr.replace(/,\s*$/, '').replace(/:\s*"[^"]*$/, '').replace(/,\s*"[^"]*"\s*$/, '');
+          jsonStr = jsonStr.replace(/,\s*$/, '');
+          const opens      = (jsonStr.match(/\[/g) || []).length - (jsonStr.match(/\]/g) || []).length;
+          const openBraces = (jsonStr.match(/\{/g) || []).length - (jsonStr.match(/\}/g) || []).length;
+          for (let i = 0; i < opens; i++)      jsonStr += ']';
+          for (let i = 0; i < openBraces; i++) jsonStr += '}';
+          parsed = JSON.parse(jsonStr);
+        } catch (e2) {
+          console.log('Parse error:', e2.message);
+        }
+      }
+    } else if (result.error) {
+      throw new Error('API Error: ' + (result.error.message || JSON.stringify(result.error)));
+    }
+
+    if (parsed && parsed.categories && parsed.categories.length > 0) {
+      allMenus[currentMenu] = parsed;
+      const total = parsed.categories.reduce((s, c) => s + c.items.length, 0);
+      setTimeout(async () => {
+        document.getElementById('scan-card').classList.remove('show');
+        document.getElementById('success-card').classList.add('show');
+        document.getElementById('success-detail').textContent = total + ' items found across ' + parsed.categories.length + ' categories!';
+        document.getElementById('editor-wrap').classList.add('show');
+        renderAdminCats();
+        updateCounts();
+        try { await saveData(); } catch(e) {}
+        toast('✅ ' + MENU_NAMES[currentMenu] + ' menu saved! ' + total + ' items found.');
+      }, 500);
+      return;
+    }
+    throw new Error('No menu data found. Please try a clearer photo.');
+
+  } catch(e) {
+    clearInterval(iv);
+    document.getElementById('scan-card').classList.remove('show');
+    if (allMenus[currentMenu].categories.length > 0) {
+      document.getElementById('editor-wrap').classList.add('show');
+      renderAdminCats();
+      toast('⚠ Could not scan. Showing existing menu.');
+    } else {
+      toast('⚠ Could not read menu. Try a clearer photo.');
+    }
+    console.error(e);
+  }
+}
+
+function fileToBase64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload  = e => res(e.target.result.split(',')[1]);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+
+// ── ADMIN RENDER ──
+function renderAdminCats() {
+  const cats     = allMenus[currentMenu].categories;
+  const tabsEl   = document.getElementById('cat-tabs');
+  const panelsEl = document.getElementById('cat-panels');
+  tabsEl.innerHTML = ''; panelsEl.innerHTML = '';
+
+  if (!cats.length) {
+    panelsEl.innerHTML = '<div style="text-align:center;padding:1.5rem;color:var(--muted);font-size:0.78rem">No categories yet. Upload a menu photo or click "+ Add Category"</div>';
+    return;
+  }
+
+  cats.forEach((cat, ci) => {
+    const tb = document.createElement('button');
+    tb.className = 'admin-tab' + (ci === 0 ? ' active' : '');
+    tb.textContent = cat.name.split('(')[0].trim();
+    tb.onclick = () => {
+      tabsEl.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
+      tb.classList.add('active');
+      panelsEl.querySelectorAll('.cat-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('apanel-' + cat.id).classList.add('active');
+    };
+    tabsEl.appendChild(tb);
+
+    const panel = document.createElement('div');
+    panel.className = 'cat-panel' + (ci === 0 ? ' active' : '');
+    panel.id = 'apanel-' + cat.id;
+    panel.innerHTML = `
+      <div class="cat-header-row">
+        <input class="cat-name-input" value="${cat.name}" id="cname-${cat.id}">
+        <button class="btn-rename" onclick="renameCat('${cat.id}')">✓ Rename</button>
+        <button class="btn-delete-cat" onclick="deleteCat('${cat.id}')">🗑 Delete</button>
+      </div>
+      <div class="item-list" id="alist-${cat.id}">
+        ${cat.items.map(item => renderAdminItem(cat.id, item)).join('')}
+      </div>
+      <button class="add-item-btn" onclick="openAddItem('${cat.id}')">+ Add Item to ${cat.name.split('(')[0].trim()}</button>`;
+    panelsEl.appendChild(panel);
+  });
+}
+
+function renderAdminItem(catId, item) {
+  const dc = item.type === 'nonveg' ? 'nonveg' : 'veg';
+  return `<div class="admin-item" id="ai-${item.id}">
+    <div class="vdot ${dc}"></div>
+    <div class="admin-item-info">
+      <div class="admin-item-name">${item.name}</div>
+      ${item.desc ? `<div class="admin-item-desc">${item.desc}</div>` : ''}
+    </div>
+    <div class="admin-item-price">${item.price > 0 ? '₹' + item.price : 'Incl.'}</div>
+    <div class="item-actions">
+      <button class="btn-edit" onclick="openEditItem('${catId}','${item.id}')">✏</button>
+      <button class="btn-del"  onclick="deleteItem('${catId}','${item.id}')">🗑</button>
+    </div>
+  </div>`;
+}
+
+// ── CATEGORY ACTIONS ──
+function addCategory() {
+  document.getElementById('f-cat-name').value = '';
+  document.getElementById('cat-modal').classList.add('show');
+}
+function renameCat(catId) {
+  const val = document.getElementById('cname-' + catId).value.trim();
+  if (!val) return;
+  const cat = allMenus[currentMenu].categories.find(c => c.id === catId);
+  if (cat) { cat.name = val; saveData().catch(()=>{}); renderAdminCats(); toast('✓ Renamed!'); }
+}
+function deleteCat(catId) {
+  if (!confirm('Delete this category and all its items?')) return;
+  allMenus[currentMenu].categories = allMenus[currentMenu].categories.filter(c => c.id !== catId);
+  saveData().catch(()=>{}); renderAdminCats(); updateCounts(); toast('🗑 Deleted');
+}
+function saveCatName() {
+  const name = document.getElementById('f-cat-name').value.trim();
+  if (!name) { toast('⚠ Enter a name'); return; }
+  allMenus[currentMenu].categories.push({ id: 'cat_' + Date.now(), name, items: [] });
+  saveData().catch(()=>{}); renderAdminCats(); updateCounts(); closeCatModal(); toast('✓ Category added!');
+}
+function closeCatModal() { document.getElementById('cat-modal').classList.remove('show'); }
+
+// ── ITEM ACTIONS ──
+function openAddItem(catId) {
+  editingItem = { catId, itemId: null };
+  document.getElementById('modal-title').textContent = 'Add Item';
+  document.getElementById('f-name').value  = '';
+  document.getElementById('f-price').value = '';
+  document.getElementById('f-desc').value  = '';
+  document.getElementById('f-type').value  = 'veg';
+  document.getElementById('item-modal').classList.add('show');
+}
+function openEditItem(catId, itemId) {
+  editingItem = { catId, itemId };
+  const cat  = allMenus[currentMenu].categories.find(c => c.id === catId);
+  const item = cat.items.find(i => i.id === itemId);
+  document.getElementById('modal-title').textContent = 'Edit Item';
+  document.getElementById('f-name').value  = item.name;
+  document.getElementById('f-price').value = item.price || '';
+  document.getElementById('f-desc').value  = item.desc  || '';
+  document.getElementById('f-type').value  = item.type  || 'veg';
+  document.getElementById('item-modal').classList.add('show');
+}
+function saveItem() {
+  const name  = document.getElementById('f-name').value.trim();
+  const price = parseInt(document.getElementById('f-price').value) || 0;
+  const desc  = document.getElementById('f-desc').value.trim();
+  const type  = document.getElementById('f-type').value;
+  if (!name) { toast('⚠ Name required'); return; }
+  const cat = allMenus[currentMenu].categories.find(c => c.id === editingItem.catId);
+  if (editingItem.itemId) {
+    const item = cat.items.find(i => i.id === editingItem.itemId);
+    Object.assign(item, { name, price, desc, type });
+    toast('✓ Updated!');
+  } else {
+    cat.items.push({ id: 'item_' + Date.now(), name, price, desc, type });
+    toast('✓ Added!');
+  }
+  saveData().catch(()=>{});
+  renderAdminCats();
+  updateCounts();
+  closeModal();
+  showSaveBar();
+}
+function deleteItem(catId, itemId) {
+  if (!confirm('Delete this item?')) return;
+  const cat = allMenus[currentMenu].categories.find(c => c.id === catId);
+  cat.items = cat.items.filter(i => i.id !== itemId);
+  saveData().catch(()=>{}); renderAdminCats(); updateCounts(); toast('🗑 Deleted');
+}
+function closeModal() { document.getElementById('item-modal').classList.remove('show'); }
+
+// ── SAVE BAR ──
+function showSaveBar() {
+  document.getElementById('save-bar').style.display = 'flex';
+}
+
+async function manualSave() {
+  const btn = document.getElementById('save-btn');
+  btn.textContent = '⏳ Saving...';
+  btn.className   = 'save-bar-btn saving';
+  try {
+    await saveData();
+    btn.textContent = '✅ Saved!';
+    btn.className   = 'save-bar-btn saved';
+    toast('✅ Menu saved! Customers can see it now.');
+    setTimeout(() => {
+      btn.textContent = '💾 Save Menu';
+      btn.className   = 'save-bar-btn';
+    }, 3000);
+  } catch(e) {
+    btn.textContent = '💾 Save Menu';
+    btn.className   = 'save-bar-btn';
+    toast('⚠ Save failed. Check connection and try again.');
+  }
+}
+
+// ── CUSTOMER RENDER ──
+function renderCustomer() {
+  const params    = new URLSearchParams(window.location.search);
+  const menuType  = params.get('menu') || 'restaurant';
+  const cats      = allMenus[menuType]?.categories || [];
+  const tabsEl    = document.getElementById('cust-cat-nav');
+  const contentEl = document.getElementById('cust-content');
+  tabsEl.innerHTML = ''; contentEl.innerHTML = '';
+
+  if (!cats.length) {
+    contentEl.innerHTML = `<div class="no-menu-box">
+      <span class="ico">${MENU_ICONS[menuType] || '📋'}</span>
+      <h3>Menu Coming Soon</h3>
+      <p>Please call us at <strong>+91-7088004440</strong></p>
+    </div>`;
+    return;
+  }
+
+  const ornamentSVG = `<svg class="c-sec-ornament" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="5" width="30" height="30" stroke="#FBF5E6" stroke-width="1.5" transform="rotate(45 20 20)"/><rect x="10" y="10" width="20" height="20" stroke="#FBF5E6" stroke-width="1" transform="rotate(45 20 20)"/></svg>`;
+
+  cats.forEach((cat, ci) => {
+    const tile = document.createElement('div');
+    tile.className = 'c-cat-tile' + (ci === 0 ? ' active' : '');
+    tile.textContent = cat.name.split('(')[0].trim();
+    tile.onclick = () => {
+      tabsEl.querySelectorAll('.c-cat-tile').forEach(t => t.classList.remove('active'));
+      tile.classList.add('active');
+      contentEl.querySelectorAll('.c-section').forEach(s => s.classList.remove('active'));
+      document.getElementById('csec-' + cat.id).classList.add('active');
+      document.getElementById('active-cat-name').innerHTML = '☰ &nbsp;MENU';
+      document.getElementById('cat-panel').classList.remove('open');
+      document.getElementById('cat-arrow').classList.remove('open');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+    tabsEl.appendChild(tile);
+
+    const sec = document.createElement('div');
+    sec.className = 'c-section' + (ci === 0 ? ' active' : '');
+    sec.id = 'csec-' + cat.id;
+
+    const itemsHtml = cat.items.map(item => {
+      const dc = item.type === 'nonveg' ? 'nonveg' : 'veg';
+      const priceHtml = item.price > 0
+        ? `<div class="c-item-price">${item.price}</div>`
+        : `<div class="c-item-price" style="font-size:0.7rem;color:#8B6355">MRP</div>`;
+      return `<div class="c-item">
+        <div class="c-item-left">
+          <div class="c-vdot ${dc}"></div>
+          <div class="c-item-info">
+            <div class="c-item-name">${item.name}</div>
+            ${item.desc ? `<div class="c-item-desc">${item.desc}</div>` : ''}
+          </div>
+        </div>
+        ${priceHtml}
+      </div>`;
+    }).join('');
+
+    sec.innerHTML = `
+      <div class="c-sec-header">
+        <div class="c-sec-title-wrap">
+          <span class="c-sec-eyebrow">${MENU_NAMES[menuType] || 'Menu'}</span>
+          <div class="c-sec-name">${cat.name.split('(')[0].trim()}</div>
+        </div>
+        ${ornamentSVG}
+      </div>
+      <div class="c-items-wrap">${itemsHtml}</div>`;
+    contentEl.appendChild(sec);
+  });
+}
+
+// ── QR ──
+function generateQRs() {
+  ['restaurant', 'banquet', 'chaat'].forEach(type => {
+    new QRious({
+      element: document.getElementById('qr-' + type),
+      value: BASE_URL + '/?menu=' + type,
+      size: 120, foreground: '#0D2744', background: '#FFFFFF', level: 'M'
+    });
+  });
+}
+
+function downloadQR(type, label) {
+  const canvas = document.getElementById('qr-' + type);
+  const out = document.createElement('canvas');
+  out.width = 400; out.height = 480;
+  const ctx = out.getContext('2d');
+  ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, 400, 480);
+  ctx.fillStyle = '#0D2744'; ctx.fillRect(0, 0, 400, 70);
+  ctx.fillStyle = '#D4AC5C'; ctx.font = 'bold 22px Georgia,serif'; ctx.textAlign = 'center';
+  ctx.fillText('FOOD HOUSE', 200, 30);
+  ctx.fillStyle = 'rgba(200,224,240,0.8)'; ctx.font = '11px Arial,sans-serif';
+  ctx.fillText('Kunjilal · Since 1947', 200, 48);
+  ctx.fillText(label + ' Menu', 200, 63);
+  ctx.fillStyle = '#B8953F'; ctx.fillRect(0, 70, 400, 3);
+  ctx.drawImage(canvas, 70, 90, 260, 260);
+  ctx.fillStyle = '#0D2744'; ctx.font = 'bold 14px Arial,sans-serif';
+  ctx.fillText('Scan to View Menu', 200, 385);
+  ctx.fillStyle = '#4A6A88'; ctx.font = '11px Arial,sans-serif';
+  ctx.fillText('Vidhya Nagar, Ramghat Road, Aligarh', 200, 405);
+  ctx.fillText('+91-7088004440', 200, 422);
+  ctx.strokeStyle = '#C8E0F0'; ctx.lineWidth = 2; ctx.strokeRect(1, 1, 398, 478);
+  const a = document.createElement('a');
+  a.href = out.toDataURL('image/png');
+  a.download = 'FoodHouse-' + type + '-QR.png';
+  a.click();
+  toast('⬇ ' + label + ' QR downloaded!');
+}
+
+// ── TOAST ──
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// ── CATEGORY PANEL (customer) ──
+function toggleCatPanel() {
+  document.getElementById('cat-panel').classList.toggle('open');
+  document.getElementById('cat-arrow').classList.toggle('open');
+}
+
+// ── PASSCODE ──
+const ADMIN_PASSCODE = '1947';
+let currentPin = '';
+
+function enterDigit(d) {
+  if (currentPin.length >= 4) return;
+  currentPin += d;
+  updateDots();
+  if (currentPin.length === 4) setTimeout(checkPasscode, 150);
+}
+function clearDigit() {
+  currentPin = currentPin.slice(0, -1);
+  updateDots();
+  document.getElementById('passcode-error').textContent = '';
+}
+function updateDots() {
+  for (let i = 0; i < 4; i++) {
+    document.getElementById('dot-' + i).classList.toggle('filled', i < currentPin.length);
+  }
+}
+function checkPasscode() {
+  if (currentPin === ADMIN_PASSCODE) {
+    document.getElementById('passcode-screen').classList.add('hidden');
+    sessionStorage.setItem('fh_admin_auth', '1');
+  } else {
+    document.getElementById('passcode-error').textContent = '❌ Wrong passcode. Try again.';
+    currentPin = '';
+    updateDots();
+    const box = document.querySelector('.passcode-box');
+    box.style.animation = 'shake 0.4s ease';
+    setTimeout(() => box.style.animation = '', 400);
+  }
+}
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded', async () => {
+  const params    = new URLSearchParams(window.location.search);
+  const menuParam = params.get('menu');
+
+  if (menuParam && ['restaurant', 'banquet', 'chaat'].includes(menuParam)) {
+    // CUSTOMER MODE
+    document.getElementById('topbar').style.display        = 'none';
+    document.getElementById('view-admin').style.display    = 'none';
+    document.getElementById('passcode-screen').style.display = 'none';
+    document.getElementById('save-bar').style.display      = 'none';
+    document.getElementById('view-customer').style.display = 'block';
+    await loadData();
+    renderCustomer();
+  } else {
+    // ADMIN MODE
+    await loadData();
+    const screen = document.getElementById('passcode-screen');
+    screen.style.display = sessionStorage.getItem('fh_admin_auth') === '1' ? 'none' : 'flex';
+    generateQRs();
+    updateCounts();
+    showSaveBar();
+    if (allMenus.restaurant.categories.length > 0) {
+      document.getElementById('editor-wrap').classList.add('show');
+      document.getElementById('success-card').classList.add('show');
+      const total = allMenus.restaurant.categories.reduce((s, c) => s + c.items.length, 0);
+      document.getElementById('success-detail').textContent = total + ' items across ' + allMenus.restaurant.categories.length + ' categories';
+      renderAdminCats();
+    }
+  }
+});
+</script>
+</body>
+</html>
