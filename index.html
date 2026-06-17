@@ -654,7 +654,12 @@ async function processFile(files){
     if(stepIdx<steps.length&&prog>stepIdx*18){sub.textContent=steps[stepIdx++];}
   },300);
   try{
-    const images=await Promise.all(files.map(async f=>({base64:await fileToBase64(f),mediaType:f.type||'image/jpeg'})));
+    const images=await Promise.all(files.map(async f=>{
+      const result=await fileToBase64(f);
+      // fileToBase64 returns {base64, mediaType} or string
+      if(typeof result==='object') return result;
+      return {base64:result, mediaType:'image/jpeg'};
+    }));
     const response=await fetch('/api/scan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({images:images})});
     if(!response.ok){
       const errText=await response.text();
@@ -707,7 +712,9 @@ function fileToBase64(file){
         const canvas=document.createElement('canvas');
         canvas.width=w; canvas.height=h;
         canvas.getContext('2d').drawImage(img,0,0,w,h);
-        res(canvas.toDataURL('image/jpeg',0.75).split(',')[1]);
+        // Always output as jpeg
+        const dataUrl=canvas.toDataURL('image/jpeg',0.75);
+        res({base64:dataUrl.split(',')[1], mediaType:'image/jpeg'});
       };
       img.onerror=rej;
       img.src=e.target.result;
