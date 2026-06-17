@@ -608,26 +608,20 @@ async function processFile(files){
 
     let parsed = null;
 
-    // Try multiple ways to extract JSON from response
-if(result.content && result.content[0]){
+// Try multiple ways to extract JSON from response
+    if(result.content && result.content[0]){
       let text = result.content[0].text;
       console.log('AI Response:', text.substring(0, 200));
-      // Strip markdown code blocks
       text = text.replace(/```json\s*/g,'').replace(/```\s*/g,'').trim();
-
-// Strip markdown code blocks if present
-      const cleaned = text.replace(/```json\s*/g,'').replace(/```\s*/g,'').trim();
       // Method 1: direct JSON match
       try {
-        const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+        const jsonMatch = text.match(/\{[\s\S]*\}/);
         if(jsonMatch) parsed = JSON.parse(jsonMatch[0]);
       } catch(e1) {
-        // Method 2: find categories array specifically
+        // Method 2: fix truncated JSON
         try {
-          const catMatch = text.match(/"categories"\s*:\s*\[/);
-          if(catMatch) {
-const start = text.indexOf('{');
-            let jsonStr = text.substring(start);
+          const start = text.indexOf('{');
+          let jsonStr = text.substring(start);
             // Fix truncated JSON - remove incomplete last property
             jsonStr = jsonStr.replace(/,\s*$/, '').replace(/:\s*"[^"]*$/, '').replace(/,\s*"[^"]*"\s*$/, '');
             jsonStr = jsonStr.replace(/,\s*$/, '');
