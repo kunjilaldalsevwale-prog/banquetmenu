@@ -9,6 +9,14 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
+  --hide-admin: block;
+}
+#passcode-screen[data-customer="true"],
+body[data-customer="true"] #passcode-screen,
+body[data-customer="true"] .topbar,
+body[data-customer="true"] #view-admin,
+body[data-customer="true"] .save-bar{display:none!important}
+:root{
   --navy:#0D2744;--royal:#1A4A7A;--mid:#2E6FA8;--gold:#B8953F;--gold2:#D4AC5C;
   --pale:#C8E0F0;--ivory:#FBF8F2;--cream:#F5F0E8;--white:#fff;
   --muted:#4A6A88;--text:#0A1E35;
@@ -17,6 +25,8 @@
   --orange:#92400e;--orange-bg:#fef3c7;--orange-bd:#fcd34d;
 }
 body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);min-height:100vh;-webkit-tap-highlight-color:transparent}
+
+/* TOPBAR */
 .topbar{background:var(--navy);height:52px;padding:0 1rem;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:200}
 .tb-brand{font-family:'Cinzel',serif;font-size:0.82rem;font-weight:700;color:var(--gold2)}
 .tb-sub{font-size:0.48rem;color:rgba(200,224,240,0.5);letter-spacing:0.15em;text-transform:uppercase}
@@ -24,6 +34,8 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 .tb-btn{padding:0.38rem 0.75rem;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;border:none;background:none;color:rgba(200,224,240,0.6);cursor:pointer;font-weight:600;font-family:'Raleway',sans-serif;transition:all 0.2s;white-space:nowrap}
 .tb-btn.active{background:var(--gold);color:var(--navy)}
 .view{display:none}.view.active{display:block}
+
+/* ADMIN */
 .aw{max-width:860px;margin:0 auto;padding:1.2rem 1rem 5rem}
 .welcome{background:var(--navy);border-radius:12px;padding:1.3rem 1.4rem;margin-bottom:1.3rem;display:flex;gap:1rem;align-items:center;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50'%3E%3Ccircle cx='25' cy='25' r='8' fill='none' stroke='%235B9FD4' stroke-width='0.5' opacity='0.15'/%3E%3C/svg%3E")}
 .w-icon{font-size:1.8rem;width:48px;height:48px;background:var(--gold);border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none}
@@ -33,6 +45,8 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 .live-dot{width:5px;height:5px;border-radius:50%;background:#4ade80;animation:blink 1.4s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
 @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+
+/* MENU TYPE SELECTOR */
 .menu-selector{display:grid;grid-template-columns:repeat(3,1fr);gap:0.8rem;margin-bottom:1.3rem}
 .menu-sel-btn{background:var(--white);border:2px solid var(--pale);border-radius:10px;padding:0.9rem 0.5rem;text-align:center;cursor:pointer;transition:all 0.2s;font-family:'Raleway',sans-serif}
 .menu-sel-btn:hover{border-color:var(--mid)}
@@ -42,6 +56,8 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 .menu-sel-count{font-size:0.58rem;color:var(--muted)}
 .menu-sel-status{font-size:0.55rem;font-weight:600;margin-top:0.25rem;display:block}
 .status-live{color:var(--green)}.status-empty{color:var(--red)}
+
+/* UPLOAD ZONE */
 .sec-hd{font-family:'Cinzel',serif;font-size:0.78rem;font-weight:600;color:var(--navy);letter-spacing:0.1em;text-transform:uppercase;padding-bottom:0.5rem;border-bottom:2px solid var(--pale);margin-bottom:0.9rem;display:flex;align-items:center;justify-content:space-between}
 .upload-zone{border:2px dashed var(--pale);border-radius:12px;padding:1.8rem 1.2rem;text-align:center;background:var(--white);cursor:pointer;transition:all 0.2s;margin-bottom:1rem}
 .upload-zone:hover,.upload-zone.drag{border-color:var(--royal);background:rgba(26,74,122,0.03)}
@@ -50,6 +66,8 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 .upload-zone h3{font-family:'Cinzel',serif;font-size:0.95rem;color:var(--navy);margin-bottom:0.3rem}
 .upload-zone p{font-size:0.7rem;color:var(--muted);line-height:1.5}
 .upload-hint{font-size:0.62rem;color:var(--gold);margin-top:0.4rem;font-weight:600;display:block}
+
+/* SCAN STATE */
 .scan-card{background:var(--navy);border-radius:12px;padding:1.5rem;text-align:center;display:none;margin-bottom:1rem}
 .scan-card.show{display:block}
 .scan-spinner{font-size:2rem;animation:spin 1s linear infinite;display:block;margin-bottom:0.6rem}
@@ -58,9 +76,14 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 .scan-sub{font-size:0.7rem;color:rgba(200,224,240,0.65);line-height:1.5}
 .scan-bar{height:4px;background:rgba(255,255,255,0.1);border-radius:2px;margin-top:0.8rem;overflow:hidden}
 .scan-fill{height:100%;background:linear-gradient(to right,var(--royal),var(--gold));border-radius:2px;width:0;transition:width 0.4s}
+
+/* SUCCESS */
 .success-card{background:var(--green-bg);border:1px solid var(--green-bd);border-radius:10px;padding:0.9rem 1.1rem;margin-bottom:1rem;display:none;align-items:center;gap:0.8rem}
 .success-card.show{display:flex}
-.editor-wrap{display:none}.editor-wrap.show{display:block}
+
+/* EDITOR */
+.editor-wrap{display:none}
+.editor-wrap.show{display:block}
 .admin-tabs{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:1rem}
 .admin-tab{padding:0.4rem 0.8rem;font-size:0.62rem;letter-spacing:0.06em;text-transform:uppercase;border:1px solid var(--pale);background:var(--white);color:var(--muted);cursor:pointer;border-radius:6px;font-weight:600;font-family:'Raleway',sans-serif;transition:all 0.2s}
 .admin-tab.active{background:var(--navy);color:var(--gold2);border-color:var(--navy)}
@@ -76,13 +99,16 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 .btn-edit{padding:3px 7px;background:var(--orange-bg);color:var(--orange);border:1px solid var(--orange-bd);border-radius:4px;font-size:0.58rem;cursor:pointer;font-weight:600;font-family:'Raleway',sans-serif}
 .btn-del{padding:3px 7px;background:var(--red-bg);color:var(--red);border:1px solid var(--red-bd);border-radius:4px;font-size:0.58rem;cursor:pointer;font-weight:600;font-family:'Raleway',sans-serif}
 .vdot{width:8px;height:8px;border-radius:2px;border:1px solid;flex:none}
-.vdot.veg{background:#dcfce7;border-color:#4ade80}.vdot.nonveg{background:#fee2e2;border-color:#f87171}
+.vdot.veg{background:#dcfce7;border-color:#4ade80}
+.vdot.nonveg{background:#fee2e2;border-color:#f87171}
 .add-item-btn{width:100%;padding:0.5rem;background:none;border:2px dashed var(--pale);border-radius:8px;color:var(--muted);font-size:0.68rem;font-weight:600;cursor:pointer;font-family:'Raleway',sans-serif;transition:all 0.2s}
 .add-item-btn:hover{border-color:var(--royal);color:var(--royal)}
 .cat-header-row{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.7rem;flex-wrap:wrap}
 .cat-name-input{flex:1;min-width:120px;border:1px solid var(--pale);border-radius:5px;padding:0.38rem 0.6rem;font-size:0.8rem;font-family:'Cinzel',serif;color:var(--navy);background:var(--white);outline:none;font-weight:600}
 .btn-rename{padding:0.38rem 0.7rem;background:var(--royal);color:white;border:none;border-radius:5px;font-size:0.6rem;font-weight:600;cursor:pointer;font-family:'Raleway',sans-serif}
 .btn-delete-cat{padding:0.38rem 0.7rem;background:var(--red-bg);color:var(--red);border:1px solid var(--red-bd);border-radius:5px;font-size:0.6rem;font-weight:600;cursor:pointer;font-family:'Raleway',sans-serif}
+
+/* QR */
 .qr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.8rem;margin-bottom:1rem}
 .qr-card{background:var(--white);border:1px solid var(--pale);border-radius:10px;padding:0.9rem;text-align:center}
 .qr-card-title{font-size:0.65rem;font-weight:700;color:var(--navy);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem}
@@ -90,13 +116,16 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 .qr-canvas-wrap canvas{border-radius:6px;border:1px solid var(--pale)}
 .qr-dl-btn{width:100%;padding:0.45rem;background:var(--navy);color:var(--gold2);border:none;border-radius:5px;font-size:0.6rem;font-weight:700;cursor:pointer;font-family:'Raleway',sans-serif}
 .qr-status{font-size:0.58rem;margin-top:0.3rem;display:block}
+
 /* CUSTOMER */
 .cw{max-width:520px;margin:0 auto;background:#FBF5E6;min-height:100vh}
-.c-hero{background:#FBF5E6;text-align:center;padding:0;overflow:hidden}
+.c-hero{background:#FBF5E6;text-align:center;padding:1.5rem 1.2rem 1.2rem;border-bottom:3px solid #8B1A1A}
 .c-addr{font-size:0.62rem;color:#8B6355;margin-top:0.4rem;letter-spacing:0.05em}
 .c-div{display:flex;align-items:center;gap:0.5rem;justify-content:center;margin:0.5rem 0}
 .c-line{flex:1;max-width:60px;height:1px;background:rgba(139,26,26,0.2)}
 .c-dia{width:5px;height:5px;background:#B8953F;transform:rotate(45deg)}
+
+/* CATEGORY NAV */
 .c-cat-nav{background:#8B1A1A;border-bottom:3px solid #5C0F0F;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.3)}
 .c-cat-header{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1rem;cursor:pointer;user-select:none}
 .c-cat-header-text{font-size:0.8rem;font-weight:700;color:#FBF5E6;font-family:'Cinzel',serif;letter-spacing:0.1em;text-transform:uppercase}
@@ -108,27 +137,33 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 .c-cat-tile{padding:0.55rem 0.3rem;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:5px;font-size:0.58rem;font-weight:700;color:rgba(255,245,230,0.8);cursor:pointer;text-align:center;font-family:'Cinzel',serif;transition:all 0.2s;letter-spacing:0.04em;text-transform:uppercase;line-height:1.3}
 .c-cat-tile.active{background:#FBF5E6;color:#8B1A1A;border-color:#FBF5E6}
 .c-cat-tile:hover{background:rgba(255,255,255,0.2);color:white}
+
+/* MENU CONTENT */
 .c-content{padding:0 0 5rem}
 .c-section{display:none}
 .c-section.active{display:block;animation:fadeUp 0.2s ease}
 @keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
 .c-sec-header{background:#8B1A1A;padding:0.8rem 1rem;display:flex;align-items:center;gap:0.6rem;position:relative}
 .c-sec-header::after{content:'';position:absolute;bottom:-6px;left:1rem;right:1rem;height:1px;background:rgba(139,26,26,0.2)}
 .c-sec-title-wrap{flex:1}
 .c-sec-eyebrow{font-size:0.48rem;letter-spacing:0.3em;text-transform:uppercase;color:rgba(255,245,230,0.55);display:block;margin-bottom:0.1rem}
 .c-sec-name{font-family:'Cinzel',serif;font-size:1.15rem;font-weight:700;color:#FBF5E6;letter-spacing:0.05em}
 .c-sec-ornament{width:32px;height:32px;opacity:0.25}
+
 .c-items-wrap{padding:0.8rem 1rem}
 .c-item{display:flex;align-items:start;justify-content:space-between;gap:0.8rem;padding:0.75rem 0;border-bottom:1px solid rgba(139,26,26,0.12)}
 .c-item:last-child{border-bottom:none}
 .c-item-left{flex:1;min-width:0;display:flex;align-items:start;gap:0.5rem}
 .c-vdot{width:10px;height:10px;border-radius:2px;border:1.5px solid;flex:none;margin-top:4px}
-.c-vdot.veg{background:#dcfce7;border-color:#16a34a}.c-vdot.nonveg{background:#fee2e2;border-color:#dc2626}
+.c-vdot.veg{background:#dcfce7;border-color:#16a34a}
+.c-vdot.nonveg{background:#fee2e2;border-color:#dc2626}
 .c-item-info{flex:1}
 .c-item-name{font-family:'EB Garamond',serif;font-size:1.05rem;font-weight:500;color:#2C1810;line-height:1.3}
 .c-item-desc{font-size:0.68rem;color:#8B6355;margin-top:0.15rem;font-style:italic;line-height:1.4}
 .c-item-price{font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:#8B1A1A;white-space:nowrap;padding-top:0.1rem}
 .c-item-price::before{content:'₹';font-size:0.7rem;opacity:0.7;margin-right:1px}
+
 .no-menu-box{text-align:center;padding:4rem 1.5rem;background:#FBF5E6}
 .no-menu-box .ico{font-size:3rem;display:block;margin-bottom:1rem}
 .no-menu-box h3{font-family:'Cinzel',serif;font-size:1.1rem;color:#8B1A1A;margin-bottom:0.4rem}
@@ -136,6 +171,7 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 .c-footer{text-align:center;padding:1.5rem 1rem;font-size:0.65rem;color:#8B6355;line-height:2.2;border-top:2px solid rgba(139,26,26,0.15);background:#FBF5E6}
 .c-footer strong{color:#8B1A1A;font-family:'Cinzel',serif}
 .c-footer a{color:#8B1A1A;text-decoration:none;font-weight:700}
+
 /* MODALS */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(10,30,53,0.7);z-index:300;align-items:center;justify-content:center;padding:1rem}
 .modal-bg.show{display:flex}
@@ -149,16 +185,19 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 .f-btn-row{display:flex;gap:0.5rem;justify-content:flex-end;margin-top:0.5rem}
 .f-btn-save{padding:0.5rem 1.2rem;background:var(--navy);color:var(--gold2);border:none;border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer;font-family:'Raleway',sans-serif}
 .f-btn-cancel{padding:0.5rem 1rem;background:none;color:var(--muted);border:1px solid var(--pale);border-radius:6px;font-size:0.7rem;cursor:pointer;font-family:'Raleway',sans-serif}
+
 .save-menu-btn{display:block;width:100%;padding:0.9rem;background:linear-gradient(135deg,var(--royal),var(--navy));color:var(--gold2);border:none;border-radius:10px;font-family:'Cinzel',serif;font-size:0.9rem;font-weight:600;letter-spacing:0.1em;cursor:pointer;margin-bottom:1.4rem;transition:all 0.2s;box-shadow:0 4px 15px rgba(13,39,68,0.3)}
-.save-menu-btn:hover{transform:translateY(-1px)}.save-menu-btn:active{transform:translateY(0)}
+.save-menu-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(13,39,68,0.4)}
+.save-menu-btn:active{transform:translateY(0)}
 .save-menu-btn.saving{background:var(--muted);cursor:not-allowed}
 .save-menu-btn.saved{background:linear-gradient(135deg,var(--green),#14532d);color:white}
-.save-bar{position:fixed;bottom:0;left:0;right:0;background:var(--navy);padding:0.8rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;border-top:2px solid var(--gold);z-index:150;display:none}
+.save-bar{position:fixed;bottom:0;left:0;right:0;background:var(--navy);padding:0.8rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;border-top:2px solid var(--gold);z-index:150}
 .save-bar-text{font-size:0.7rem;color:rgba(200,224,240,0.7)}
 .save-bar-btn{padding:0.6rem 1.5rem;background:var(--gold);color:var(--navy);border:none;border-radius:6px;font-family:'Cinzel',serif;font-size:0.75rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:0.4rem;white-space:nowrap}
 .save-bar-btn:hover{background:var(--gold2)}
 .save-bar-btn.saving{background:var(--royal);color:white;pointer-events:none}
 .save-bar-btn.saved{background:var(--green-bg);color:var(--green);border:1px solid var(--green-bd)}
+/* PASSCODE SCREEN */
 .passcode-screen{position:fixed;inset:0;background:#0D2744;z-index:500;display:none;align-items:center;justify-content:center;padding:1rem}
 .passcode-box{background:white;border-radius:16px;padding:2rem;width:100%;max-width:340px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.4)}
 .passcode-logo{font-family:'Cinzel',serif;font-size:1.2rem;font-weight:700;color:#0D2744;margin-bottom:0.3rem}
@@ -172,12 +211,13 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 .passcode-btn:active{background:#0D2744;color:white;transform:scale(0.95)}
 .passcode-clear{padding:1rem;background:#fee2e2;border:1px solid #fca5a5;border-radius:10px;font-size:1rem;color:#991b1b;cursor:pointer;font-family:'Raleway',sans-serif;transition:all 0.15s}
 .passcode-error{font-size:0.72rem;color:#991b1b;margin-top:0.5rem;min-height:1rem;font-weight:600}
+.passcode-screen.hidden{display:none}
 .toast{position:fixed;bottom:1.2rem;left:50%;transform:translateX(-50%) translateY(50px);background:var(--navy);color:white;padding:0.7rem 1.3rem;border-radius:8px;font-size:0.75rem;font-weight:500;border-left:3px solid var(--gold2);opacity:0;transition:all 0.3s;z-index:999;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-/* BANNER SIZE SLIDER */
-.banner-slider-wrap{background:var(--white);border:1px solid var(--pale);border-radius:10px;padding:1rem;margin-bottom:1.3rem}
+
 @media(max-width:560px){.menu-selector{grid-template-columns:1fr}.qr-grid{grid-template-columns:1fr}.f-row{grid-template-columns:1fr}.welcome{flex-direction:column;text-align:center}}
 </style>
+
 </head>
 <body>
 
@@ -195,20 +235,40 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 <!-- ADMIN -->
 <div id="view-admin" class="view active">
 <div class="aw">
+
   <div class="welcome">
     <div class="w-icon">✨</div>
     <div>
       <div class="w-title">AI-Powered Menu Builder</div>
       <div class="w-sub">Upload a photo of any menu — AI reads it and builds the digital menu automatically. Edit anytime.</div>
       <div class="live-pill"><span class="live-dot"></span>Claude AI · Instant Scanning</div>
-      <div class="live-pill" id="server-status" style="margin-top:0.3rem;background:rgba(255,165,0,0.12);border-color:rgba(255,165,0,0.35);color:#fbbf24">⏳ Checking server...</div>
     </div>
   </div>
-  <div class="sec-hd">
-    <span>Select Menu to Manage</span>
-    <button class="admin-tab admin-tab-add" onclick="openAddMenuModal()">+ Add Menu</button>
+
+  <!-- MENU SELECTOR -->
+  <div class="sec-hd">Select Menu to Manage</div>
+  <div class="menu-selector">
+    <div class="menu-sel-btn active" onclick="selectMenu('restaurant',this)">
+      <span class="menu-sel-icon">🍛</span>
+      <span class="menu-sel-name">Restaurant</span>
+      <span class="menu-sel-count" id="count-restaurant">No items yet</span>
+      <span class="menu-sel-status" id="sel-status-restaurant"></span>
+    </div>
+    <div class="menu-sel-btn" onclick="selectMenu('banquet',this)">
+      <span class="menu-sel-icon">🏛</span>
+      <span class="menu-sel-name">Banquet Hall</span>
+      <span class="menu-sel-count" id="count-banquet">No items yet</span>
+      <span class="menu-sel-status" id="sel-status-banquet"></span>
+    </div>
+    <div class="menu-sel-btn" onclick="selectMenu('chaat',this)">
+      <span class="menu-sel-icon">🌶</span>
+      <span class="menu-sel-name">Chaat Adda</span>
+      <span class="menu-sel-count" id="count-chaat">No items yet</span>
+      <span class="menu-sel-status" id="sel-status-chaat"></span>
+    </div>
   </div>
-  <div class="menu-selector" id="menu-selector-grid"></div>
+
+  <!-- UPLOAD ZONE -->
   <div class="sec-hd"><span id="upload-sec-title">📸 Upload Restaurant Menu</span></div>
   <div class="upload-zone" id="upload-zone"
     onclick="document.getElementById('menu-file').click()"
@@ -221,12 +281,16 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
     <p>Upload 1 or 2 images for double-sided menus<br>AI will read every item, category and price automatically</p>
     <span class="upload-hint">✨ Powered by Claude AI · Select multiple images · Instant scanning</span>
   </div>
+
+  <!-- SCAN STATE -->
   <div class="scan-card" id="scan-card">
     <span class="scan-spinner">🔍</span>
     <div class="scan-title" id="scan-title">AI is Reading Your Menu...</div>
     <div class="scan-sub" id="scan-sub">Scanning menu image and extracting items, categories and prices</div>
     <div class="scan-bar"><div class="scan-fill" id="scan-fill"></div></div>
   </div>
+
+  <!-- SUCCESS -->
   <div class="success-card" id="success-card">
     <span style="font-size:1.5rem">✅</span>
     <div>
@@ -234,61 +298,8 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
       <div style="font-size:0.7rem;color:var(--green);opacity:0.85" id="success-detail"></div>
     </div>
   </div>
-  <!-- THEME PANEL -->
-  <div class="theme-panel" id="theme-panel">
-    <div class="theme-panel-title">🎨 AI Suggested Theme — Approve or Tweak</div>
-    <div class="theme-preview-bar" id="theme-preview-bar" style="height:8px;border-radius:4px;margin-bottom:0.6rem;background:linear-gradient(to right,#8B1A1A,#B8953F)"></div>
-    <div style="display:flex;gap:0.6rem;align-items:center;margin-bottom:0.5rem">
-      <span style="font-size:0.62rem;color:rgba(200,224,240,0.7);width:80px;flex:none">Primary</span>
-      <input type="color" id="theme-primary" value="#8B1A1A" oninput="updateThemePreview()" style="width:36px;height:28px;border-radius:5px;border:none;cursor:pointer;flex:none">
-      <input id="theme-primary-hex" value="#8B1A1A" oninput="syncColor('primary')" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:5px;padding:0.3rem 0.5rem;color:white;font-size:0.72rem;font-family:Raleway,sans-serif;flex:1">
-    </div>
-    <div style="display:flex;gap:0.6rem;align-items:center;margin-bottom:0.5rem">
-      <span style="font-size:0.62rem;color:rgba(200,224,240,0.7);width:80px;flex:none">Accent</span>
-      <input type="color" id="theme-accent" value="#B8953F" oninput="updateThemePreview()" style="width:36px;height:28px;border-radius:5px;border:none;cursor:pointer;flex:none">
-      <input id="theme-accent-hex" value="#B8953F" oninput="syncColor('accent')" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:5px;padding:0.3rem 0.5rem;color:white;font-size:0.72rem;font-family:Raleway,sans-serif;flex:1">
-    </div>
-    <div style="display:flex;gap:0.6rem;align-items:center;margin-bottom:0.5rem">
-      <span style="font-size:0.62rem;color:rgba(200,224,240,0.7);width:80px;flex:none">Background</span>
-      <input type="color" id="theme-bg" value="#FBF5E6" oninput="updateThemePreview()" style="width:36px;height:28px;border-radius:5px;border:none;cursor:pointer;flex:none">
-      <input id="theme-bg-hex" value="#FBF5E6" oninput="syncColor('bg')" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:5px;padding:0.3rem 0.5rem;color:white;font-size:0.72rem;font-family:Raleway,sans-serif;flex:1">
-    </div>
-    <div style="display:flex;gap:0.4rem;margin-bottom:0.7rem;align-items:center">
-      <span style="font-size:0.62rem;color:rgba(200,224,240,0.7);width:80px;flex:none">Font Style</span>
-      <button onclick="setFont('serif',this)" style="padding:0.3rem 0.6rem;background:var(--gold);color:var(--navy);border:1px solid var(--gold);border-radius:5px;font-size:0.62rem;cursor:pointer" id="font-serif">Serif</button>
-      <button onclick="setFont('sans',this)" style="padding:0.3rem 0.6rem;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:5px;color:rgba(255,255,255,0.8);font-size:0.62rem;cursor:pointer" id="font-sans">Sans-Serif</button>
-      <button onclick="setFont('decorative',this)" style="padding:0.3rem 0.6rem;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:5px;color:rgba(255,255,255,0.8);font-size:0.62rem;cursor:pointer" id="font-decorative">Decorative</button>
-    </div>
-    <button onclick="approveTheme()" style="width:100%;padding:0.6rem;background:var(--gold);color:var(--navy);border:none;border-radius:8px;font-family:Cinzel,serif;font-size:0.78rem;font-weight:700;cursor:pointer">✓ Apply This Theme to Menu</button>
-  </div>
 
-  <!-- BANNER SECTION -->
-  <div id="banner-section" style="background:var(--cream);border:1px solid var(--pale);border-radius:10px;padding:1rem;margin-bottom:1rem;display:none">
-    <div style="font-family:Cinzel,serif;font-size:0.72rem;color:var(--navy);margin-bottom:0.6rem;font-weight:600">🖼 Menu Banner — Upload & Crop</div>
-    <div style="background:white;border:1px solid var(--pale);border-radius:8px;padding:0.7rem;margin-bottom:0.7rem">
-      <div style="font-family:Cinzel,serif;font-size:0.65rem;color:var(--navy);margin-bottom:0.5rem;font-weight:600">📍 Restaurant Info</div>
-      <label class="f-label">Restaurant Name</label>
-      <input class="f-input" id="edit-restname" placeholder="e.g. Kunjilal Food House" style="margin-bottom:0.4rem">
-      <label class="f-label">Address</label>
-      <input class="f-input" id="edit-address" placeholder="e.g. Vidhya Nagar, Ramghat Road" style="margin-bottom:0.4rem">
-      <label class="f-label">Phone</label>
-      <input class="f-input" id="edit-phone" placeholder="e.g. +917088004440" style="margin-bottom:0.4rem">
-      <button onclick="saveMenuInfo()" style="padding:0.4rem 1rem;background:var(--navy);color:var(--gold2);border:none;border-radius:6px;font-size:0.65rem;font-weight:600;cursor:pointer;font-family:Raleway,sans-serif">💾 Save Info</button>
-    </div>
-    <input type="file" id="banner-file-input" accept="image/*" style="display:none" onchange="loadBannerImage(this)">
-    <button onclick="document.getElementById('banner-file-input').click()" style="padding:0.4rem 0.9rem;background:var(--royal);color:white;border:none;border-radius:6px;font-size:0.65rem;font-weight:600;cursor:pointer;font-family:Raleway,sans-serif">📁 Upload Banner Image</button>
-    <div style="font-size:0.6rem;color:var(--muted);margin-top:0.3rem">Upload an image then drag to select the region for the banner</div>
-    <div id="banner-preview" style="position:relative;margin-top:0.6rem;display:none;border-radius:8px;overflow:hidden;border:2px solid var(--pale)">
-      <img id="banner-source-img" src="" style="width:100%;display:block">
-      <canvas id="crop-overlay" style="position:absolute;inset:0;cursor:crosshair;width:100%;height:100%"></canvas>
-    </div>
-    <div id="crop-actions" style="display:none;gap:0.5rem;margin-top:0.5rem;display:none">
-      <button onclick="applyCrop()" style="flex:1;padding:0.4rem;background:#166534;color:white;border:none;border-radius:6px;font-size:0.65rem;font-weight:600;cursor:pointer">✓ Use Selected Region</button>
-      <button onclick="clearCrop()" style="flex:1;padding:0.4rem;background:#fee2e2;color:#991b1b;border:none;border-radius:6px;font-size:0.65rem;font-weight:600;cursor:pointer">✕ Clear</button>
-    </div>
-    <div id="banner-set-indicator" style="font-size:0.65rem;color:var(--green);margin-top:0.4rem;display:none">✓ Banner set for this menu</div>
-  </div>
-
+  <!-- EDITOR -->
   <div class="editor-wrap" id="editor-wrap">
     <div class="sec-hd">
       <span id="editor-title">Edit Menu</span>
@@ -296,63 +307,78 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
     </div>
     <div class="admin-tabs" id="cat-tabs"></div>
     <div id="cat-panels"></div>
+
+    <!-- RE-UPLOAD -->
     <div style="background:var(--cream);border:1px solid var(--pale);border-radius:10px;padding:1rem;text-align:center;margin-top:1rem;margin-bottom:1.5rem">
       <p style="font-size:0.72rem;color:var(--muted);margin-bottom:0.5rem">📸 Got a new menu? Upload a new photo to re-scan with AI</p>
       <button onclick="document.getElementById('menu-file').click()" style="padding:0.5rem 1.2rem;background:var(--royal);color:white;border:none;border-radius:6px;font-size:0.7rem;font-weight:600;cursor:pointer;font-family:'Raleway',sans-serif">Upload New Menu Photo</button>
     </div>
   </div>
-  <button class="save-menu-btn" id="save-menu-btn" onclick="manualSave()">💾 Save Menu to Server</button>
 
-  <!-- BANNER SIZE -->
-  <div class="sec-hd">🖼 Banner Size</div>
-  <div class="banner-slider-wrap">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem">
-      <label style="font-size:0.72rem;font-weight:600;color:var(--navy)">Banner Width</label>
-      <span style="font-size:0.72rem;font-weight:700;color:var(--royal)" id="banner-size-label">100%</span>
-    </div>
-    <input type="range" min="40" max="100" value="100" step="2" id="banner-slider" style="width:100%;accent-color:#0D2744" oninput="updateBannerSize(this.value)">
-    <div style="display:flex;justify-content:space-between;font-size:0.58rem;color:var(--muted);margin-top:0.2rem">
-      <span>Small</span><span>Medium</span><span>Full Width</span>
-    </div>
-  </div>
+  <!-- SAVE BUTTON -->
+  <button class="save-menu-btn" id="save-menu-btn" onclick="manualSave()">
+    💾 Save Menu to Server
+  </button>
 
   <!-- QR CODES -->
   <div class="sec-hd">📱 QR Codes — Download & Print for Tables</div>
-  <div class="qr-grid" id="qr-grid-dynamic"></div>
+  <div class="qr-grid">
+    <div class="qr-card">
+      <div class="qr-card-title">🍛 Restaurant</div>
+      <div class="qr-canvas-wrap"><canvas id="qr-restaurant" width="120" height="120"></canvas></div>
+      <button class="qr-dl-btn" onclick="downloadQR('restaurant','Restaurant')">⬇ Download QR</button>
+      <span class="qr-status" id="qrstatus-restaurant"></span>
+    </div>
+    <div class="qr-card">
+      <div class="qr-card-title">🏛 Banquet Hall</div>
+      <div class="qr-canvas-wrap"><canvas id="qr-banquet" width="120" height="120"></canvas></div>
+      <button class="qr-dl-btn" onclick="downloadQR('banquet','Banquet Hall')">⬇ Download QR</button>
+      <span class="qr-status" id="qrstatus-banquet"></span>
+    </div>
+    <div class="qr-card">
+      <div class="qr-card-title">🌶 Chaat Adda</div>
+      <div class="qr-canvas-wrap"><canvas id="qr-chaat" width="120" height="120"></canvas></div>
+      <button class="qr-dl-btn" onclick="downloadQR('chaat','Chaat Adda')">⬇ Download QR</button>
+      <span class="qr-status" id="qrstatus-chaat"></span>
+    </div>
+  </div>
+
 </div>
 </div>
 
 <!-- CUSTOMER VIEW -->
 <div id="view-customer" class="view">
 <div class="cw">
+  <!-- HERO -->
   <div class="c-hero">
-    <img id="banner-img" src="data:image/jpeg;base64,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zElyd7rVRzYROHEOcOJhBJHbz237Vts0BqmhBLjMTqcR4mQndjw4OAPWNgO3t2I3U8/REdbQlnTeNnaJJwHOsTN5PfxNJJA6hs3YDs5LVsZkrnWT1zayWiJsRlumZkQYnw2Bu3xiPi6z6du3qPrU5r2aVuj9GOZLIC50Jc4PIJ/o29asd7wf18lpChibckbchSg6OK5G08nc+R7S093zhfOqdF3czpzCY2rcrwz44N4pHh3C4hgby29I7UzDFS+u8A7UWCmrV5HR3Ij0tZzXlvux+KSOwjl9BXP9Ny5XX2bx8WUMsVLCxDxoNeWmaUHb3W3aeEb9wae9dA0pj9R0ZLDtR5iHIteG9CI4+HgIJ335Dr5fQtfRWmLGnbGYlsWYZhfs9MwRgjhG7jsd+33SkuIuM1aURFhtqZWAWMbZiPLeMlp7nAbg/MQFkozGxSrzu99JE159ZAK181OYqL44udix/Qwt73O5fuG5PqW3XibBXihZ72NgYPUBss/9OU3+LccmRERadRERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERBoW6Dnz+N0pRBa24XEjdkg7A4dvoPWF8C3kY+UuLLyPxoJ2kH/m2KkkWdnk5Xwt+dNwjvH7v6Hsfto/tTx+7+iLH7aP7VIomzef6PL1fdfx8I7x+7+iLH7aP7U8fu/oix+2j+1SKJs3n+jy9X3X8fCO8fu/oix+2j+1PH7v6Isfto/tUiibN5/o8vV91/HwjvH7v6Isfto/tTx+7+iLH7aP7VIomzef6PL1fdfx8I7x+7+h7H7aP7U8fu/oix+2j+1SKJs3n+jy9X3X8fCO8fu/oix+2j+1PH7v6Isfto/tUiibN5/o8vV91/HwjvH7v6Isfto/tTx+7+iLH7aP7VIomzef6PL1fdfx8I7x+7+iLH7aP7U8fu/oix+2j+1SKJs3n+jy9X3X8fCO8fu/oix+2j+1PH7v6Isfto/tUiibN5/o8vV91/HwjvH7v6Isfto/tTx+7+iLH7aP7VIomzef6PL1fdfx8I7x+7+iLH7aP7V4beSk9zFi+jJ/GnnaAP+XclSSJs3n+jy9X3X8fDRp0HMnNu5L09ojhDgNmxjuYOz19ZW8iKyScG9OiaZiCIirQiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAibJsgImyICJsiAibJsgIibICJsmyAibIgImybICImyAiJsgImyICJsmyAibJsgIibICJsiAibIgImybICImyAibJsgImyICJsmyAiJsgIibICJsiAibJsgImybICImyAibIgImyICJsmyAiJsgImybICJsiD/9k=" alt="Kunjilal Food House" style="width:100%;display:block;margin:0">
-  </div>
-  <div style="text-align:center;padding:0.4rem 1rem 0.6rem;background:#FBF5E6;border-bottom:3px solid #8B1A1A">
+    <img src="https://raw.githubusercontent.com/kunjilaldalsevwale-prog/banquetmenu/main/logo.png" alt="Kunjilal Food House" style="width:88%;max-width:400px;display:block;margin:0 auto 0.5rem">
     <div class="c-div"><span class="c-line"></span><span class="c-dia"></span><span class="c-line"></span></div>
-    <div class="c-addr" id="cust-addr"></div>
+    <div class="c-addr">Vidhya Nagar, Ramghat Road, Aligarh &nbsp;·&nbsp; +91-7088004440</div>
   </div>
+
+  <!-- CATEGORY NAV -->
   <div class="c-cat-nav">
     <div class="c-cat-header" onclick="toggleCatPanel()">
-      <span class="c-cat-header-text" id="active-cat-name">🏠 &nbsp;HOME</span>
+      <span class="c-cat-header-text" id="active-cat-name">☰ &nbsp;MENU</span>
       <span class="c-cat-header-arrow" id="cat-arrow">▼</span>
     </div>
     <div class="c-cat-panel" id="cat-panel">
       <div class="c-cat-grid" id="cust-cat-nav"></div>
     </div>
   </div>
+
+  <!-- MENU CONTENT -->
   <div class="c-content" id="cust-content"></div>
+
+  <!-- FOOTER -->
   <div class="c-footer">
-    <span id="cust-footer-name"></span><br>
-    <span id="cust-footer-addr"></span><br>
-    <a id="cust-footer-tel" href="#">📞 </a> &nbsp;·&nbsp;
-    <a id="cust-footer-wa" href="#">💬 WhatsApp</a><br><br>
-    <div style="font-size:0.72rem;font-weight:700;color:#2C1810;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.5rem">Also Available On</div>
-    <img src="data:image/jpeg;base64,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" alt="Zomato and Swiggy" style="width:65%;max-width:240px;border-radius:8px">
+    <strong>Kunjilal Food House</strong><br>
+    Vidhya Nagar, Ramghat Road, Aligarh, UP<br>
+    <a href="tel:+917088004440">📞 +91-7088004440</a> &nbsp;·&nbsp;
+    <a href="https://wa.me/917088004440">💬 WhatsApp</a>
   </div>
 </div>
 </div>
-
 <!-- ITEM MODAL -->
 <div class="modal-bg" id="item-modal">
   <div class="modal-box">
@@ -376,6 +402,8 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
     </div>
   </div>
 </div>
+
+<!-- CAT MODAL -->
 <div class="modal-bg" id="cat-modal">
   <div class="modal-box">
     <div class="modal-title">Add Category</div>
@@ -387,27 +415,8 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
     </div>
   </div>
 </div>
-<!-- ADD MENU MODAL -->
-<div class="modal-bg" id="add-menu-modal">
-  <div class="modal-box">
-    <div class="modal-title">Add New Menu</div>
-    <label class="f-label">Menu Name *</label>
-    <input class="f-input" id="f-menu-name" placeholder="e.g. Rooftop Cafe, Lunch Menu...">
-    <label class="f-label">Icon (emoji)</label>
-    <input class="f-input" id="f-menu-icon" placeholder="e.g. 🍕 🥗 ☕" value="🍽">
-    <label class="f-label">Restaurant Name</label>
-    <input class="f-input" id="f-menu-restname" placeholder="e.g. Kunjilal Food House">
-    <label class="f-label">Address</label>
-    <input class="f-input" id="f-menu-address" placeholder="e.g. Vidhya Nagar, Ramghat Road, Aligarh">
-    <label class="f-label">Phone</label>
-    <input class="f-input" id="f-menu-phone" placeholder="e.g. +917088004440">
-    <div class="f-btn-row">
-      <button class="f-btn-cancel" onclick="closeAddMenuModal()">Cancel</button>
-      <button class="f-btn-save" onclick="saveNewMenu()">✓ Create Menu</button>
-    </div>
-  </div>
-</div>
 
+<!-- PASSCODE SCREEN -->
 <div class="passcode-screen" id="passcode-screen">
   <div class="passcode-box">
     <div class="passcode-logo">🏛 Food House</div>
@@ -431,15 +440,12 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
       <button class="passcode-btn" onclick="enterDigit('9')">9</button>
       <button class="passcode-clear" onclick="clearDigit()">⌫</button>
       <button class="passcode-btn" onclick="enterDigit('0')">0</button>
-      <button class="passcode-btn" style="visibility:hidden"></button>
+      <button class="passcode-btn" onclick="enterDigit('')" style="visibility:hidden"></button>
     </div>
     <div class="passcode-error" id="passcode-error"></div>
   </div>
 </div>
-<div class="save-bar" id="save-bar">
-  <span class="save-bar-text">Unsaved changes</span>
-  <button class="save-bar-btn" id="save-btn" onclick="manualSaveBar()">💾 Save Menu</button>
-</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -448,379 +454,378 @@ const STORE_KEY = 'fh_all_menus_v1';
 const MENU_NAMES = { restaurant:'Restaurant', banquet:'Banquet Hall', chaat:'Chaat Adda' };
 const MENU_ICONS = { restaurant:'🍛', banquet:'🏛', chaat:'🌶' };
 
-// menuList = [{id, name, icon}]
-let menuList = [
-  {id:'restaurant', name:'Restaurant', icon:'🍛'},
-  {id:'banquet',    name:'Banquet Hall', icon:'🏛'},
-  {id:'chaat',      name:'Chaat Adda',   icon:'🌶'}
-];
-let allMenus = { restaurant:{categories:[]}, banquet:{categories:[]}, chaat:{categories:[]} };
+// All 3 menus stored here
+let allMenus = {
+  restaurant: { categories: [] },
+  banquet:    { categories: [] },
+  chaat:      { categories: [] }
+};
+
 let currentMenu = 'restaurant';
 let editingItem = null;
 
-const restaurantPreload = {"categories": [{"id": "c1", "name": "Soups", "items": [{"id": "i1", "name": "Tomato", "price": 130, "type": "veg", "desc": ""},{"id": "i2", "name": "Hot and Sour", "price": 140, "type": "veg", "desc": ""},{"id": "i3", "name": "Sweet Corn", "price": 140, "type": "veg", "desc": ""},{"id": "i4", "name": "Manchaow", "price": 140, "type": "veg", "desc": ""}]},{"id": "c2", "name": "Beverages", "items": [{"id": "i5", "name": "Tea", "price": 55, "type": "veg", "desc": ""},{"id": "i6", "name": "Masala Tea", "price": 65, "type": "veg", "desc": ""},{"id": "i7", "name": "Green Tea", "price": 50, "type": "veg", "desc": ""},{"id": "i8", "name": "Hot Coffee", "price": 90, "type": "veg", "desc": ""},{"id": "i9", "name": "Black Coffee", "price": 70, "type": "veg", "desc": ""},{"id": "i10", "name": "Cold Coffee", "price": 130, "type": "veg", "desc": ""},{"id": "i11", "name": "Cold Coffee with Icecream", "price": 180, "type": "veg", "desc": ""},{"id": "i12", "name": "Lassi (Sweet / Salty)", "price": 70, "type": "veg", "desc": ""},{"id": "i13", "name": "Buttermilk (Chaach)", "price": 70, "type": "veg", "desc": ""},{"id": "i14", "name": "Jeera Shikanji", "price": 75, "type": "veg", "desc": ""},{"id": "i15", "name": "Fresh Lime Soda", "price": 85, "type": "veg", "desc": ""},{"id": "i16", "name": "Virgin Mojito", "price": 120, "type": "veg", "desc": ""},{"id": "i17", "name": "Vanilla Shake", "price": 190, "type": "veg", "desc": ""},{"id": "i18", "name": "Chocolate Shake", "price": 190, "type": "veg", "desc": ""},{"id": "i19", "name": "Strawberry Shake", "price": 190, "type": "veg", "desc": ""},{"id": "i20", "name": "Oreo Shake", "price": 190, "type": "veg", "desc": ""},{"id": "i21", "name": "Bubblem Gum Shake", "price": 190, "type": "veg", "desc": ""},{"id": "i22", "name": "Aerated Drinks", "price": 0, "type": "veg", "desc": "MRP"},{"id": "i23", "name": "Mineral Water", "price": 0, "type": "veg", "desc": "MRP"}]},{"id": "c3", "name": "Chatpati Chaat", "items": [{"id": "i24", "name": "Pani Puri", "price": 60, "type": "veg", "desc": ""},{"id": "i25", "name": "Dahi Bhalla", "price": 70, "type": "veg", "desc": ""},{"id": "i26", "name": "Gupchup Chaat", "price": 90, "type": "veg", "desc": ""},{"id": "i27", "name": "Bhelpuri", "price": 100, "type": "veg", "desc": ""},{"id": "i28", "name": "Papdi Chaat", "price": 80, "type": "veg", "desc": ""},{"id": "i29", "name": "Rajkachori", "price": 120, "type": "veg", "desc": ""},{"id": "i30", "name": "Aloo Tikki", "price": 70, "type": "veg", "desc": "Open 2pm-9pm"},{"id": "i31", "name": "Pao Bhaji", "price": 140, "type": "veg", "desc": "Open 2pm-9pm"},{"id": "i32", "name": "Chole Bhature", "price": 180, "type": "veg", "desc": "Open 2pm-9pm"}]},{"id": "c4", "name": "Indian Mains", "items": [{"id": "i33", "name": "Daal Tadka", "price": 235, "type": "veg", "desc": ""},{"id": "i34", "name": "Daal Makhani", "price": 295, "type": "veg", "desc": ""},{"id": "i35", "name": "Daal Punjabi", "price": 295, "type": "veg", "desc": ""},{"id": "i36", "name": "Aloo Jeera", "price": 235, "type": "veg", "desc": ""},{"id": "i37", "name": "Mix Veg", "price": 295, "type": "veg", "desc": ""},{"id": "i38", "name": "Chana Masala", "price": 295, "type": "veg", "desc": ""},{"id": "i39", "name": "Veg Kolhaputi", "price": 295, "type": "veg", "desc": ""},{"id": "i40", "name": "Veg Jalfrezi", "price": 295, "type": "veg", "desc": ""},{"id": "i41", "name": "Veg Jaipuri", "price": 295, "type": "veg", "desc": ""},{"id": "i42", "name": "Veg Navratan Korma", "price": 295, "type": "veg", "desc": ""},{"id": "i43", "name": "Matar Mushroom", "price": 335, "type": "veg", "desc": ""},{"id": "i44", "name": "Shahi Paneer", "price": 355, "type": "veg", "desc": "Chef Special"},{"id": "i45", "name": "Kadhai Paneer", "price": 355, "type": "veg", "desc": ""},{"id": "i46", "name": "Paneer Butter Masala", "price": 355, "type": "veg", "desc": ""},{"id": "i47", "name": "Paneer Lababdar", "price": 355, "type": "veg", "desc": "Best Seller"},{"id": "i48", "name": "Angara Paneer", "price": 355, "type": "veg", "desc": ""},{"id": "i49", "name": "Paneer Kolhapuri", "price": 355, "type": "veg", "desc": ""},{"id": "i50", "name": "Paneer Do Pyaza", "price": 355, "type": "veg", "desc": ""},{"id": "i51", "name": "Malai Kofta", "price": 355, "type": "veg", "desc": ""},{"id": "i52", "name": "Kashmiri Dum Aloo", "price": 355, "type": "veg", "desc": ""},{"id": "i53", "name": "Punjabi Dum Aloo", "price": 320, "type": "veg", "desc": ""},{"id": "i54", "name": "Paneer Bhurji", "price": 375, "type": "veg", "desc": ""}]},{"id": "c_rice", "name": "Rice", "items": [{"id": "r1", "name": "Jeera Rice", "price": 175, "type": "veg", "desc": ""},{"id": "r2", "name": "Veg Pulao", "price": 215, "type": "veg", "desc": ""},{"id": "r3", "name": "Veg Dum Biryani", "price": 295, "type": "veg", "desc": ""}]},{"id": "c5", "name": "Breads", "items": [{"id": "i58", "name": "Tandoori Roti", "price": 25, "type": "veg", "desc": "Closed 5pm-7pm"},{"id": "i59", "name": "Tandoori Butter Roti", "price": 35, "type": "veg", "desc": ""},{"id": "i60", "name": "Missi Roti", "price": 55, "type": "veg", "desc": ""},{"id": "i61", "name": "Plain Naan", "price": 55, "type": "veg", "desc": ""},{"id": "i62", "name": "Butter Naan", "price": 65, "type": "veg", "desc": ""},{"id": "i63", "name": "Lachha Paratha", "price": 65, "type": "veg", "desc": ""},{"id": "i64", "name": "Garlic Naan", "price": 80, "type": "veg", "desc": ""},{"id": "i65", "name": "Kulcha (Onion / Aloo / Paneer)", "price": 105, "type": "veg", "desc": ""},{"id": "i66", "name": "Stuff Naan", "price": 105, "type": "veg", "desc": ""}]},{"id": "c6", "name": "Add-Ons", "items": [{"id": "i67", "name": "Plain Papad", "price": 60, "type": "veg", "desc": ""},{"id": "i68", "name": "Masala Papad", "price": 100, "type": "veg", "desc": ""},{"id": "i69", "name": "Green Salad", "price": 99, "type": "veg", "desc": ""},{"id": "i70", "name": "Boondi Raita", "price": 155, "type": "veg", "desc": ""},{"id": "i71", "name": "Pineapple Raita", "price": 155, "type": "veg", "desc": ""},{"id": "i72", "name": "Mix Veg Raita", "price": 155, "type": "veg", "desc": ""},{"id": "i73", "name": "Tadka Raita", "price": 155, "type": "veg", "desc": ""}]},{"id": "c7", "name": "South Indian", "items": [{"id": "i74", "name": "Idli Sambhar (4pc)", "price": 160, "type": "veg", "desc": ""},{"id": "i75", "name": "Vada Sambhar (4pc)", "price": 160, "type": "veg", "desc": ""},{"id": "i76", "name": "Plain Dosa", "price": 190, "type": "veg", "desc": ""},{"id": "i77", "name": "Masala Dosa", "price": 210, "type": "veg", "desc": "Best Seller"},{"id": "i78", "name": "Mysore Masala Dosa", "price": 230, "type": "veg", "desc": ""},{"id": "i79", "name": "Paneer Cheese Dosa", "price": 270, "type": "veg", "desc": ""},{"id": "i80", "name": "Jimmy Dosa", "price": 270, "type": "veg", "desc": ""},{"id": "i81", "name": "Rawa Plain Dosa", "price": 210, "type": "veg", "desc": ""},{"id": "i82", "name": "Pawa Masala Dosa", "price": 230, "type": "veg", "desc": ""},{"id": "i83", "name": "Onion Rawa Dosa", "price": 230, "type": "veg", "desc": ""},{"id": "i84", "name": "Onion Rawa Masala Dosa", "price": 270, "type": "veg", "desc": ""},{"id": "i85", "name": "Mix Veg Uttapam", "price": 210, "type": "veg", "desc": "Mix Veg, Onion, Tomato"},{"id": "i86", "name": "South Indian Platter", "price": 360, "type": "veg", "desc": "Vada, Idli, Mini Mix Uttapam, Mini Dosa"}]},{"id": "c8", "name": "Pasta", "items": [{"id": "i87", "name": "Red Sauce Pasta", "price": 275, "type": "veg", "desc": ""},{"id": "i88", "name": "White Sauce Pasta", "price": 275, "type": "veg", "desc": ""},{"id": "i89", "name": "Pink Sauce Pasta", "price": 275, "type": "veg", "desc": ""}]},{"id": "c9", "name": "Sizzler", "items": [{"id": "i90", "name": "Vegetable Sizzler", "price": 390, "type": "veg", "desc": ""},{"id": "i91", "name": "Chinese Sizzler", "price": 390, "type": "veg", "desc": ""}]},{"id": "c10", "name": "Tandoori Snacks", "items": [{"id": "i92", "name": "Veg Seekh Kabab", "price": 250, "type": "veg", "desc": "Closed 5pm-7pm"},{"id": "i93", "name": "Veg Cutlet", "price": 250, "type": "veg", "desc": ""},{"id": "i94", "name": "Dahi Ke Cutlet", "price": 250, "type": "veg", "desc": ""},{"id": "i95", "name": "Tandoori Stuff Aloo", "price": 250, "type": "veg", "desc": ""},{"id": "i96", "name": "Tandoori Paneer Tikka", "price": 295, "type": "veg", "desc": ""},{"id": "i97", "name": "Malai Paneer Tikka", "price": 295, "type": "veg", "desc": ""},{"id": "i98", "name": "Mushroom Tikka", "price": 295, "type": "veg", "desc": ""},{"id": "i99", "name": "Tandoori Platter", "price": 370, "type": "veg", "desc": "Tandoori Stuff Aloo, Paneer Tikka, Mushroom Tikka, Veg Seekh Kabab"}]},{"id": "c11", "name": "Mini Meals", "items": [{"id": "i100", "name": "Daal Makhani + Rice / Baby Naan", "price": 220, "type": "veg", "desc": ""},{"id": "i101", "name": "Amritsari Kulcha + Chole", "price": 225, "type": "veg", "desc": ""},{"id": "i102", "name": "Shahi Paneer + Jeera Rice / Baby Naan", "price": 240, "type": "veg", "desc": ""},{"id": "i103", "name": "Chilly Paneer + Fried Rice / Noodle", "price": 250, "type": "veg", "desc": ""},{"id": "i104", "name": "Manchurian + Fried Rice / Noodle", "price": 250, "type": "veg", "desc": ""},{"id": "i105", "name": "Veg Biryani + Boondi Raita", "price": 295, "type": "veg", "desc": ""}]},{"id": "c12", "name": "Thali", "items": [{"id": "i106", "name": "Deluxe Thali", "price": 295, "type": "veg", "desc": "Daal, Shahi Paneer, Tandoori Roti, Rice, Salad, Pickle, Sweet"},{"id": "i107", "name": "Special Thali", "price": 375, "type": "veg", "desc": "Daal, Shahi Paneer, Mix Veg, 1 Baby Naan, Rice, Salad, Raita, Pickle, Papad, Sweet"},{"id": "i108", "name": "Shahi Thali", "price": 475, "type": "veg", "desc": "Daal, Shahi Paneer, Mix Veg, Kofta, 1 Baby Naan, Rice, Salad, Raita, Pickle, Papad, Sweet"}]},{"id": "c13", "name": "Chinese", "items": [{"id": "i109", "name": "Spring Roll", "price": 215, "type": "veg", "desc": ""},{"id": "i110", "name": "Honey Chilly Potato", "price": 215, "type": "veg", "desc": ""},{"id": "i111", "name": "Chowmein", "price": 215, "type": "veg", "desc": ""},{"id": "i112", "name": "Hakka Noodles", "price": 240, "type": "veg", "desc": ""},{"id": "i113", "name": "Chilly Garlic Noodle", "price": 240, "type": "veg", "desc": ""},{"id": "i114", "name": "Manchurian Dry / Gravy", "price": 260, "type": "veg", "desc": ""},{"id": "i115", "name": "Veg Fried Rice", "price": 195, "type": "veg", "desc": ""},{"id": "i116", "name": "Crispy Corn", "price": 260, "type": "veg", "desc": ""},{"id": "i117", "name": "Chilly Paneer Dry / Gravy", "price": 280, "type": "veg", "desc": ""},{"id": "i118", "name": "Chilly Mushroom", "price": 280, "type": "veg", "desc": ""}]},{"id": "c14", "name": "Continental", "items": [{"id": "i119", "name": "Veg Burger", "price": 120, "type": "veg", "desc": ""},{"id": "i120", "name": "Veg Cheese Burger", "price": 140, "type": "veg", "desc": ""},{"id": "i121", "name": "Veg Sandwich", "price": 120, "type": "veg", "desc": ""},{"id": "i122", "name": "Veg Grilled Sandwich", "price": 140, "type": "veg", "desc": ""},{"id": "i123", "name": "Club Sandwich", "price": 180, "type": "veg", "desc": ""},{"id": "i124", "name": "French Fries", "price": 115, "type": "veg", "desc": ""},{"id": "i125", "name": "Cheese Pizza", "price": 250, "type": "veg", "desc": ""},{"id": "i126", "name": "Farm Veggie Pizza", "price": 280, "type": "veg", "desc": ""},{"id": "i127", "name": "Punjabi Paneer Pizza", "price": 300, "type": "veg", "desc": ""}]},{"id": "c15", "name": "Dessert", "items": [{"id": "i128", "name": "Rasgulla (Plate)", "price": 52, "type": "veg", "desc": ""},{"id": "i129", "name": "Rajbhog (Plate)", "price": 60, "type": "veg", "desc": ""},{"id": "i130", "name": "Rasmalai (Plate)", "price": 90, "type": "veg", "desc": ""},{"id": "i131", "name": "Ice Cream Scoop", "price": 75, "type": "veg", "desc": ""},{"id": "i132", "name": "Single Sundaes", "price": 155, "type": "veg", "desc": ""},{"id": "i133", "name": "Hot Choco Fudge", "price": 160, "type": "veg", "desc": ""},{"id": "i134", "name": "Fruity Sundaes", "price": 160, "type": "veg", "desc": ""}]}]};
+// Pre-load restaurant menu from your uploaded photo
+const restaurantPreload = {"categories": [{"id": "c1", "name": "Soups", "items": [{"id": "i1", "name": "Tomato", "price": 130, "type": "veg", "desc": ""}, {"id": "i2", "name": "Hot and Sour", "price": 140, "type": "veg", "desc": ""}, {"id": "i3", "name": "Sweet Corn", "price": 140, "type": "veg", "desc": ""}, {"id": "i4", "name": "Manchaow", "price": 140, "type": "veg", "desc": ""}]}, {"id": "c2", "name": "Beverages", "items": [{"id": "i5", "name": "Tea", "price": 0, "type": "veg", "desc": ""}, {"id": "i6", "name": "Masala Tea", "price": 60, "type": "veg", "desc": ""}, {"id": "i7", "name": "Green Tea", "price": 50, "type": "veg", "desc": ""}, {"id": "i8", "name": "Hot Coffee", "price": 90, "type": "veg", "desc": ""}, {"id": "i9", "name": "Black Coffee", "price": 0, "type": "veg", "desc": ""}, {"id": "i10", "name": "Cold Coffee", "price": 130, "type": "veg", "desc": ""}, {"id": "i11", "name": "Cold Coffee with Icecream", "price": 180, "type": "veg", "desc": ""}, {"id": "i12", "name": "Lassi (Sweet / Salty)", "price": 70, "type": "veg", "desc": ""}, {"id": "i13", "name": "Buttermilk (Chaach)", "price": 70, "type": "veg", "desc": ""}, {"id": "i14", "name": "Jeera Shikanji", "price": 75, "type": "veg", "desc": ""}, {"id": "i15", "name": "Fresh Lime Soda", "price": 85, "type": "veg", "desc": ""}, {"id": "i16", "name": "Virgin Mojito", "price": 120, "type": "veg", "desc": ""}, {"id": "i17", "name": "Vanilla Shake", "price": 190, "type": "veg", "desc": ""}, {"id": "i18", "name": "Chocolate Shake", "price": 190, "type": "veg", "desc": ""}, {"id": "i19", "name": "Strawberry Shake", "price": 190, "type": "veg", "desc": ""}, {"id": "i20", "name": "Oreo Shake", "price": 190, "type": "veg", "desc": ""}, {"id": "i21", "name": "Bubblem Gum Shake", "price": 190, "type": "veg", "desc": ""}, {"id": "i22", "name": "Aerated Drinks", "price": 0, "type": "veg", "desc": "MRP"}, {"id": "i23", "name": "Mineral Water", "price": 0, "type": "veg", "desc": "MRP"}]}, {"id": "c3", "name": "Chatpati Chaat", "items": [{"id": "i24", "name": "Pani Puri", "price": 60, "type": "veg", "desc": ""}, {"id": "i25", "name": "Dahi Bhalla", "price": 70, "type": "veg", "desc": ""}, {"id": "i26", "name": "Gupchup Chaat", "price": 90, "type": "veg", "desc": ""}, {"id": "i27", "name": "Bhelpuri", "price": 100, "type": "veg", "desc": ""}, {"id": "i28", "name": "Papdi Chaat", "price": 80, "type": "veg", "desc": ""}, {"id": "i29", "name": "Rajkachori", "price": 120, "type": "veg", "desc": ""}, {"id": "i30", "name": "Aloo Tikki", "price": 70, "type": "veg", "desc": "Open 2pm-9pm"}, {"id": "i31", "name": "Pao Bhaji", "price": 140, "type": "veg", "desc": "Open 2pm-9pm"}, {"id": "i32", "name": "Chole Bhature", "price": 180, "type": "veg", "desc": "Open 2pm-9pm"}]}, {"id": "c4", "name": "Indian Mains", "items": [{"id": "i33", "name": "Daal Tadka", "price": 235, "type": "veg", "desc": ""}, {"id": "i34", "name": "Daal Makhani", "price": 295, "type": "veg", "desc": ""}, {"id": "i35", "name": "Daal Punjabi", "price": 295, "type": "veg", "desc": ""}, {"id": "i36", "name": "Aloo Jeera", "price": 235, "type": "veg", "desc": ""}, {"id": "i37", "name": "Mix Veg", "price": 295, "type": "veg", "desc": ""}, {"id": "i38", "name": "Chana Masala", "price": 295, "type": "veg", "desc": ""}, {"id": "i39", "name": "Veg Kolhaputi", "price": 295, "type": "veg", "desc": ""}, {"id": "i40", "name": "Veg Jalfrezi", "price": 295, "type": "veg", "desc": ""}, {"id": "i41", "name": "Veg Jaipuri", "price": 295, "type": "veg", "desc": ""}, {"id": "i42", "name": "Veg Navratan Korma", "price": 295, "type": "veg", "desc": ""}, {"id": "i43", "name": "Matar Mushroom", "price": 335, "type": "veg", "desc": ""}, {"id": "i44", "name": "Shahi Paneer", "price": 355, "type": "veg", "desc": "Chef's Special"}, {"id": "i45", "name": "Kadhai Paneer", "price": 355, "type": "veg", "desc": ""}, {"id": "i46", "name": "Paneer Butter Masala", "price": 355, "type": "veg", "desc": ""}, {"id": "i47", "name": "Paneer Lababdar", "price": 355, "type": "veg", "desc": "Best Seller"}, {"id": "i48", "name": "Angara Paneer", "price": 355, "type": "veg", "desc": ""}, {"id": "i49", "name": "Paneer Kolhapuri", "price": 355, "type": "veg", "desc": ""}, {"id": "i50", "name": "Paneer Do Pyaza", "price": 355, "type": "veg", "desc": ""}, {"id": "i51", "name": "Malai Kotta", "price": 355, "type": "veg", "desc": ""}, {"id": "i52", "name": "Kashmiri Dum Aloo", "price": 355, "type": "veg", "desc": ""}, {"id": "i53", "name": "Punjabi Dum Aloo", "price": 320, "type": "veg", "desc": ""}, {"id": "i54", "name": "Paneer Bhurji", "price": 375, "type": "veg", "desc": ""}]}, {"id": "c_rice", "name": "Rice", "items": [{"id": "r1", "name": "Jeera Rice", "price": 175, "type": "veg", "desc": ""}, {"id": "r2", "name": "Veg Pulao", "price": 215, "type": "veg", "desc": ""}, {"id": "r3", "name": "Veg Dum Biryani", "price": 295, "type": "veg", "desc": ""}]}, {"id": "c5", "name": "Breads", "items": [{"id": "i58", "name": "Tandoori Roti", "price": 25, "type": "veg", "desc": "Closed 5pm-7pm"}, {"id": "i59", "name": "Tandoori Butter Roti", "price": 35, "type": "veg", "desc": ""}, {"id": "i60", "name": "Missi Roti", "price": 55, "type": "veg", "desc": ""}, {"id": "i61", "name": "Plain Naan", "price": 55, "type": "veg", "desc": ""}, {"id": "i62", "name": "Butter Naan", "price": 65, "type": "veg", "desc": ""}, {"id": "i63", "name": "Lachha Paratha", "price": 65, "type": "veg", "desc": ""}, {"id": "i64", "name": "Garlic Naan", "price": 80, "type": "veg", "desc": ""}, {"id": "i65", "name": "Kulcha (Onion / Aloo / Paneer)", "price": 105, "type": "veg", "desc": ""}, {"id": "i66", "name": "Stuff Naan", "price": 0, "type": "veg", "desc": ""}]}, {"id": "c6", "name": "Add-Ons", "items": [{"id": "i67", "name": "Plain Papad", "price": 60, "type": "veg", "desc": ""}, {"id": "i68", "name": "Masala Papad", "price": 100, "type": "veg", "desc": ""}, {"id": "i69", "name": "Green Salad", "price": 99, "type": "veg", "desc": ""}, {"id": "i70", "name": "Boondi Raita", "price": 155, "type": "veg", "desc": ""}, {"id": "i71", "name": "Pineapple Raita", "price": 155, "type": "veg", "desc": ""}, {"id": "i72", "name": "Mix Veg Raita", "price": 155, "type": "veg", "desc": ""}, {"id": "i73", "name": "Tadka Raita", "price": 155, "type": "veg", "desc": ""}]}, {"id": "c7", "name": "South Indian", "items": [{"id": "i74", "name": "Idli Sambhar (4pc)", "price": 160, "type": "veg", "desc": ""}, {"id": "i75", "name": "Vada Sambhar (4pc)", "price": 0, "type": "veg", "desc": ""}, {"id": "i76", "name": "Plain Dosa", "price": 190, "type": "veg", "desc": ""}, {"id": "i77", "name": "Masala Dosa", "price": 210, "type": "veg", "desc": "Best Seller"}, {"id": "i78", "name": "Mysore Masala Dosa", "price": 230, "type": "veg", "desc": ""}, {"id": "i79", "name": "Paneer Cheese Dosa", "price": 270, "type": "veg", "desc": ""}, {"id": "i80", "name": "Jimmy Dosa", "price": 270, "type": "veg", "desc": ""}, {"id": "i81", "name": "Rawa Plain Dosa", "price": 210, "type": "veg", "desc": ""}, {"id": "i82", "name": "Pawa Masala Dosa", "price": 230, "type": "veg", "desc": ""}, {"id": "i83", "name": "Onion Rawa Dosa", "price": 230, "type": "veg", "desc": ""}, {"id": "i84", "name": "Onion Rawa Masala Dosa", "price": 270, "type": "veg", "desc": ""}, {"id": "i85", "name": "Mix Veg Uttapam", "price": 210, "type": "veg", "desc": "Mix Veg, Onion, Tomato"}, {"id": "i86", "name": "South Indian Platter", "price": 360, "type": "veg", "desc": "Vada, Idli, Mini Mix Uttapam, Mini Dosa"}]}, {"id": "c8", "name": "Pasta", "items": [{"id": "i87", "name": "Red Sauce Pasta", "price": 275, "type": "veg", "desc": ""}, {"id": "i88", "name": "White Sauce Pasta", "price": 275, "type": "veg", "desc": ""}, {"id": "i89", "name": "Pink Sauce Pasta", "price": 275, "type": "veg", "desc": ""}]}, {"id": "c9", "name": "Sizzler", "items": [{"id": "i90", "name": "Vegetable Sizzler", "price": 390, "type": "veg", "desc": ""}, {"id": "i91", "name": "Chinese Sizzler", "price": 390, "type": "veg", "desc": ""}]}, {"id": "c10", "name": "Tandoori Snacks", "items": [{"id": "i92", "name": "Veg Seekh Kabab", "price": 250, "type": "veg", "desc": "Closed 5pm-7pm"}, {"id": "i93", "name": "Veg Cutlet", "price": 250, "type": "veg", "desc": ""}, {"id": "i94", "name": "Dahi Ke Cutlet", "price": 250, "type": "veg", "desc": ""}, {"id": "i95", "name": "Tandoori Stuff Aloo", "price": 250, "type": "veg", "desc": ""}, {"id": "i96", "name": "Tandoori Paneer Tikka", "price": 295, "type": "veg", "desc": ""}, {"id": "i97", "name": "Malai Paneer Tikka", "price": 295, "type": "veg", "desc": ""}, {"id": "i98", "name": "Mushroom Tikka", "price": 295, "type": "veg", "desc": ""}, {"id": "i99", "name": "Tandoori Platter", "price": 370, "type": "veg", "desc": "Tandoori Stuff Aloo, Paneer Tikka, Mushroom Tikka, Veg Seekh Kabab"}]}, {"id": "c11", "name": "Mini Meals", "items": [{"id": "i100", "name": "Daal Makhani + Rice / Baby Naan", "price": 220, "type": "veg", "desc": ""}, {"id": "i101", "name": "Amritsari Kulcha + Chole", "price": 225, "type": "veg", "desc": ""}, {"id": "i102", "name": "Shahi Paneer + Jeera Rice / Baby Naan", "price": 240, "type": "veg", "desc": ""}, {"id": "i103", "name": "Chilly Paneer + Fried Rice / Noodle", "price": 250, "type": "veg", "desc": ""}, {"id": "i104", "name": "Manchurian + Fried Rice / Noodle", "price": 250, "type": "veg", "desc": ""}, {"id": "i105", "name": "Veg Biryani + Boondi Raita", "price": 295, "type": "veg", "desc": ""}]}, {"id": "c12", "name": "Thali", "items": [{"id": "i106", "name": "Deluxe Thali", "price": 295, "type": "veg", "desc": "Daal, Shahi Paneer, Tandoori Roti, Rice, Salad, Pickle, Sweet"}, {"id": "i107", "name": "Special Thali", "price": 375, "type": "veg", "desc": "Daal, Shahi Paneer, Mix Vegetable, 1 Baby Naan, 1 Baby Lachha Paratha, Rice, Salad, Raita, Pickle, Papad, Sweet"}, {"id": "i108", "name": "Shahi Thali", "price": 475, "type": "veg", "desc": "Daal, Shahi Paneer, Mix Vegetable, Kofta, 1 Baby Naan, 1 Baby Lachha Paratha, Rice, Salad, Raita, Pickle, Papad, Fresh Lime Soda, Sweet"}]}, {"id": "c13", "name": "Chinese", "items": [{"id": "i109", "name": "Spring Roll", "price": 215, "type": "veg", "desc": ""}, {"id": "i110", "name": "Honey Chilly Potato", "price": 215, "type": "veg", "desc": ""}, {"id": "i111", "name": "Chowmein", "price": 215, "type": "veg", "desc": ""}, {"id": "i112", "name": "Hakka Noodles", "price": 240, "type": "veg", "desc": ""}, {"id": "i113", "name": "Chilly Garlic Noodle", "price": 240, "type": "veg", "desc": ""}, {"id": "i114", "name": "Manchurian Dry / Gravy", "price": 260, "type": "veg", "desc": ""}, {"id": "i115", "name": "Veg Fried Rice", "price": 195, "type": "veg", "desc": ""}, {"id": "i116", "name": "Crispy Corn", "price": 260, "type": "veg", "desc": ""}, {"id": "i117", "name": "Chilly Paneer Dry / Gravy", "price": 280, "type": "veg", "desc": ""}, {"id": "i118", "name": "Chilly Mushroom", "price": 280, "type": "veg", "desc": ""}]}, {"id": "c14", "name": "Continental", "items": [{"id": "i119", "name": "Veg Burger", "price": 120, "type": "veg", "desc": ""}, {"id": "i120", "name": "Veg Cheese Burger", "price": 140, "type": "veg", "desc": ""}, {"id": "i121", "name": "Veg Sandwich", "price": 120, "type": "veg", "desc": ""}, {"id": "i122", "name": "Veg Grilled Sandwich", "price": 140, "type": "veg", "desc": ""}, {"id": "i123", "name": "Club Sandwich", "price": 180, "type": "veg", "desc": ""}, {"id": "i124", "name": "French Fries", "price": 115, "type": "veg", "desc": ""}, {"id": "i125", "name": "Cheese Pizza", "price": 250, "type": "veg", "desc": ""}, {"id": "i126", "name": "Farm Veggie Pizza", "price": 280, "type": "veg", "desc": ""}, {"id": "i127", "name": "Punjabi Paneer Pizza", "price": 300, "type": "veg", "desc": ""}]}, {"id": "c15", "name": "Dessert", "items": [{"id": "i128", "name": "Rasgulla (Plate)", "price": 52, "type": "veg", "desc": ""}, {"id": "i129", "name": "Rajbhog (Plate)", "price": 60, "type": "veg", "desc": ""}, {"id": "i130", "name": "Rasmalai (Plate)", "price": 90, "type": "veg", "desc": ""}, {"id": "i131", "name": "Ice Cream Scoop", "price": 75, "type": "veg", "desc": ""}, {"id": "i132", "name": "Single Sundaes", "price": 155, "type": "veg", "desc": ""}, {"id": "i133", "name": "Hot Choco Fudge", "price": 160, "type": "veg", "desc": ""}, {"id": "i134", "name": "Fruity Sundaes", "price": 160, "type": "veg", "desc": ""}]}]};
 
+// LOAD / SAVE
 async function loadData(){
+  // ALWAYS load from server first — this ensures all devices see same menu
   try{
-    const r=await fetch('/api/menu',{cache:'no-store'});
+    const r = await fetch('/api/menu', {cache:'no-store'});
     if(r.ok){
-      const data=await r.json();
-      // NEW format: {menuList:[...], menus:{...}}
-      if(data.menuList && data.menus){
-        menuList=data.menuList;
-        allMenus=data.menus;
-        showServerStatus('ok', data.menuList.length);
-        return;
-      }
-      // OLD format: {restaurant:{...}, banquet:{...}, chaat:{...}}
-      // Migrate it - keep the menu data, use default menuList
-      if(data.restaurant || data.banquet || data.chaat){
-        allMenus = data;
-        // menuList stays as default
-        showServerStatus('old');
-        return;
-      }
+      const data = await r.json();
+      const hasData = Object.values(data).some(m=>m.categories&&m.categories.length>0);
+      if(hasData){ allMenus=data; return; }
     }
-  }catch(e){console.log('Server load failed:',e);showServerStatus('error');}
-  // Try localStorage
+  }catch(e){ console.log('Server load failed:', e); }
+  // Fallback: localStorage
   try{
     const s=localStorage.getItem(STORE_KEY);
-    if(s){
-      const p=JSON.parse(s);
-      if(p.menuList && p.menus){menuList=p.menuList;allMenus=p.menus;return;}
-      if(p.restaurant || p.banquet || p.chaat){allMenus=p;return;}
-    }
+    if(s){ allMenus=JSON.parse(s); return; }
   }catch(e){}
-  // Only use preload as last resort - NEVER overwrite existing server data
-  allMenus.restaurant=restaurantPreload;
-  // Don't auto-save - let user explicitly save
+  // Last resort: preload
+  allMenus.restaurant = restaurantPreload;
+  await saveData();
 }
 async function saveData(){
-  const payload={menuList, menus:allMenus};
-  try{await fetch('/api/menu',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});}catch(e){console.log('Server save failed:',e);}
-  try{localStorage.setItem(STORE_KEY,JSON.stringify(payload));}catch(e){}
+  // Save to server
+  try{
+    await fetch('/api/menu',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({menus:allMenus})
+    });
+  }catch(e){ console.log('Server save failed:',e); }
+  // Also localStorage as backup
+  try{ localStorage.setItem(STORE_KEY,JSON.stringify(allMenus)); }catch(e){}
 }
 
+// VIEW
 function switchView(v,btn){
   document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
   document.querySelectorAll('.tb-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('view-'+v).classList.add('active');
   btn.classList.add('active');
-  if(v==='customer') renderCustomerPreview();
+  if(v==='customer') renderCustomer();
   window.scrollTo({top:0,behavior:'smooth'});
 }
-function renderCustomerPreview(){
-  // Preview uses currentMenu selected in admin
-  const orig=new URLSearchParams(window.location.search).get('menu');
-  // Temporarily override menuParam for renderCustomer
-  window._previewMenu=currentMenu;
-  renderCustomer();
-  window._previewMenu=null;
-}
 
-function selectMenu(type,btn){
-  currentMenu=type;
-  const menuDef=menuList.find(m=>m.id===type)||{name:type,icon:'🍽'};
+// MENU SELECTION
+function selectMenu(type, btn){
+  currentMenu = type;
   document.querySelectorAll('.menu-sel-btn').forEach(b=>b.classList.remove('active'));
-  if(btn)btn.classList.add('active');
-  document.getElementById('upload-sec-title').textContent='📸 Upload '+menuDef.name+' Menu';
-  document.getElementById('editor-title').textContent='Edit '+menuDef.name+' Menu';
-  if(!allMenus[type])allMenus[type]={categories:[]};
-  const cats=allMenus[type].categories;
-  if(cats.length>0){
+  btn.classList.add('active');
+  document.getElementById('upload-sec-title').textContent = '📸 Upload ' + MENU_NAMES[type] + ' Menu';
+  document.getElementById('editor-title').textContent = 'Edit ' + MENU_NAMES[type] + ' Menu';
+
+  const cats = allMenus[type].categories;
+  if(cats.length > 0){
     document.getElementById('editor-wrap').classList.add('show');
     document.getElementById('success-card').classList.add('show');
-    const total=cats.reduce((s,c)=>s+c.items.length,0);
-    document.getElementById('success-detail').textContent=total+' items across '+cats.length+' categories';
+    const total = cats.reduce((s,c)=>s+c.items.length,0);
+    document.getElementById('success-detail').textContent = total + ' items across ' + cats.length + ' categories';
     renderAdminCats();
-  }else{
+  } else {
     document.getElementById('editor-wrap').classList.remove('show');
     document.getElementById('success-card').classList.remove('show');
   }
   document.getElementById('scan-card').classList.remove('show');
-  document.getElementById('banner-section').style.display='block';
-  const meta=menuList.find(m=>m.id===currentMenu)||{};
-  document.getElementById('edit-restname').value=meta.restname||'';
-  document.getElementById('edit-address').value=meta.address||'';
-  document.getElementById('edit-phone').value=meta.phone||'';
-  const hasBanner=!!(allMenus[currentMenu]?.banner);
-  document.getElementById('banner-set-indicator').style.display=hasBanner?'block':'none';
-  document.getElementById('banner-preview').style.display='none';
-  document.getElementById('crop-actions').style.display='none';
-  if(allMenus[currentMenu]?.theme) showThemeSuggestion(allMenus[currentMenu].theme);
-  else document.getElementById('theme-panel').style.display='none';
 }
 
-function renderMenuSelector(){
-  const grid=document.getElementById('menu-selector-grid');
-  if(!grid)return;
-  grid.innerHTML='';
-  menuList.forEach((m,i)=>{
-    const cats=allMenus[m.id]?.categories||[];
-    const total=cats.reduce((s,c)=>s+c.items.length,0);
-    const isActive=m.id===currentMenu;
-    const btn=document.createElement('div');
-    btn.className='menu-sel-btn'+(isActive?' active':'');
-    btn.innerHTML=`<span class="menu-sel-icon">${m.icon}</span>
-      <span class="menu-sel-name">${m.name}</span>
-      <span class="menu-sel-count">${total>0?total+' items · '+cats.length+' cat':'No items yet'}</span>
-      <span class="menu-sel-status ${total>0?'status-live':'status-empty'}">${total>0?'✓ Live':'○ Empty'}</span>
-      ${menuList.length>1?`<span onclick="event.stopPropagation();deleteMenu('${m.id}')" style="font-size:0.6rem;color:var(--red);margin-top:0.3rem;cursor:pointer;display:block">🗑 Remove</span>`:''}`;
-    btn.onclick=()=>selectMenu(m.id,btn);
-    grid.appendChild(btn);
-  });
-}
-
-function renderQRGrid(){
-  const grid=document.getElementById('qr-grid-dynamic');
-  if(!grid)return;
-  grid.innerHTML='';
-  menuList.forEach(m=>{
-    const cats=allMenus[m.id]?.categories||[];
-    const total=cats.reduce((s,c)=>s+c.items.length,0);
-    const card=document.createElement('div');
-    card.className='qr-card';
-    card.innerHTML=`<div class="qr-card-title">${m.icon} ${m.name}</div>
-      <div class="qr-canvas-wrap"><canvas id="qr-${m.id}" width="120" height="120"></canvas></div>
-      <button class="qr-dl-btn" onclick="downloadQR('${m.id}','${m.name}')">⬇ Download QR</button>
-      <span class="qr-status">${total>0?'✓ '+total+' items ready':'○ No menu yet'}</span>`;
-    grid.appendChild(card);
-    // generate QR
-    setTimeout(()=>{
-      new QRious({element:document.getElementById('qr-'+m.id),value:BASE_URL+'/?menu='+m.id,size:120,foreground:'#0D2744',background:'#FFFFFF',level:'M'});
-    },50);
-  });
-}
-
+// UPDATE SELECTOR COUNTS
 function updateCounts(){
-  renderMenuSelector();
-  renderQRGrid();
+  ['restaurant','banquet','chaat'].forEach(type=>{
+    const cats = allMenus[type].categories;
+    const total = cats.reduce((s,c)=>s+c.items.length,0);
+    const countEl = document.getElementById('count-'+type);
+    const statusEl = document.getElementById('sel-status-'+type);
+    if(total > 0){
+      countEl.textContent = total + ' items · ' + cats.length + ' categories';
+      statusEl.textContent = '✓ Live';
+      statusEl.className = 'menu-sel-status status-live';
+    } else {
+      countEl.textContent = 'No items yet';
+      statusEl.textContent = '○ Empty';
+      statusEl.className = 'menu-sel-status status-empty';
+    }
+    // Update QR status
+    const qrEl = document.getElementById('qrstatus-'+type);
+    if(qrEl) qrEl.textContent = total > 0 ? '✓ ' + total + ' items ready' : '○ No menu yet';
+  });
 }
 
-// Add/Delete menu
-function openAddMenuModal(){
-  document.getElementById('f-menu-name').value='';
-  document.getElementById('f-menu-icon').value='🍽';
-  document.getElementById('add-menu-modal').classList.add('show');
-}
-function closeAddMenuModal(){document.getElementById('add-menu-modal').classList.remove('show');}
-function saveNewMenu(){
-  const name=document.getElementById('f-menu-name').value.trim();
-  const icon=document.getElementById('f-menu-icon').value.trim()||'🍽';
-  if(!name){toast('⚠ Enter a menu name');return;}
-  const id='menu_'+Date.now();
-  const restname=document.getElementById('f-menu-restname').value.trim()||name;
-  const address=document.getElementById('f-menu-address').value.trim();
-  const phone=document.getElementById('f-menu-phone').value.trim();
-  menuList.push({id,name,icon,restname,address,phone});
-  allMenus[id]={categories:[]};
-  saveData();
-  renderMenuSelector();
-  renderQRGrid();
-  closeAddMenuModal();
-  toast('✅ "'+name+'" menu created!');
-}
-function deleteMenu(id){
-  if(menuList.length<=1){toast('⚠ Cannot delete the only menu');return;}
-  if(!confirm('Delete this menu and all its items?'))return;
-  menuList=menuList.filter(m=>m.id!==id);
-  delete allMenus[id];
-  if(currentMenu===id)currentMenu=menuList[0].id;
-  saveData();renderMenuSelector();renderQRGrid();
-  toast('🗑 Menu deleted');
-}
-
-function handleDrop(e){const files=Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith("image/"));if(files.length)processFile(files);}
-function handleUpload(input){const files=Array.from(input.files);if(files.length)processFile(files);input.value='';}
+// AI UPLOAD
+function handleDrop(e){ const files=Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith("image/")); if(files.length) processFile(files); }
+function handleUpload(input){ const files=Array.from(input.files); if(files.length) processFile(files); input.value=''; }
 
 async function processFile(files){
-  if(!Array.isArray(files))files=[files];
-  files=files.slice(0,2);
-  allMenus[currentMenu]={categories:[]};
+  // Support single file or array of files
+  if (!Array.isArray(files)) files = [files];
+  files = files.slice(0, 2); // max 2 images
+
+  // Clear current menu for this type before scanning
+  allMenus[currentMenu] = { categories: [] };
+
   document.getElementById('scan-card').classList.add('show');
   document.getElementById('success-card').classList.remove('show');
   document.getElementById('editor-wrap').classList.remove('show');
-  document.getElementById('cat-tabs').innerHTML='';
-  document.getElementById('cat-panels').innerHTML='';
-  const fill=document.getElementById('scan-fill');
-  const sub=document.getElementById('scan-sub');
-  const title=document.getElementById('scan-title');
-  title.textContent='AI is Reading Your '+MENU_NAMES[currentMenu]+' Menu...';
-  const steps=['Reading menu image...','Identifying categories...','Extracting menu items...','Reading prices...','Building digital menu...'];
-  let prog=0,stepIdx=0;
-  const iv=setInterval(()=>{
-    prog=Math.min(prog+Math.random()*12,88);
-    fill.style.width=prog+'%';
-    if(stepIdx<steps.length&&prog>stepIdx*18){sub.textContent=steps[stepIdx++];}
-  },300);
+  document.getElementById('cat-tabs').innerHTML = '';
+  document.getElementById('cat-panels').innerHTML = '';
+
+  const fill = document.getElementById('scan-fill');
+  const sub  = document.getElementById('scan-sub');
+  const title = document.getElementById('scan-title');
+  const sideText = files.length > 1 ? ' ('+files.length+' sides)' : '';
+  title.textContent = 'AI is Reading Your ' + MENU_NAMES[currentMenu] + ' Menu' + sideText + '...';
+
+  const steps = files.length > 1
+    ? ['Reading side 1...','Reading side 2...','Combining all items...','Extracting prices...','Building digital menu...']
+    : ['Reading menu image...','Identifying categories...','Extracting menu items...','Reading prices...','Building digital menu...'];
+  let prog=0, stepIdx=0;
+  const iv = setInterval(()=>{
+    prog = Math.min(prog + Math.random()*12, 88);
+    fill.style.width = prog+'%';
+    if(stepIdx < steps.length && prog > stepIdx*18){ sub.textContent = steps[stepIdx++]; }
+  }, 300);
+
   try{
-    const images=await Promise.all(files.map(async f=>{
-      const result=await fileToBase64(f);
-      // fileToBase64 returns {base64, mediaType} or string
-      if(typeof result==='object') return result;
-      return {base64:result, mediaType:'image/jpeg'};
-    }));
-    const response=await fetch('/api/scan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({images:images})});
-    if(!response.ok){
-      const errText=await response.text();
-      if(response.status===504) throw new Error('Scan timed out — try a smaller/clearer photo');
-      throw new Error('Server error '+response.status);
-    }
-    const result=await response.json();
-    console.log('API response:', JSON.stringify(result).substring(0,500));
-    clearInterval(iv);fill.style.width='100%';
-    let parsed=null;
-    if(result.content&&result.content[0]){
-      const text=result.content[0].text;
-      try{
-        // Direct parse first
-        parsed=JSON.parse(text);
-      }catch(e1){
-        try{
-          // Extract JSON block
-          const jsonMatch=text.match(/\{[\s\S]*\}/);
-          if(jsonMatch) parsed=JSON.parse(jsonMatch[0]);
-        }catch(e2){
-          try{
+    // Convert all files to base64
+    const images = await Promise.all(files.map(async f => ({
+      base64: await fileToBase64(f),
+      mediaType: f.type || 'image/jpeg'
+    })));
+
+    const response = await fetch('/api/scan', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ images: images })
+    });
+
+    const result = await response.json();
+    clearInterval(iv);
+    fill.style.width='100%';
+
+    let parsed = null;
+
+    // Try multiple ways to extract JSON from response
+    if(result.content && result.content[0]){
+      const text = result.content[0].text;
+      console.log('AI Response:', text.substring(0, 200));
+
+      // Method 1: direct JSON match
+      try {
+        const jsonMatch = text.match(/\{[\s\S]*\}/);
+        if(jsonMatch) parsed = JSON.parse(jsonMatch[0]);
+      } catch(e1) {
+        // Method 2: find categories array specifically
+        try {
+          const catMatch = text.match(/"categories"\s*:\s*\[/);
+          if(catMatch) {
+            const start = text.indexOf('{');
+            let jsonStr = text.substring(start);
             // Fix truncated JSON
-            const start=text.indexOf('{');
-            let jsonStr=text.substring(start);
-            jsonStr=jsonStr.replace(/,\s*$/,'').replace(/,\s*\]/,']').replace(/,\s*\}/,'}');
-            let opens=(jsonStr.match(/\[/g)||[]).length-(jsonStr.match(/\]/g)||[]).length;
-            let braces=(jsonStr.match(/\{/g)||[]).length-(jsonStr.match(/\}/g)||[]).length;
-            for(let i=0;i<opens;i++)jsonStr+=']';
-            for(let i=0;i<braces;i++)jsonStr+='}';
-            // Try fixing truncated JSON
-            let j2=jsonStr.replace(/,\s*"[^"]*":\s*$/,'').replace(/,\s*$/,'');
-            let op=(j2.match(/\[/g)||[]).length-(j2.match(/\]/g)||[]).length;
-            let ob=(j2.match(/\{/g)||[]).length-(j2.match(/\}/g)||[]).length;
-            for(let i=0;i<op;i++)j2+=']';
-            for(let i=0;i<ob;i++)j2+='}';
-          try{parsed=JSON.parse(j2);}catch(e3){console.log('Parse error:',e3.message);}
-          }catch(e2){}
-        }catch(e1){}
+            jsonStr = jsonStr.replace(/,\s*$/, '').replace(/,\s*\]/, ']').replace(/,\s*\}/, '}');
+            let opens = (jsonStr.match(/\[/g)||[]).length - (jsonStr.match(/\]/g)||[]).length;
+            let openBraces = (jsonStr.match(/\{/g)||[]).length - (jsonStr.match(/\}/g)||[]).length;
+            for(let i=0;i<opens;i++) jsonStr += ']';
+            for(let i=0;i<openBraces;i++) jsonStr += '}';
+            parsed = JSON.parse(jsonStr);
+          }
+        } catch(e2) {
+          console.log('Parse error:', e2.message);
+        }
+      }
+    } else if(result.error) {
+      throw new Error('API Error: ' + result.error.message || JSON.stringify(result.error));
     }
-    if(parsed&&parsed.categories&&parsed.categories.length>0){
-      allMenus[currentMenu]=parsed;
-      const total=parsed.categories.reduce((s,c)=>s+c.items.length,0);
-      setTimeout(async()=>{
+
+    if(parsed && parsed.categories && parsed.categories.length > 0){
+      allMenus[currentMenu] = parsed;
+      const total = parsed.categories.reduce((s,c)=>s+c.items.length,0);
+      setTimeout(async ()=>{
         document.getElementById('scan-card').classList.remove('show');
         document.getElementById('success-card').classList.add('show');
-        document.getElementById('success-detail').textContent=total+' items found across '+parsed.categories.length+' categories!';
+        document.getElementById('success-detail').textContent = total + ' items found across ' + parsed.categories.length + ' categories!';
         document.getElementById('editor-wrap').classList.add('show');
-        renderAdminCats();updateCounts();await saveData();
-        toast('✅ '+MENU_NAMES[currentMenu]+' menu saved! '+total+' items found.');
-      },500);return;
+        renderAdminCats();
+        updateCounts();
+        await saveData();
+        toast('✅ ' + MENU_NAMES[currentMenu] + ' menu saved! ' + total + ' items found.');
+      }, 500);
+      return;
     }
-if(!parsed) throw new Error('No menu data found.');
+    throw new Error('No menu data found. Please try a clearer photo.');
   }catch(e){
     clearInterval(iv);
     document.getElementById('scan-card').classList.remove('show');
-    if(allMenus[currentMenu].categories.length>0){document.getElementById('editor-wrap').classList.add('show');renderAdminCats();toast('⚠ Could not scan. Showing existing menu.');}
-    else toast('⚠ Could not read menu. Try a clearer photo.');
+    if(allMenus[currentMenu].categories.length > 0){
+      document.getElementById('editor-wrap').classList.add('show');
+      renderAdminCats();
+      toast('⚠ Could not scan. Showing existing menu.');
+    } else {
+      toast('⚠ Could not read menu. Try a clearer photo.');
+    }
     console.error(e);
   }
 }
 
 function fileToBase64(file){
   return new Promise((res,rej)=>{
-    const reader=new FileReader();
-    reader.onload=e=>{
-      const img=new Image();
-      img.onload=()=>{
-        const MAX=1200;
-        let w=img.width, h=img.height;
-        if(w>MAX||h>MAX){
-          if(w>h){h=Math.round(h*MAX/w);w=MAX;}
-          else{w=Math.round(w*MAX/h);h=MAX;}
-        }
-        const canvas=document.createElement('canvas');
-        canvas.width=w; canvas.height=h;
-        canvas.getContext('2d').drawImage(img,0,0,w,h);
-        // Always output as jpeg
-        const dataUrl=canvas.toDataURL('image/jpeg',0.75);
-        res({base64:dataUrl.split(',')[1], mediaType:'image/jpeg'});
-      };
-      img.onerror=rej;
-      img.src=e.target.result;
-    };
-    reader.onerror=rej;
-    reader.readAsDataURL(file);
+    const r=new FileReader();
+    r.onload=e=>res(e.target.result.split(',')[1]);
+    r.onerror=rej;
+    r.readAsDataURL(file);
   });
 }
 
+// ADMIN RENDER
 function renderAdminCats(){
-  const cats=allMenus[currentMenu].categories;
-  const tabsEl=document.getElementById('cat-tabs');
-  const panelsEl=document.getElementById('cat-panels');
-  tabsEl.innerHTML='';panelsEl.innerHTML='';
-  if(!cats.length){panelsEl.innerHTML='<div style="text-align:center;padding:1.5rem;color:var(--muted);font-size:0.78rem">No categories yet.</div>';return;}
+  const cats = allMenus[currentMenu].categories;
+  const tabsEl   = document.getElementById('cat-tabs');
+  const panelsEl = document.getElementById('cat-panels');
+  tabsEl.innerHTML=''; panelsEl.innerHTML='';
+
+  if(!cats.length){
+    panelsEl.innerHTML='<div style="text-align:center;padding:1.5rem;color:var(--muted);font-size:0.78rem">No categories yet. Upload a menu photo or click "+ Add Category"</div>';
+    return;
+  }
+
   cats.forEach((cat,ci)=>{
     const tb=document.createElement('button');
     tb.className='admin-tab'+(ci===0?' active':'');
     tb.textContent=cat.name.split('(')[0].trim();
-    tb.onclick=()=>{tabsEl.querySelectorAll('.admin-tab').forEach(b=>b.classList.remove('active'));tb.classList.add('active');panelsEl.querySelectorAll('.cat-panel').forEach(p=>p.classList.remove('active'));document.getElementById('apanel-'+cat.id).classList.add('active');};
+    tb.onclick=()=>{
+      tabsEl.querySelectorAll('.admin-tab').forEach(b=>b.classList.remove('active'));
+      tb.classList.add('active');
+      panelsEl.querySelectorAll('.cat-panel').forEach(p=>p.classList.remove('active'));
+      document.getElementById('apanel-'+cat.id).classList.add('active');
+    };
     tabsEl.appendChild(tb);
+
     const panel=document.createElement('div');
     panel.className='cat-panel'+(ci===0?' active':'');
     panel.id='apanel-'+cat.id;
-    panel.innerHTML=`<div class="cat-header-row"><input class="cat-name-input" value="${cat.name}" id="cname-${cat.id}"><button class="btn-rename" onclick="renameCat('${cat.id}')">✓ Rename</button><button class="btn-delete-cat" onclick="deleteCat('${cat.id}')">🗑 Delete</button></div><div class="item-list" id="alist-${cat.id}">${cat.items.map(item=>renderAdminItem(cat.id,item)).join('')}</div><button class="add-item-btn" onclick="openAddItem('${cat.id}')">+ Add Item to ${cat.name.split('(')[0].trim()}</button>`;
+    panel.innerHTML=`
+      <div class="cat-header-row">
+        <input class="cat-name-input" value="${cat.name}" id="cname-${cat.id}">
+        <button class="btn-rename" onclick="renameCat('${cat.id}')">✓ Rename</button>
+        <button class="btn-delete-cat" onclick="deleteCat('${cat.id}')">🗑 Delete</button>
+      </div>
+      <div class="item-list" id="alist-${cat.id}">
+        ${cat.items.map(item=>renderAdminItem(cat.id,item)).join('')}
+      </div>
+      <button class="add-item-btn" onclick="openAddItem('${cat.id}')">+ Add Item to ${cat.name.split('(')[0].trim()}</button>`;
     panelsEl.appendChild(panel);
   });
 }
 
 function renderAdminItem(catId,item){
   const dc=item.type==='nonveg'?'nonveg':'veg';
-  return `<div class="admin-item" id="ai-${item.id}"><div class="vdot ${dc}"></div><div class="admin-item-info"><div class="admin-item-name">${item.name}</div>${item.desc?`<div class="admin-item-desc">${item.desc}</div>`:''}</div><div class="admin-item-price">${item.price>0?'₹'+item.price:'Incl.'}</div><div class="item-actions"><button class="btn-edit" onclick="openEditItem('${catId}','${item.id}')">✏</button><button class="btn-del" onclick="deleteItem('${catId}','${item.id}')">🗑</button></div></div>`;
+  return `<div class="admin-item" id="ai-${item.id}">
+    <div class="vdot ${dc}"></div>
+    <div class="admin-item-info">
+      <div class="admin-item-name">${item.name}</div>
+      ${item.desc?`<div class="admin-item-desc">${item.desc}</div>`:''}
+    </div>
+    <div class="admin-item-price">${item.price>0?'₹'+item.price:'Incl.'}</div>
+    <div class="item-actions">
+      <button class="btn-edit" onclick="openEditItem('${catId}','${item.id}')">✏</button>
+      <button class="btn-del" onclick="deleteItem('${catId}','${item.id}')">🗑</button>
+    </div>
+  </div>`;
 }
 
-function addCategory(){document.getElementById('f-cat-name').value='';document.getElementById('cat-modal').classList.add('show');}
-function renameCat(catId){const val=document.getElementById('cname-'+catId).value.trim();if(!val)return;const cat=allMenus[currentMenu].categories.find(c=>c.id===catId);if(cat){cat.name=val;saveData();renderAdminCats();toast('✓ Renamed!');}}
-function deleteCat(catId){if(!confirm('Delete this category and all its items?'))return;allMenus[currentMenu].categories=allMenus[currentMenu].categories.filter(c=>c.id!==catId);saveData();renderAdminCats();updateCounts();toast('🗑 Deleted');}
-function saveCatName(){const name=document.getElementById('f-cat-name').value.trim();if(!name){toast('⚠ Enter a name');return;}allMenus[currentMenu].categories.push({id:'cat_'+Date.now(),name,items:[]});saveData();renderAdminCats();updateCounts();closeCatModal();toast('✓ Category added!');}
+// CATEGORY ACTIONS
+function addCategory(){
+  document.getElementById('f-cat-name').value='';
+  document.getElementById('cat-modal').classList.add('show');
+}
+function renameCat(catId){
+  const val=document.getElementById('cname-'+catId).value.trim();
+  if(!val)return;
+  const cat=allMenus[currentMenu].categories.find(c=>c.id===catId);
+  if(cat){cat.name=val;saveData();renderAdminCats();toast('✓ Renamed!');}
+}
+function deleteCat(catId){
+  if(!confirm('Delete this category and all its items?'))return;
+  allMenus[currentMenu].categories=allMenus[currentMenu].categories.filter(c=>c.id!==catId);
+  saveData();renderAdminCats();updateCounts();toast('🗑 Deleted');
+}
+function saveCatName(){
+  const name=document.getElementById('f-cat-name').value.trim();
+  if(!name){toast('⚠ Enter a name');return;}
+  allMenus[currentMenu].categories.push({id:'cat_'+Date.now(),name,items:[]});
+  saveData();renderAdminCats();updateCounts();closeCatModal();toast('✓ Category added!');
+}
 function closeCatModal(){document.getElementById('cat-modal').classList.remove('show');}
-function openAddItem(catId){editingItem={catId,itemId:null};document.getElementById('modal-title').textContent='Add Item';document.getElementById('f-name').value='';document.getElementById('f-price').value='';document.getElementById('f-desc').value='';document.getElementById('f-type').value='veg';document.getElementById('item-modal').classList.add('show');}
-function openEditItem(catId,itemId){editingItem={catId,itemId};const cat=allMenus[currentMenu].categories.find(c=>c.id===catId);const item=cat.items.find(i=>i.id===itemId);document.getElementById('modal-title').textContent='Edit Item';document.getElementById('f-name').value=item.name;document.getElementById('f-price').value=item.price||'';document.getElementById('f-desc').value=item.desc||'';document.getElementById('f-type').value=item.type||'veg';document.getElementById('item-modal').classList.add('show');}
-function saveItem(){const name=document.getElementById('f-name').value.trim();const price=parseInt(document.getElementById('f-price').value)||0;const desc=document.getElementById('f-desc').value.trim();const type=document.getElementById('f-type').value;if(!name){toast('⚠ Name required');return;}const cat=allMenus[currentMenu].categories.find(c=>c.id===editingItem.catId);if(editingItem.itemId){const item=cat.items.find(i=>i.id===editingItem.itemId);Object.assign(item,{name,price,desc,type});toast('✓ Updated!');}else{cat.items.push({id:'item_'+Date.now(),name,price,desc,type});toast('✓ Added!');}saveData();renderAdminCats();updateCounts();closeModal();showSaveBar();}
-function deleteItem(catId,itemId){if(!confirm('Delete this item?'))return;const cat=allMenus[currentMenu].categories.find(c=>c.id===catId);cat.items=cat.items.filter(i=>i.id!==itemId);saveData();renderAdminCats();updateCounts();toast('🗑 Deleted');}
+
+// ITEM ACTIONS
+function openAddItem(catId){
+  editingItem={catId,itemId:null};
+  document.getElementById('modal-title').textContent='Add Item';
+  document.getElementById('f-name').value='';
+  document.getElementById('f-price').value='';
+  document.getElementById('f-desc').value='';
+  document.getElementById('f-type').value='veg';
+  document.getElementById('item-modal').classList.add('show');
+}
+function openEditItem(catId,itemId){
+  editingItem={catId,itemId};
+  const cat=allMenus[currentMenu].categories.find(c=>c.id===catId);
+  const item=cat.items.find(i=>i.id===itemId);
+  document.getElementById('modal-title').textContent='Edit Item';
+  document.getElementById('f-name').value=item.name;
+  document.getElementById('f-price').value=item.price||'';
+  document.getElementById('f-desc').value=item.desc||'';
+  document.getElementById('f-type').value=item.type||'veg';
+  document.getElementById('item-modal').classList.add('show');
+}
+function saveItem(){
+  const name=document.getElementById('f-name').value.trim();
+  const price=parseInt(document.getElementById('f-price').value)||0;
+  const desc=document.getElementById('f-desc').value.trim();
+  const type=document.getElementById('f-type').value;
+  if(!name){toast('⚠ Name required');return;}
+  const cat=allMenus[currentMenu].categories.find(c=>c.id===editingItem.catId);
+  if(editingItem.itemId){
+    const item=cat.items.find(i=>i.id===editingItem.itemId);
+    Object.assign(item,{name,price,desc,type});toast('✓ Updated!');
+  }else{
+    cat.items.push({id:'item_'+Date.now(),name,price,desc,type});toast('✓ Added!');
+  }
+  saveData();renderAdminCats();updateCounts();closeModal();showSaveBar();
+}
+function deleteItem(catId,itemId){
+  if(!confirm('Delete this item?'))return;
+  const cat=allMenus[currentMenu].categories.find(c=>c.id===catId);
+  cat.items=cat.items.filter(i=>i.id!==itemId);
+  saveData();renderAdminCats();updateCounts();toast('🗑 Deleted');
+}
 function closeModal(){document.getElementById('item-modal').classList.remove('show');}
 
+// CUSTOMER RENDER
 function renderCustomer(){
   const params=new URLSearchParams(window.location.search);
-  const menuType=window._previewMenu||params.get('menu')||'restaurant';
+  const menuType=params.get('menu')||'restaurant';
   const cats=allMenus[menuType]?.categories||[];
   const tabsEl=document.getElementById('cust-cat-nav');
   const contentEl=document.getElementById('cust-content');
   tabsEl.innerHTML='';contentEl.innerHTML='';
-  document.getElementById('active-cat-name').innerHTML='🏠 &nbsp;HOME';
-  applyMenuTheme(menuType);
-  const menuMeta=menuList.find(m=>m.id===menuType)||{restname:'Kunjilal Food House',address:'Vidhya Nagar, Ramghat Road, Aligarh, UP',phone:'+917088004440'};
-  const mm_name=menuMeta.restname||'Kunjilal Food House';
-  const mm_addr=menuMeta.address||'Vidhya Nagar, Ramghat Road, Aligarh';
-  const mm_phone=menuMeta.phone||'+91-7088004440';
-  const mm_wa=(menuMeta.phone||'917088004440').replace(/[^0-9]/g,'');
-  const addrEl=document.getElementById('cust-addr');
-  if(addrEl) addrEl.innerHTML=mm_addr+' &nbsp;·&nbsp; '+mm_phone;
-  const fnEl=document.getElementById('cust-footer-name');
-  if(fnEl) fnEl.innerHTML='<strong>'+mm_name+'</strong>';
-  const faEl=document.getElementById('cust-footer-addr');
-  if(faEl) faEl.textContent=mm_addr;
-  const ftEl=document.getElementById('cust-footer-tel');
-  if(ftEl){ftEl.href='tel:'+mm_phone;ftEl.textContent='📞 '+mm_phone;}
-  const fwEl=document.getElementById('cust-footer-wa');
-  if(fwEl) fwEl.href='https://wa.me/'+mm_wa;
-  // Check if this menu exists in menuList at all
-  const menuExists = menuList.some(m=>m.id===menuType);
-  if(!cats.length && !menuExists && menuType !== 'restaurant' && menuType !== 'banquet' && menuType !== 'chaat'){
-    contentEl.innerHTML=`<div class="no-menu-box"><span class="ico">⏳</span><h3>Loading Menu...</h3><p>Please wait a moment</p></div>`;
-    return;
-  }
+
   if(!cats.length){
-    contentEl.innerHTML=`<div class="no-menu-box"><span class="ico">${MENU_ICONS[menuType]||'📋'}</span><h3>Menu Coming Soon</h3><p>Please call us at <strong>+91-7088004440</strong></p></div>`;
+    contentEl.innerHTML=`<div class="no-menu-box">
+      <span class="ico">${MENU_ICONS[menuType]||'📋'}</span>
+      <h3>Menu Coming Soon</h3>
+      <p>Please call us at <strong>+91-7088004440</strong></p>
+    </div>`;
     return;
   }
-  const ornamentSVG=`<svg class="c-sec-ornament" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="5" width="30" height="30" stroke="#FBF5E6" stroke-width="1.5" transform="rotate(45 20 20)"/><rect x="10" y="10" width="20" height="20" stroke="#FBF5E6" stroke-width="1" transform="rotate(45 20 20)"/></svg>`;
+
+  // SVG ornament for section headers
+  const ornamentSVG = `<svg class="c-sec-ornament" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="5" width="30" height="30" stroke="#FBF5E6" stroke-width="1.5" transform="rotate(45 20 20)"/><rect x="10" y="10" width="20" height="20" stroke="#FBF5E6" stroke-width="1" transform="rotate(45 20 20)"/></svg>`;
+
   cats.forEach((cat,ci)=>{
+    // Build tile
     const tile=document.createElement('div');
     tile.className='c-cat-tile'+(ci===0?' active':'');
     tile.textContent=cat.name.split('(')[0].trim();
@@ -829,280 +834,230 @@ function renderCustomer(){
       tile.classList.add('active');
       contentEl.querySelectorAll('.c-section').forEach(s=>s.classList.remove('active'));
       document.getElementById('csec-'+cat.id).classList.add('active');
-      document.getElementById('active-cat-name').innerHTML='🏠 &nbsp;HOME';
+      document.getElementById('active-cat-name').innerHTML='☰ &nbsp;MENU';
       document.getElementById('cat-panel').classList.remove('open');
       document.getElementById('cat-arrow').classList.remove('open');
       window.scrollTo({top:0,behavior:'smooth'});
     };
     tabsEl.appendChild(tile);
+
+    // Build section
     const sec=document.createElement('div');
     sec.className='c-section'+(ci===0?' active':'');
     sec.id='csec-'+cat.id;
+
     const itemsHtml=cat.items.map(item=>{
       const dc=item.type==='nonveg'?'nonveg':'veg';
-      const priceHtml=item.price>0?`<div class="c-item-price">${item.price}</div>`:`<div class="c-item-price" style="font-size:0.7rem;color:#8B6355">MRP</div>`;
-      return `<div class="c-item"><div class="c-item-left"><div class="c-vdot ${dc}"></div><div class="c-item-info"><div class="c-item-name">${item.name}</div>${item.desc?`<div class="c-item-desc">${item.desc}</div>`:''}</div></div>${priceHtml}</div>`;
+      const priceHtml = item.price > 0 
+        ? `<div class="c-item-price">${item.price}</div>`
+        : `<div class="c-item-price" style="font-size:0.7rem;color:#8B6355">MRP</div>`;
+      return `<div class="c-item">
+        <div class="c-item-left">
+          <div class="c-vdot ${dc}"></div>
+          <div class="c-item-info">
+            <div class="c-item-name">${item.name}</div>
+            ${item.desc?`<div class="c-item-desc">${item.desc}</div>`:''}
+          </div>
+        </div>
+        ${priceHtml}
+      </div>`;
     }).join('');
-    sec.innerHTML=`<div class="c-sec-header"><div class="c-sec-title-wrap"><span class="c-sec-eyebrow">${(menuList.find(m=>m.id===menuType)||{name:menuType.charAt(0).toUpperCase()+menuType.slice(1)}).name}</span><div class="c-sec-name">${cat.name.split('(')[0].trim()}</div></div>${ornamentSVG}</div><div class="c-items-wrap">${itemsHtml}</div>`;
+
+    sec.innerHTML=`
+      <div class="c-sec-header">
+        <div class="c-sec-title-wrap">
+          <span class="c-sec-eyebrow">${MENU_NAMES[menuType]||'Menu'}</span>
+          <div class="c-sec-name">${cat.name.split('(')[0].trim()}</div>
+        </div>
+        ${ornamentSVG}
+      </div>
+      <div class="c-items-wrap">${itemsHtml}</div>`;
     contentEl.appendChild(sec);
   });
-  // Apply banner size
-  const savedSize=localStorage.getItem('fh_banner_size')||'100';
-  const bannerImg=document.getElementById('banner-img');
-  if(bannerImg)bannerImg.style.width=savedSize+'%';
 }
 
-function generateQRs(){ renderQRGrid(); }
+// QR
+function generateQRs(){
+  ['restaurant','banquet','chaat'].forEach(type=>{
+    new QRious({
+      element:document.getElementById('qr-'+type),
+      value:BASE_URL+'/?menu='+type,
+      size:120,foreground:'#0D2744',background:'#FFFFFF',level:'M'
+    });
+  });
+}
 
 function downloadQR(type,label){
   const canvas=document.getElementById('qr-'+type);
-  const out=document.createElement('canvas');out.width=400;out.height=480;
+  const out=document.createElement('canvas');
+  out.width=400;out.height=480;
   const ctx=out.getContext('2d');
   ctx.fillStyle='#FFFFFF';ctx.fillRect(0,0,400,480);
   ctx.fillStyle='#0D2744';ctx.fillRect(0,0,400,70);
   ctx.fillStyle='#D4AC5C';ctx.font='bold 22px Georgia,serif';ctx.textAlign='center';
   ctx.fillText('FOOD HOUSE',200,30);
   ctx.fillStyle='rgba(200,224,240,0.8)';ctx.font='11px Arial,sans-serif';
-  ctx.fillText('Kunjilal · Since 1947',200,48);ctx.fillText(label+' Menu',200,63);
+  ctx.fillText('Kunjilal · Since 1947',200,48);
+  ctx.fillText(label+' Menu',200,63);
   ctx.fillStyle='#B8953F';ctx.fillRect(0,70,400,3);
   ctx.drawImage(canvas,70,90,260,260);
-  ctx.fillStyle='#0D2744';ctx.font='bold 14px Arial,sans-serif';ctx.fillText('Scan to View Menu',200,385);
-  ctx.fillStyle='#4A6A88';ctx.font='11px Arial,sans-serif';ctx.fillText('Vidhya Nagar, Ramghat Road, Aligarh',200,405);ctx.fillText('+91-7088004440',200,422);
+  ctx.fillStyle='#0D2744';ctx.font='bold 14px Arial,sans-serif';
+  ctx.fillText('Scan to View Menu',200,385);
+  ctx.fillStyle='#4A6A88';ctx.font='11px Arial,sans-serif';
+  ctx.fillText('Vidhya Nagar, Ramghat Road, Aligarh',200,405);
+  ctx.fillText('+91-7088004440',200,422);
   ctx.strokeStyle='#C8E0F0';ctx.lineWidth=2;ctx.strokeRect(1,1,398,478);
-  const a=document.createElement('a');a.href=out.toDataURL('image/png');a.download='FoodHouse-'+type+'-QR.png';a.click();
+  const a=document.createElement('a');
+  a.href=out.toDataURL('image/png');
+  a.download='FoodHouse-'+type+'-QR.png';
+  a.click();
   toast('⬇ '+label+' QR downloaded!');
 }
 
-function updateBannerSize(val){
-  document.getElementById('banner-size-label').textContent=val+'%';
-  const bannerImg=document.getElementById('banner-img');
-  if(bannerImg)bannerImg.style.width=val+'%';
-  localStorage.setItem('fh_banner_size',val);
+async function manualSave(){
+  const btn = document.getElementById('save-menu-btn');
+  btn.textContent = '⏳ Saving...';
+  btn.className = 'save-menu-btn saving';
+  btn.disabled = true;
+  try {
+    await saveData();
+    btn.textContent = '✅ Menu Saved Successfully!';
+    btn.className = 'save-menu-btn saved';
+    toast('✅ Menu saved! Customers can see it now.');
+    setTimeout(()=>{
+      btn.textContent = '💾 Save Menu to Server';
+      btn.className = 'save-menu-btn';
+      btn.disabled = false;
+    }, 3000);
+  } catch(e) {
+    btn.textContent = '⚠ Save Failed — Try Again';
+    btn.className = 'save-menu-btn';
+    btn.disabled = false;
+    toast('⚠ Could not save. Check connection.');
+  }
 }
 
 async function manualSave(){
-  const btn=document.getElementById('save-menu-btn');
-  btn.textContent='⏳ Saving...';btn.className='save-menu-btn saving';btn.disabled=true;
-  try{
+  const btn = document.getElementById('save-btn');
+  btn.textContent = '⏳ Saving...';
+  btn.className = 'save-bar-btn saving';
+  try {
     await saveData();
-    btn.textContent='✅ Menu Saved!';btn.className='save-menu-btn saved';
-    toast('✅ Menu saved! Customers can see it now.');
-    setTimeout(()=>{btn.textContent='💾 Save Menu to Server';btn.className='save-menu-btn';btn.disabled=false;},3000);
-  }catch(e){btn.textContent='⚠ Save Failed — Try Again';btn.className='save-menu-btn';btn.disabled=false;toast('⚠ Could not save.');}
-}
-
-async function manualSaveBar(){
-  const btn=document.getElementById('save-btn');
-  btn.textContent='⏳ Saving...';btn.className='save-bar-btn saving';
-  try{await saveData();btn.textContent='✅ Saved!';btn.className='save-bar-btn saved';toast('✅ Saved!');setTimeout(()=>{btn.textContent='💾 Save Menu';btn.className='save-bar-btn';},3000);}
-  catch(e){btn.textContent='💾 Save Menu';btn.className='save-bar-btn';toast('⚠ Save failed.');}
-}
-
-function showSaveBar(){const bar=document.getElementById('save-bar');if(bar)bar.style.display='flex';}
-function toggleCatPanel(){const panel=document.getElementById('cat-panel');const arrow=document.getElementById('cat-arrow');panel.classList.toggle('open');arrow.classList.toggle('open');}
-// ── THEME ──
-let currentThemeFont='serif';
-function updateThemePreview(){
-  const p=document.getElementById('theme-primary').value;
-  const a=document.getElementById('theme-accent').value;
-  const b=document.getElementById('theme-bg').value;
-  document.getElementById('theme-primary-hex').value=p;
-  document.getElementById('theme-accent-hex').value=a;
-  document.getElementById('theme-bg-hex').value=b;
-  document.getElementById('theme-preview-bar').style.background='linear-gradient(to right,'+p+','+a+')';
-}
-function syncColor(w){
-  const h=document.getElementById('theme-'+w+'-hex').value;
-  if(/^#[0-9A-Fa-f]{6}$/.test(h)){document.getElementById('theme-'+w).value=h;updateThemePreview();}
-}
-function setFont(f,btn){
-  currentThemeFont=f;
-  ['serif','sans','decorative'].forEach(x=>{
-    const el=document.getElementById('font-'+x);
-    if(el){el.style.background=x===f?'var(--gold)':'rgba(255,255,255,0.1)';el.style.color=x===f?'var(--navy)':'rgba(255,255,255,0.8)';el.style.borderColor=x===f?'var(--gold)':'rgba(255,255,255,0.2)';}
-  });
-}
-function showThemeSuggestion(t){
-  const p=t.primary||'#8B1A1A', a=t.accent||'#B8953F', b=t.bg||'#FBF5E6';
-  document.getElementById('theme-primary').value=p;
-  document.getElementById('theme-accent').value=a;
-  document.getElementById('theme-bg').value=b;
-  document.getElementById('theme-primary-hex').value=p;
-  document.getElementById('theme-accent-hex').value=a;
-  document.getElementById('theme-bg-hex').value=b;
-  currentThemeFont=t.font||'serif';
-  setFont(currentThemeFont, document.getElementById('font-'+currentThemeFont));
-  updateThemePreview();
-  document.getElementById('theme-panel').style.display='block';
-  document.getElementById('banner-section').style.display='block';
-}
-function approveTheme(){
-  const theme={primary:document.getElementById('theme-primary').value,accent:document.getElementById('theme-accent').value,bg:document.getElementById('theme-bg').value,font:currentThemeFont};
-  if(!allMenus[currentMenu])allMenus[currentMenu]={categories:[]};
-  allMenus[currentMenu].theme=theme;
-  saveData();
-  toast('✅ Theme applied!');
-  document.getElementById('theme-panel').style.display='none';
-}
-// ── BANNER CROP ──
-let cropState={active:false,startX:0,startY:0,x:0,y:0,w:0,h:0};
-let bannerNatW=0,bannerNatH=0;
-function loadBannerImage(input){
-  const file=input.files[0]; if(!file)return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    const img=document.getElementById('banner-source-img');
-    img.src=e.target.result;
-    img.onload=()=>{
-      bannerNatW=img.naturalWidth; bannerNatH=img.naturalHeight;
-      document.getElementById('banner-preview').style.display='block';
-      document.getElementById('crop-actions').style.display='flex';
-      setupCropCanvas();
-    };
-  };
-  reader.readAsDataURL(file); input.value='';
-}
-function setupCropCanvas(){
-  const img=document.getElementById('banner-source-img');
-  const canvas=document.getElementById('crop-overlay');
-  canvas.width=img.offsetWidth; canvas.height=img.offsetHeight;
-  cropState={active:false,startX:0,startY:0,x:0,y:0,w:0,h:0};
-  const getPos=(e)=>{const r=canvas.getBoundingClientRect();const pt=e.touches?e.touches[0]:e;return{x:pt.clientX-r.left,y:pt.clientY-r.top};};
-  canvas.onmousedown=canvas.ontouchstart=(e)=>{e.preventDefault();const p=getPos(e);cropState.startX=p.x;cropState.startY=p.y;cropState.active=true;};
-  canvas.onmousemove=canvas.ontouchmove=(e)=>{if(!cropState.active)return;e.preventDefault();const p=getPos(e);cropState.x=Math.min(cropState.startX,p.x);cropState.y=Math.min(cropState.startY,p.y);cropState.w=Math.abs(p.x-cropState.startX);cropState.h=Math.abs(p.y-cropState.startY);drawCrop();};
-  canvas.onmouseup=canvas.ontouchend=()=>{cropState.active=false;};
-}
-function drawCrop(){
-  const canvas=document.getElementById('crop-overlay');
-  const ctx=canvas.getContext('2d');
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  if(cropState.w<5||cropState.h<5)return;
-  ctx.fillStyle='rgba(0,0,0,0.5)';ctx.fillRect(0,0,canvas.width,canvas.height);
-  ctx.clearRect(cropState.x,cropState.y,cropState.w,cropState.h);
-  ctx.strokeStyle='white';ctx.lineWidth=2;ctx.setLineDash([6,3]);
-  ctx.strokeRect(cropState.x,cropState.y,cropState.w,cropState.h);
-}
-function applyCrop(){
-  const img=document.getElementById('banner-source-img');
-  const scaleX=bannerNatW/img.offsetWidth, scaleY=bannerNatH/img.offsetHeight;
-  const sx=(cropState.w>5?cropState.x:0)*scaleX;
-  const sy=(cropState.h>5?cropState.y:0)*scaleY;
-  const sw=(cropState.w>5?cropState.w:img.offsetWidth)*scaleX;
-  const sh=(cropState.h>5?cropState.h:img.offsetHeight)*scaleY;
-  const out=document.createElement('canvas');
-  const maxW=800; const ratio=Math.min(1,maxW/sw);
-  out.width=sw*ratio; out.height=sh*ratio;
-  out.getContext('2d').drawImage(img,sx,sy,sw,sh,0,0,out.width,out.height);
-  const b64=out.toDataURL('image/jpeg',0.8).split(',')[1];
-  if(!allMenus[currentMenu])allMenus[currentMenu]={categories:[]};
-  allMenus[currentMenu].banner=b64;
-  saveData();
-  document.getElementById('banner-set-indicator').style.display='block';
-  document.getElementById('crop-actions').style.display='none';
-  document.getElementById('banner-preview').style.display='none';
-  toast('✅ Banner saved!');
-}
-function clearCrop(){
-  cropState={active:false,startX:0,startY:0,x:0,y:0,w:0,h:0};
-  const canvas=document.getElementById('crop-overlay');
-  if(canvas)canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
-}
-// ── APPLY THEME IN CUSTOMER VIEW ──
-function applyMenuTheme(menuType){
-  const menuData=allMenus[menuType]||{};
-  const t=menuData.theme||{primary:'#8B1A1A',accent:'#B8953F',bg:'#FBF5E6',font:'serif'};
-  let s=document.getElementById('menu-theme-style');
-  if(!s){s=document.createElement('style');s.id='menu-theme-style';document.head.appendChild(s);}
-  const ff=t.font==='sans'?"'Raleway',sans-serif":t.font==='decorative'?"'Cinzel',serif":"'EB Garamond',serif";
-  s.textContent=`.cw{background:${t.bg}!important}.c-hero{background:${t.bg}!important}.c-cat-nav,.c-sec-header{background:${t.primary}!important}.c-sec-name,.c-cat-header-text{color:${t.bg}!important}.c-item-price{color:${t.primary}!important}.c-dia{background:${t.accent}!important}.c-item-name{font-family:${ff}!important}.c-cat-tile.active{background:${t.bg}!important;color:${t.primary}!important}.c-footer{background:${t.bg}!important}.c-addr{color:${t.primary}99!important}`;
-  const bannerImg=document.getElementById('banner-img');
-  if(bannerImg&&menuData.banner){bannerImg.src='data:image/jpeg;base64,'+menuData.banner;}
-}
-
-function saveMenuInfo(){
-  const restname=document.getElementById('edit-restname').value.trim();
-  const address=document.getElementById('edit-address').value.trim();
-  const phone=document.getElementById('edit-phone').value.trim();
-  const idx=menuList.findIndex(m=>m.id===currentMenu);
-  if(idx>=0){
-    menuList[idx].restname=restname||menuList[idx].restname;
-    menuList[idx].address=address||menuList[idx].address;
-    menuList[idx].phone=phone||menuList[idx].phone;
-  }
-  saveData();
-  toast('✅ Info saved!');
-}
-
-function showServerStatus(status, count){
-  const el=document.getElementById('server-status');
-  if(!el)return;
-  if(status==='ok'){
-    el.style.background='rgba(46,204,113,0.12)';
-    el.style.borderColor='rgba(46,204,113,0.35)';
-    el.style.color='#4ade80';
-    el.innerHTML='✅ Server data safe · '+count+' menu'+(count!==1?'s':'')+' saved';
-  } else if(status==='error'){
-    el.style.background='rgba(239,68,68,0.12)';
-    el.style.borderColor='rgba(239,68,68,0.35)';
-    el.style.color='#f87171';
-    el.innerHTML='⚠ Could not reach server';
-  } else if(status==='old'){
-    el.style.background='rgba(251,191,36,0.12)';
-    el.style.borderColor='rgba(251,191,36,0.35)';
-    el.style.color='#fbbf24';
-    el.innerHTML='⚠ Old data format on server — save to upgrade';
+    btn.textContent = '✅ Saved!';
+    btn.className = 'save-bar-btn saved';
+    toast('✅ Menu saved successfully!');
+    setTimeout(()=>{
+      btn.textContent = '💾 Save Menu';
+      btn.className = 'save-bar-btn';
+    }, 3000);
+  } catch(e) {
+    btn.textContent = '💾 Save Menu';
+    btn.className = 'save-bar-btn';
+    toast('⚠ Save failed. Try again.');
   }
 }
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3500);}
 
-const ADMIN_PASSCODE='1947';
-let currentPin='';
-function enterDigit(d){if(currentPin.length>=4)return;currentPin+=d;updateDots();if(currentPin.length===4)setTimeout(checkPasscode,150);}
-function clearDigit(){currentPin=currentPin.slice(0,-1);updateDots();document.getElementById('passcode-error').textContent='';}
-function updateDots(){for(let i=0;i<4;i++){const dot=document.getElementById('dot-'+i);if(i<currentPin.length)dot.classList.add('filled');else dot.classList.remove('filled');}}
-function checkPasscode(){
-  if(currentPin===ADMIN_PASSCODE){document.getElementById('passcode-screen').style.display='none';sessionStorage.setItem('fh_admin_auth','1');}
-  else{document.getElementById('passcode-error').textContent='❌ Wrong passcode. Try again.';currentPin='';updateDots();const box=document.querySelector('.passcode-box');box.style.animation='shake 0.4s ease';setTimeout(()=>box.style.animation='',400);}
+function showSaveBar(){
+  const bar = document.getElementById('save-bar');
+  if(bar) bar.style.display = 'flex';
+}
+
+function toggleCatPanel(){
+  const panel = document.getElementById('cat-panel');
+  const arrow = document.getElementById('cat-arrow');
+  panel.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+function switchCatDropdown(catId){
+  document.querySelectorAll('.c-section').forEach(s=>s.classList.remove('active'));
+  const sec = document.getElementById('csec-'+catId);
+  if(sec) sec.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+// INIT
+// ── PASSCODE ──
+const ADMIN_PASSCODE = '1947'; // Change this to your preferred passcode
+let currentPin = '';
+
+function enterDigit(d) {
+  if (currentPin.length >= 4) return;
+  currentPin += d;
+  updateDots();
+  if (currentPin.length === 4) {
+    setTimeout(checkPasscode, 150);
+  }
+}
+
+function clearDigit() {
+  currentPin = currentPin.slice(0, -1);
+  updateDots();
+  document.getElementById('passcode-error').textContent = '';
+}
+
+function updateDots() {
+  for (let i = 0; i < 4; i++) {
+    const dot = document.getElementById('dot-' + i);
+    if (i < currentPin.length) {
+      dot.classList.add('filled');
+    } else {
+      dot.classList.remove('filled');
+    }
+  }
+}
+
+function checkPasscode() {
+  if (currentPin === ADMIN_PASSCODE) {
+    document.getElementById('passcode-screen').classList.add('hidden');
+    sessionStorage.setItem('fh_admin_auth', '1');
+  } else {
+    document.getElementById('passcode-error').textContent = '❌ Wrong passcode. Try again.';
+    currentPin = '';
+    updateDots();
+    // Shake animation
+    const box = document.querySelector('.passcode-box');
+    box.style.animation = 'shake 0.4s ease';
+    setTimeout(() => box.style.animation = '', 400);
+  }
 }
 
 window.addEventListener('DOMContentLoaded', async ()=>{
-  const params=new URLSearchParams(window.location.search);
-  const menuParam=params.get('menu');
+  const params = new URLSearchParams(window.location.search);
+  const menuParam = params.get('menu');
 
-  if(menuParam){
-    // CUSTOMER MODE — hide admin immediately, show menu
-    document.getElementById('topbar').style.display='none';
-    document.getElementById('view-admin').classList.remove('active');
-    document.getElementById('passcode-screen').style.display='none';
-    document.getElementById('save-bar').style.display='none';
-    document.getElementById('view-customer').classList.add('active');
-    // Load from server first, then render
-    try{ await loadData(); }catch(e){
-      // fallback for restaurant only
-      if(menuParam==='restaurant') allMenus.restaurant=restaurantPreload;
-    }
+  if(menuParam && ['restaurant','banquet','chaat'].includes(menuParam)){
+    // CUSTOMER MODE — show menu immediately, load data in background
+    document.getElementById('topbar').style.display = 'none';
+    document.getElementById('view-admin').style.display = 'none';
+    document.getElementById('passcode-screen').style.display = 'none';
+    const sb=document.querySelector('.save-bar'); if(sb) sb.style.display='none';
+    document.getElementById('view-customer').style.display = 'block';
+    await loadData();
     renderCustomer();
   } else {
     // ADMIN MODE
     await loadData();
-    // Passcode check
-    if(sessionStorage.getItem('fh_admin_auth')==='1'){
-      document.getElementById('passcode-screen').style.display='none';
+    const screen = document.getElementById('passcode-screen');
+    if(sessionStorage.getItem('fh_admin_auth') === '1'){
+      screen.style.display = 'none';
     } else {
-      document.getElementById('passcode-screen').style.display='flex';
+      screen.style.display = 'flex';
     }
-    renderMenuSelector();
     generateQRs();
-    // Restore banner size
-    const savedSize=localStorage.getItem('fh_banner_size');
-    if(savedSize){const s=document.getElementById('banner-slider');if(s)s.value=savedSize;document.getElementById('banner-size-label').textContent=savedSize+'%';}
     updateCounts();
     showSaveBar();
-    if(allMenus.restaurant.categories.length>0){
+    if(allMenus.restaurant.categories.length > 0){
       document.getElementById('editor-wrap').classList.add('show');
       document.getElementById('success-card').classList.add('show');
-      const total=allMenus.restaurant.categories.reduce((s,c)=>s+c.items.length,0);
-      document.getElementById('success-detail').textContent=total+' items across '+allMenus.restaurant.categories.length+' categories';
+      const total = allMenus.restaurant.categories.reduce((s,c)=>s+c.items.length,0);
+      document.getElementById('success-detail').textContent = total+' items across '+allMenus.restaurant.categories.length+' categories';
       renderAdminCats();
     }
   }
@@ -1110,3 +1065,16 @@ window.addEventListener('DOMContentLoaded', async ()=>{
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
