@@ -34,7 +34,7 @@ Rules: type=veg/nonveg, price=number(0 if unclear), desc=empty unless written, i
       },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 3000,
+        max_tokens: 2000,
         messages: [{ role: 'user', content }]
       }),
       signal: controller.signal
@@ -45,17 +45,16 @@ Rules: type=veg/nonveg, price=number(0 if unclear), desc=empty unless written, i
 
     if (data.content && data.content[0]) {
       let text = data.content[0].text;
-      let jsonStr = text.match(/\{[\s\S]*\}/)?.[0];
-      if (jsonStr) {
-        try { JSON.parse(jsonStr); } catch(e) {
-          jsonStr = jsonStr.replace(/,\s*$/, '');
-          let opens = (jsonStr.match(/\[/g)||[]).length - (jsonStr.match(/\]/g)||[]).length;
-          let braces = (jsonStr.match(/\{/g)||[]).length - (jsonStr.match(/\}/g)||[]).length;
-          for(let i=0;i<opens;i++) jsonStr+=']';
-          for(let i=0;i<braces;i++) jsonStr+='}';
-        }
-        data.content[0].text = jsonStr;
-      }
+      let jsonStr = text.match(/\{[\s\S]*/)?.[0] || '';
+      // Fix truncated JSON
+      jsonStr = jsonStr.replace(/,\s*"[^"]*":\s*$/, '')  // remove trailing incomplete key
+                       .replace(/,\s*$/, '');              // remove trailing comma
+      let opens = (jsonStr.match(/\[/g)||[]).length - (jsonStr.match(/\]/g)||[]).length;
+      let braces = (jsonStr.match(/\{/g)||[]).length - (jsonStr.match(/\}/g)||[]).length;
+      for(let i=0;i<opens;i++) jsonStr+=']';
+      for(let i=0;i<braces;i++) jsonStr+='}';
+      try { JSON.parse(jsonStr); data.content[0].text = jsonStr; }
+      catch(e) { data.content[0].text = text; }
     }
 
     return res.status(200).json(data);
