@@ -1,3 +1,5 @@
+export const config = { maxDuration: 60 };
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -23,23 +25,20 @@ export default async function handler(req, res) {
       type: 'text',
       text: `You are a menu scanner. ${sideText}
 
-STRICT RULES - VERY IMPORTANT:
-1. ONLY extract items that are CLEARLY VISIBLE and READABLE in the image
-2. Do NOT guess, invent, or add any items not explicitly shown
-3. Do NOT add items from memory or training data
-4. If you cannot clearly read an item name or price, SKIP it
-5. ONLY include what you can actually see written in the menu image
+STRICT RULES:
+1. ONLY extract items CLEARLY VISIBLE in the image
+2. Do NOT guess or invent items
+3. Skip items you cannot clearly read
 
-Return ONLY this JSON format, no other text:
-{"categories":[{"id":"c1","name":"Category Name","items":[{"id":"i1","name":"Exact Item Name As Written","price":100,"type":"veg","desc":""}]}],"theme":{"primary":"#8B1A1A","accent":"#B8953F","bg":"#FBF5E6","font":"serif"}}
+Return ONLY this JSON, no other text:
+{"categories":[{"id":"c1","name":"Category Name","items":[{"id":"i1","name":"Item Name","price":100,"type":"veg","desc":""}]}],"theme":{"primary":"#8B1A1A","accent":"#B8953F","bg":"#FBF5E6","font":"serif"}}
 
-More rules:
+Rules:
 - type: "veg" or "nonveg" only
-- price: exact number as shown (0 if not visible)
-- Keep desc empty unless clearly written
-- Use short ids: c1,c2,i1,i2 etc
-- Group items exactly as shown in the menu under their headings
-- For theme: extract the DOMINANT colors from the menu design. primary=main header/title color, accent=highlight/gold color, bg=background color. font=serif/sans/decorative based on the menu typography`
+- price: number as shown (0 if not visible)
+- desc: empty unless clearly written
+- ids: c1,c2,i1,i2 etc
+- theme: extract dominant colors from menu design. font=serif/sans/decorative`
     });
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -50,22 +49,19 @@ More rules:
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-5',
-        max_tokens: 8000,
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 4000,
         messages: [{ role: 'user', content }]
       })
     });
 
     const data = await response.json();
 
-    // Fix truncated JSON if needed
     if (data.content && data.content[0]) {
       const text = data.content[0].text;
       let jsonStr = text.match(/\{[\s\S]*\}/)?.[0];
       if (jsonStr) {
-        try {
-          JSON.parse(jsonStr);
-        } catch(e) {
+        try { JSON.parse(jsonStr); } catch(e) {
           jsonStr = jsonStr.replace(/,\s*$/, '');
           let opens = (jsonStr.match(/\[/g)||[]).length - (jsonStr.match(/\]/g)||[]).length;
           let openBraces = (jsonStr.match(/\{/g)||[]).length - (jsonStr.match(/\}/g)||[]).length;
