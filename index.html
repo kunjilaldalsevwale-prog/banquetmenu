@@ -201,6 +201,7 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
       <div class="w-title">AI-Powered Menu Builder</div>
       <div class="w-sub">Upload a photo of any menu — AI reads it and builds the digital menu automatically. Edit anytime.</div>
       <div class="live-pill"><span class="live-dot"></span>Claude AI · Instant Scanning</div>
+      <div class="live-pill" id="server-status" style="margin-top:0.3rem;background:rgba(255,165,0,0.12);border-color:rgba(255,165,0,0.35);color:#fbbf24">⏳ Checking server...</div>
     </div>
   </div>
   <div class="sec-hd">
@@ -468,6 +469,7 @@ async function loadData(){
       if(data.menuList && data.menus){
         menuList=data.menuList;
         allMenus=data.menus;
+        showServerStatus('ok', data.menuList.length);
         return;
       }
       // OLD format: {restaurant:{...}, banquet:{...}, chaat:{...}}
@@ -475,10 +477,11 @@ async function loadData(){
       if(data.restaurant || data.banquet || data.chaat){
         allMenus = data;
         // menuList stays as default
+        showServerStatus('old');
         return;
       }
     }
-  }catch(e){console.log('Server load failed:',e);}
+  }catch(e){console.log('Server load failed:',e);showServerStatus('error');}
   // Try localStorage
   try{
     const s=localStorage.getItem(STORE_KEY);
@@ -488,8 +491,9 @@ async function loadData(){
       if(p.restaurant || p.banquet || p.chaat){allMenus=p;return;}
     }
   }catch(e){}
+  // Only use preload as last resort - NEVER overwrite existing server data
   allMenus.restaurant=restaurantPreload;
-  await saveData();
+  // Don't auto-save - let user explicitly save
 }
 async function saveData(){
   const payload={menuList, menus:allMenus};
@@ -682,7 +686,30 @@ async function processFile(files){
   }
 }
 
-function fileToBase64(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result.split(',')[1]);r.onerror=rej;r.readAsDataURL(file);});}
+function fileToBase64(file){
+  return new Promise((res,rej)=>{
+    const reader=new FileReader();
+    reader.onload=e=>{
+      const img=new Image();
+      img.onload=()=>{
+        const MAX=1200;
+        let w=img.width, h=img.height;
+        if(w>MAX||h>MAX){
+          if(w>h){h=Math.round(h*MAX/w);w=MAX;}
+          else{w=Math.round(w*MAX/h);h=MAX;}
+        }
+        const canvas=document.createElement('canvas');
+        canvas.width=w; canvas.height=h;
+        canvas.getContext('2d').drawImage(img,0,0,w,h);
+        res(canvas.toDataURL('image/jpeg',0.75).split(',')[1]);
+      };
+      img.onerror=rej;
+      img.src=e.target.result;
+    };
+    reader.onerror=rej;
+    reader.readAsDataURL(file);
+  });
+}
 
 function renderAdminCats(){
   const cats=allMenus[currentMenu].categories;
@@ -968,6 +995,26 @@ function saveMenuInfo(){
   toast('✅ Info saved!');
 }
 
+function showServerStatus(status, count){
+  const el=document.getElementById('server-status');
+  if(!el)return;
+  if(status==='ok'){
+    el.style.background='rgba(46,204,113,0.12)';
+    el.style.borderColor='rgba(46,204,113,0.35)';
+    el.style.color='#4ade80';
+    el.innerHTML='✅ Server data safe · '+count+' menu'+(count!==1?'s':'')+' saved';
+  } else if(status==='error'){
+    el.style.background='rgba(239,68,68,0.12)';
+    el.style.borderColor='rgba(239,68,68,0.35)';
+    el.style.color='#f87171';
+    el.innerHTML='⚠ Could not reach server';
+  } else if(status==='old'){
+    el.style.background='rgba(251,191,36,0.12)';
+    el.style.borderColor='rgba(251,191,36,0.35)';
+    el.style.color='#fbbf24';
+    el.innerHTML='⚠ Old data format on server — save to upgrade';
+  }
+}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3500);}
 
 const ADMIN_PASSCODE='1947';
