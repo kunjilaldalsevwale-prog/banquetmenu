@@ -656,7 +656,13 @@ async function processFile(files){
   try{
     const images=await Promise.all(files.map(async f=>({base64:await fileToBase64(f),mediaType:f.type||'image/jpeg'})));
     const response=await fetch('/api/scan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({images:images})});
+    if(!response.ok){
+      const errText=await response.text();
+      if(response.status===504) throw new Error('Scan timed out — try a smaller/clearer photo');
+      throw new Error('Server error '+response.status);
+    }
     const result=await response.json();
+    console.log('API response:', JSON.stringify(result).substring(0,500));
     clearInterval(iv);fill.style.width='100%';
     let parsed=null;
     if(result.content&&result.content[0]){
