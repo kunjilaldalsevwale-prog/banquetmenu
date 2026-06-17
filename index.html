@@ -696,7 +696,7 @@ async function processFile(files){
             let ob=(j2.match(/\{/g)||[]).length-(j2.match(/\}/g)||[]).length;
             for(let i=0;i<op;i++)j2+=']';
             for(let i=0;i<ob;i++)j2+='}';
-            try{parsed=JSON.parse(j2);}catch(e3){console.log('Parse error:',e3.message);}
+          try{parsed=JSON.parse(j2);}catch(e3){console.log('Parse error:',e3.message);}
           }catch(e2){}
         }catch(e1){}
     }
@@ -712,7 +712,7 @@ async function processFile(files){
         toast('✅ '+MENU_NAMES[currentMenu]+' menu saved! '+total+' items found.');
       },500);return;
     }
-    throw new Error('No menu data found.');
+if(!parsed) throw new Error('No menu data found.');
   }catch(e){
     clearInterval(iv);
     document.getElementById('scan-card').classList.remove('show');
