@@ -609,9 +609,11 @@ async function processFile(files){
     let parsed = null;
 
     // Try multiple ways to extract JSON from response
-    if(result.content && result.content[0]){
-      const text = result.content[0].text;
+if(result.content && result.content[0]){
+      let text = result.content[0].text;
       console.log('AI Response:', text.substring(0, 200));
+      // Strip markdown code blocks
+      text = text.replace(/```json\s*/g,'').replace(/```\s*/g,'').trim();
 
 // Strip markdown code blocks if present
       const cleaned = text.replace(/```json\s*/g,'').replace(/```\s*/g,'').trim();
@@ -624,15 +626,16 @@ async function processFile(files){
         try {
           const catMatch = text.match(/"categories"\s*:\s*\[/);
           if(catMatch) {
-const start = cleaned.indexOf('{');
-            let jsonStr = cleaned.substring(start);
-            // Fix truncated JSON
-            jsonStr = jsonStr.replace(/,\s*$/, '').replace(/,\s*\]/, ']').replace(/,\s*\}/, '}');
+const start = text.indexOf('{');
+            let jsonStr = text.substring(start);
+            // Fix truncated JSON - remove incomplete last property
+            jsonStr = jsonStr.replace(/,\s*"[^"]*"\s*:\s*"?[^"}\]]*$/, '');
+            jsonStr = jsonStr.replace(/,\s*$/, '');
             let opens = (jsonStr.match(/\[/g)||[]).length - (jsonStr.match(/\]/g)||[]).length;
             let openBraces = (jsonStr.match(/\{/g)||[]).length - (jsonStr.match(/\}/g)||[]).length;
             for(let i=0;i<opens;i++) jsonStr += ']';
             for(let i=0;i<openBraces;i++) jsonStr += '}';
-            parsed = JSON.parse(jsonStr);
+            parsed = JSON.parse(jsonStr););
           }
         } catch(e2) {
           console.log('Parse error:', e2.message);
