@@ -635,7 +635,7 @@ const start = text.indexOf('{');
             let openBraces = (jsonStr.match(/\{/g)||[]).length - (jsonStr.match(/\}/g)||[]).length;
             for(let i=0;i<opens;i++) jsonStr += ']';
             for(let i=0;i<openBraces;i++) jsonStr += '}';
-            parsed = JSON.parse(jsonStr););
+            parsed = JSON.parse(jsonStr);
           }
         } catch(e2) {
           console.log('Parse error:', e2.message);
