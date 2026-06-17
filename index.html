@@ -672,8 +672,28 @@ async function processFile(files){
     let parsed=null;
     if(result.content&&result.content[0]){
       const text=result.content[0].text;
-      try{const jsonMatch=text.match(/\{[\s\S]*\}/);if(jsonMatch)parsed=JSON.parse(jsonMatch[0]);}
-      catch(e1){try{const start=text.indexOf('{');let jsonStr=text.substring(start);jsonStr=jsonStr.replace(/,\s*$/,'').replace(/,\s*\]/,']').replace(/,\s*\}/,'}');let opens=(jsonStr.match(/\[/g)||[]).length-(jsonStr.match(/\]/g)||[]).length;let openBraces=(jsonStr.match(/\{/g)||[]).length-(jsonStr.match(/\}/g)||[]).length;for(let i=0;i<opens;i++)jsonStr+=']';for(let i=0;i<openBraces;i++)jsonStr+='}';parsed=JSON.parse(jsonStr);}catch(e2){}}
+      try{
+        // Direct parse first
+        parsed=JSON.parse(text);
+      }catch(e1){
+        try{
+          // Extract JSON block
+          const jsonMatch=text.match(/\{[\s\S]*\}/);
+          if(jsonMatch) parsed=JSON.parse(jsonMatch[0]);
+        }catch(e2){
+          try{
+            // Fix truncated JSON
+            const start=text.indexOf('{');
+            let jsonStr=text.substring(start);
+            jsonStr=jsonStr.replace(/,\s*$/,'').replace(/,\s*\]/,']').replace(/,\s*\}/,'}');
+            let opens=(jsonStr.match(/\[/g)||[]).length-(jsonStr.match(/\]/g)||[]).length;
+            let braces=(jsonStr.match(/\{/g)||[]).length-(jsonStr.match(/\}/g)||[]).length;
+            for(let i=0;i<opens;i++)jsonStr+=']';
+            for(let i=0;i<braces;i++)jsonStr+='}';
+            parsed=JSON.parse(jsonStr);
+          }catch(e3){console.log('Parse error:',e3.message);}
+        }
+      }
     }
     if(parsed&&parsed.categories&&parsed.categories.length>0){
       allMenus[currentMenu]=parsed;
