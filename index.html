@@ -629,7 +629,7 @@ if(result.content && result.content[0]){
 const start = text.indexOf('{');
             let jsonStr = text.substring(start);
             // Fix truncated JSON - remove incomplete last property
-            jsonStr = jsonStr.replace(/,\s*"[^"]*"\s*:\s*"?[^"}\]]*$/, '');
+            jsonStr = jsonStr.replace(/,\s*$/, '').replace(/:\s*"[^"]*$/, '').replace(/,\s*"[^"]*"\s*$/, '');
             jsonStr = jsonStr.replace(/,\s*$/, '');
             let opens = (jsonStr.match(/\[/g)||[]).length - (jsonStr.match(/\]/g)||[]).length;
             let openBraces = (jsonStr.match(/\{/g)||[]).length - (jsonStr.match(/\}/g)||[]).length;
