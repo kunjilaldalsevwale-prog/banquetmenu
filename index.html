@@ -915,29 +915,6 @@ function downloadQR(type,label){
 }
 
 async function manualSave(){
-  const btn = document.getElementById('save-menu-btn');
-  btn.textContent = '⏳ Saving...';
-  btn.className = 'save-menu-btn saving';
-  btn.disabled = true;
-  try {
-    await saveData();
-    btn.textContent = '✅ Menu Saved Successfully!';
-    btn.className = 'save-menu-btn saved';
-    toast('✅ Menu saved! Customers can see it now.');
-    setTimeout(()=>{
-      btn.textContent = '💾 Save Menu to Server';
-      btn.className = 'save-menu-btn';
-      btn.disabled = false;
-    }, 3000);
-  } catch(e) {
-    btn.textContent = '⚠ Save Failed — Try Again';
-    btn.className = 'save-menu-btn';
-    btn.disabled = false;
-    toast('⚠ Could not save. Check connection.');
-  }
-}
-
-async function manualSave(){
   const btn = document.getElementById('save-btn');
   btn.textContent = '⏳ Saving...';
   btn.className = 'save-bar-btn saving';
@@ -1062,6 +1039,10 @@ window.addEventListener('DOMContentLoaded', async ()=>{
     }
   }
 });
+  <div class="save-bar" id="save-bar" style="display:none">
+  <span class="save-bar-text">Unsaved changes</span>
+  <button class="save-bar-btn" id="save-btn" onclick="manualSave()">💾 Save Menu</button>
+</div>
 </script>
 </body>
 </html>
