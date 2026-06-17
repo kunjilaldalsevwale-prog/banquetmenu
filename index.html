@@ -690,8 +690,13 @@ async function processFile(files){
             let braces=(jsonStr.match(/\{/g)||[]).length-(jsonStr.match(/\}/g)||[]).length;
             for(let i=0;i<opens;i++)jsonStr+=']';
             for(let i=0;i<braces;i++)jsonStr+='}';
-            parsed=JSON.parse(jsonStr);
-          }catch(e3){console.log('Parse error:',e3.message);}
+            // Try fixing truncated JSON
+            let j2=jsonStr.replace(/,\s*"[^"]*":\s*$/,'').replace(/,\s*$/,'');
+            let op=(j2.match(/\[/g)||[]).length-(j2.match(/\]/g)||[]).length;
+            let ob=(j2.match(/\{/g)||[]).length-(j2.match(/\}/g)||[]).length;
+            for(let i=0;i<op;i++)j2+=']';
+            for(let i=0;i<ob;i++)j2+='}';
+            try{parsed=JSON.parse(j2);}catch(e3){console.log('Parse error:',e3.message);}
         }
       }
     }
