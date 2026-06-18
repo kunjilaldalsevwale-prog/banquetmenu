@@ -742,7 +742,6 @@ function renderAdminCats(){
   const tabsEl   = document.getElementById('cat-tabs');
   const panelsEl = document.getElementById('cat-panels');
   tabsEl.innerHTML=''; panelsEl.innerHTML='';
-console.log('rendering cats:', cats.length, 'menuType:', menuType);
   if(!cats.length){
     panelsEl.innerHTML='<div style="text-align:center;padding:1.5rem;color:var(--muted);font-size:0.78rem">No categories yet. Upload a menu photo or click "+ Add Category"</div>';
     return;
