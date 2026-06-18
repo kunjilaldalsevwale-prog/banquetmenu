@@ -669,8 +669,11 @@ if(result.content && result.content[0]){
         const jsonMatch = text.match(/\{[\s\S]*\}/);
         if(jsonMatch) parsed = JSON.parse(jsonMatch[0]);
       } catch(e1) {
-        try {
+       try {
           let jsonStr = text.substring(text.indexOf('{'));
+          // Remove incomplete last item
+          jsonStr = jsonStr.replace(/,\s*\{\s*"id"\s*:\s*"[^"]*"\s*,\s*"name"\s*:\s*"[^"]*$/, '');
+          jsonStr = jsonStr.replace(/,\s*"[^"]*"\s*:\s*"[^"]*$/, '');
           jsonStr = jsonStr.replace(/,\s*$/, '');
           let opens = (jsonStr.match(/\[/g)||[]).length - (jsonStr.match(/\]/g)||[]).length;
           let braces = (jsonStr.match(/\{/g)||[]).length - (jsonStr.match(/\}/g)||[]).length;
