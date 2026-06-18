@@ -18,7 +18,7 @@ export default async function handler(req, res) {
       type: 'text',
     text: `Extract menu items from this image. Return ONLY compact valid JSON, no spaces/newlines:
 {"categories":[{"id":"c1","name":"Cat","items":[{"id":"i1","name":"Item","price":100,"type":"veg","desc":""}]}],"theme":{"primary":"#8B1A1A","accent":"#B8953F","bg":"#FBF5E6","font":"serif"}}
-Rules: type=veg/nonveg, price=number(0 if unclear), desc=empty string always, ids=c1/i1, NO formatting/whitespace in JSON, theme=dominant colors from menu design`
+Rules: type=veg/nonveg, price=number(0 if unclear), desc=include timing/special notes/platter contents/emoji if written on menu(else empty), ids=c1/i1, NO formatting/whitespace in JSON, theme=dominant colors from menu design`
     });
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
