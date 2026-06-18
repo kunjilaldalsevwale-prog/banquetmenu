@@ -16,9 +16,9 @@ export default async function handler(req, res) {
 
     content.push({
       type: 'text',
-     text: `Extract all menu items from this image. Return ONLY valid JSON with no markdown, no backticks, no explanation:
-{"categories":[{"id":"c1","name":"Category Name","items":[{"id":"i1","name":"Item Name","price":100,"type":"veg","desc":""}]}],"theme":{"primary":"#8B1A1A","accent":"#B8953F","bg":"#FBF5E6","font":"serif"}}
-Rules: type=veg or nonveg only, price=number(0 if unclear), desc=empty unless written on menu, ids=c1/i1 format, theme=extract dominant colors from the menu design (primary=main header color, accent=highlight color, bg=background color, font=serif/sans/decorative based on typography)`
+    text: `Extract menu items from this image. Return ONLY compact valid JSON, no spaces/newlines:
+{"categories":[{"id":"c1","name":"Cat","items":[{"id":"i1","name":"Item","price":100,"type":"veg","desc":""}]}],"theme":{"primary":"#8B1A1A","accent":"#B8953F","bg":"#FBF5E6","font":"serif"}}
+Rules: type=veg/nonveg, price=number(0 if unclear), desc=empty string always, ids=c1/i1, NO formatting/whitespace in JSON, theme=dominant colors from menu design`
     });
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -30,7 +30,7 @@ Rules: type=veg or nonveg only, price=number(0 if unclear), desc=empty unless wr
       },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 6000,
+        max_tokens: 8000,
         messages: [{ role: 'user', content }]
       })
     });
