@@ -984,7 +984,7 @@ function updateDots() {
 
 function checkPasscode() {
   if (currentPin === ADMIN_PASSCODE) {
-    document.getElementById('passcode-screen').classList.add('hidden');
+document.getElementById('passcode-screen').style.display = 'none';
     sessionStorage.setItem('fh_admin_auth', '1');
   } else {
     document.getElementById('passcode-error').textContent = '❌ Wrong passcode. Try again.';
