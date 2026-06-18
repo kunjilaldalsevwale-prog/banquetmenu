@@ -936,7 +936,6 @@ function renderCustomer(){
   });
 }
 
-// QR
 function generateQRs(){
   const grid=document.getElementById('qr-grid-dynamic');
   if(!grid)return;
@@ -944,25 +943,29 @@ function generateQRs(){
   menuList.forEach(m=>{
     const card=document.createElement('div');
     card.className='qr-card';
-const hasCustomQR = allMenus[m.id]?.customQR;
-    card.innerHTML=`<div class="qr-card-title">${m.icon} ${m.name}</div>
-      <div class="qr-canvas-wrap">
-        ${hasCustomQR
-          ? `<img src="data:image/png;base64,${allMenus[m.id].customQR}" style="width:120px;height:120px;border-radius:6px;border:1px solid var(--pale)">`
-          : `<canvas id="qr-${m.id}" width="120" height="120"></canvas>`}
-      </div>
-      <div style="display:flex;gap:0.3rem;margin-top:0.4rem">
-        <button class="qr-dl-btn" style="flex:1" onclick="downloadQR('${m.id}','${m.name}')">⬇ Download</button>
-        <label style="flex:1;padding:0.45rem;background:var(--royal);color:white;border-radius:5px;font-size:0.6rem;font-weight:700;cursor:pointer;text-align:center;font-family:Raleway,sans-serif">
-          📁 Upload QR<input type="file" accept="image/*" style="display:none" onchange="uploadCustomQR(event,'${m.id}')">
-        </label>
-        ${hasCustomQR?`<button onclick="clearCustomQR('${m.id}')" style="padding:0.45rem 0.5rem;background:var(--red-bg);color:var(--red);border:1px solid var(--red-bd);border-radius:5px;font-size:0.6rem;cursor:pointer">✕</button>`:''}
-      </div>
-      <span class="qr-status" id="qrstatus-${m.id}">${hasCustomQR?'📌 Custom QR':''}  </span>`;
+    const hasCustomQR=!!(allMenus[m.id]&&allMenus[m.id].customQR);
+    const qrHtml=hasCustomQR
+      ?'<img src="data:image/png;base64,'+allMenus[m.id].customQR+'" style="width:120px;height:120px;border-radius:6px;border:1px solid #C8E0F0">'
+      :'<canvas id="qr-'+m.id+'" width="120" height="120"></canvas>';
+    const clearBtn=hasCustomQR
+      ?'<button onclick="clearCustomQR(\''+m.id+'\')" style="padding:0.45rem 0.5rem;background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;border-radius:5px;font-size:0.6rem;cursor:pointer">✕</button>'
+      :'';
+    const statusText=hasCustomQR?'📌 Custom QR':'';
+    card.innerHTML='<div class="qr-card-title">'+m.icon+' '+m.name+'</div>'
+      +'<div class="qr-canvas-wrap">'+qrHtml+'</div>'
+      +'<div style="display:flex;gap:0.3rem;margin-top:0.4rem">'
+      +'<button class="qr-dl-btn" style="flex:1" onclick="downloadQR(\''+m.id+'\',\''+m.name+'\')">⬇ Download</button>'
+      +'<label style="flex:1;padding:0.45rem;background:#1A4A7A;color:white;border-radius:5px;font-size:0.6rem;font-weight:700;cursor:pointer;text-align:center;font-family:Raleway,sans-serif">📁 Upload QR'
+      +'<input type="file" accept="image/*" style="display:none" onchange="uploadCustomQR(event,\''+m.id+'\')">'
+      +'</label>'+clearBtn+'</div>'
+      +'<span class="qr-status" id="qrstatus-'+m.id+'">'+statusText+'</span>';
     grid.appendChild(card);
-    setTimeout(()=>{
-      new QRious({element:document.getElementById('qr-'+m.id),value:BASE_URL+'/?menu='+m.id,size:120,foreground:'#0D2744',background:'#FFFFFF',level:'M'});
-    },50);
+    if(!hasCustomQR){
+      setTimeout(()=>{
+        const el=document.getElementById('qr-'+m.id);
+        if(el) new QRious({element:el,value:BASE_URL+'/?menu='+m.id,size:120,foreground:'#0D2744',background:'#FFFFFF',level:'M'});
+      },50);
+    }
   });
 }
 function downloadQR(type,label){
