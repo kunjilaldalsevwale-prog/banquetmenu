@@ -16,9 +16,9 @@ export default async function handler(req, res) {
 
     content.push({
       type: 'text',
-      text: `Extract all menu items from this image. Return ONLY valid JSON with no markdown, no backticks, no explanation:
-{"categories":[{"id":"c1","name":"Category Name","items":[{"id":"i1","name":"Item Name","price":100,"type":"veg","desc":""}]}]}
-Rules: type=veg or nonveg only, price=number(0 if unclear), desc=empty unless written on menu, ids=c1/i1 format`
+     text: `Extract all menu items from this image. Return ONLY valid JSON with no markdown, no backticks, no explanation:
+{"categories":[{"id":"c1","name":"Category Name","items":[{"id":"i1","name":"Item Name","price":100,"type":"veg","desc":""}]}],"theme":{"primary":"#8B1A1A","accent":"#B8953F","bg":"#FBF5E6","font":"serif"}}
+Rules: type=veg or nonveg only, price=number(0 if unclear), desc=empty unless written on menu, ids=c1/i1 format, theme=extract dominant colors from the menu design (primary=main header color, accent=highlight color, bg=background color, font=serif/sans/decorative based on typography)`
     });
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
