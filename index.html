@@ -306,31 +306,9 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
     💾 Save Menu to Server
   </button>
 
-  <!-- QR CODES -->
+<!-- QR CODES -->
   <div class="sec-hd">📱 QR Codes — Download & Print for Tables</div>
-  <div class="qr-grid">
-    <div class="qr-card">
-      <div class="qr-card-title">🍛 Restaurant</div>
-      <div class="qr-canvas-wrap"><canvas id="qr-restaurant" width="120" height="120"></canvas></div>
-      <button class="qr-dl-btn" onclick="downloadQR('restaurant','Restaurant')">⬇ Download QR</button>
-      <span class="qr-status" id="qrstatus-restaurant"></span>
-    </div>
-    <div class="qr-card">
-      <div class="qr-card-title">🏛 Banquet Hall</div>
-      <div class="qr-canvas-wrap"><canvas id="qr-banquet" width="120" height="120"></canvas></div>
-      <button class="qr-dl-btn" onclick="downloadQR('banquet','Banquet Hall')">⬇ Download QR</button>
-      <span class="qr-status" id="qrstatus-banquet"></span>
-    </div>
-    <div class="qr-card">
-      <div class="qr-card-title">🌶 Chaat Adda</div>
-      <div class="qr-canvas-wrap"><canvas id="qr-chaat" width="120" height="120"></canvas></div>
-      <button class="qr-dl-btn" onclick="downloadQR('chaat','Chaat Adda')">⬇ Download QR</button>
-      <span class="qr-status" id="qrstatus-chaat"></span>
-    </div>
-  </div>
-
-</div>
-</div>
+  <div class="qr-grid" id="qr-grid-dynamic"></div>
 
 <!-- CUSTOMER VIEW -->
 <div id="view-customer" class="view">
@@ -887,15 +865,22 @@ function renderCustomer(){
 
 // QR
 function generateQRs(){
-  ['restaurant','banquet','chaat'].forEach(type=>{
-    new QRious({
-      element:document.getElementById('qr-'+type),
-      value:BASE_URL+'/?menu='+type,
-      size:120,foreground:'#0D2744',background:'#FFFFFF',level:'M'
-    });
+  const grid=document.getElementById('qr-grid-dynamic');
+  if(!grid)return;
+  grid.innerHTML='';
+  menuList.forEach(m=>{
+    const card=document.createElement('div');
+    card.className='qr-card';
+    card.innerHTML=`<div class="qr-card-title">${m.icon} ${m.name}</div>
+      <div class="qr-canvas-wrap"><canvas id="qr-${m.id}" width="120" height="120"></canvas></div>
+      <button class="qr-dl-btn" onclick="downloadQR('${m.id}','${m.name}')">⬇ Download QR</button>
+      <span class="qr-status" id="qrstatus-${m.id}"></span>`;
+    grid.appendChild(card);
+    setTimeout(()=>{
+      new QRious({element:document.getElementById('qr-'+m.id),value:BASE_URL+'/?menu='+m.id,size:120,foreground:'#0D2744',background:'#FFFFFF',level:'M'});
+    },50);
   });
 }
-
 function downloadQR(type,label){
   const canvas=document.getElementById('qr-'+type);
   const out=document.createElement('canvas');
