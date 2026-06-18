@@ -245,43 +245,12 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
     </div>
   </div>
 
-<!-- MENU SELECTOR -->
+  <!-- MENU SELECTOR -->
   <div class="sec-hd">
     <span>Select Menu to Manage</span>
     <button class="admin-tab admin-tab-add" onclick="openAddMenuModal()">+ Add Menu</button>
   </div>
-<div class="menu-selector" id="menu-selector-grid"></div>
-</div>
-</div>
-
-<!-- CUSTOMER VIEW -->
-<div id="view-customer" class="view">
-<div class="cw">
-  <div class="c-hero">
-    <img src="https://raw.githubusercontent.com/kunjilaldalsevwale-prog/banquetmenu/main/logo.png" alt="Kunjilal Food House" style="width:88%;max-width:400px;display:block;margin:0 auto 0.5rem">
-    <div class="c-div"><span class="c-line"></span><span class="c-dia"></span><span class="c-line"></span></div>
-    <div class="c-addr">Vidhya Nagar, Ramghat Road, Aligarh &nbsp;·&nbsp; +91-7088004440</div>
-  </div>
-  <div class="c-cat-nav">
-    <div class="c-cat-header" onclick="toggleCatPanel()">
-      <span class="c-cat-header-text" id="active-cat-name">☰ &nbsp;MENU</span>
-      <span class="c-cat-header-arrow" id="cat-arrow">▼</span>
-    </div>
-    <div class="c-cat-panel" id="cat-panel">
-      <div class="c-cat-grid" id="cust-cat-nav"></div>
-    </div>
-  </div>
-  <div class="c-content" id="cust-content"></div>
-  <div class="c-footer">
-    <strong>Kunjilal Food House</strong><br>
-    Vidhya Nagar, Ramghat Road, Aligarh, UP<br>
-    <a href="tel:+917088004440">📞 +91-7088004440</a> &nbsp;·&nbsp;
-    <a href="https://wa.me/917088004440">💬 WhatsApp</a>
-  </div>
-</div>
-</div>
-
-
+  <div class="menu-selector" id="menu-selector-grid"></div>
 
   <!-- UPLOAD ZONE -->
   <div class="sec-hd"><span id="upload-sec-title">📸 Upload Restaurant Menu</span></div>
@@ -322,8 +291,6 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
     </div>
     <div class="admin-tabs" id="cat-tabs"></div>
     <div id="cat-panels"></div>
-
-    <!-- RE-UPLOAD -->
     <div style="background:var(--cream);border:1px solid var(--pale);border-radius:10px;padding:1rem;text-align:center;margin-top:1rem;margin-bottom:1.5rem">
       <p style="font-size:0.72rem;color:var(--muted);margin-bottom:0.5rem">📸 Got a new menu? Upload a new photo to re-scan with AI</p>
       <button onclick="document.getElementById('menu-file').click()" style="padding:0.5rem 1.2rem;background:var(--royal);color:white;border:none;border-radius:6px;font-size:0.7rem;font-weight:600;cursor:pointer;font-family:'Raleway',sans-serif">Upload New Menu Photo</button>
@@ -335,21 +302,21 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
     💾 Save Menu to Server
   </button>
 
-<!-- QR CODES -->
+  <!-- QR CODES -->
   <div class="sec-hd">📱 QR Codes — Download & Print for Tables</div>
   <div class="qr-grid" id="qr-grid-dynamic"></div>
+
+</div>
+</div>
 
 <!-- CUSTOMER VIEW -->
 <div id="view-customer" class="view">
 <div class="cw">
-  <!-- HERO -->
   <div class="c-hero">
     <img src="https://raw.githubusercontent.com/kunjilaldalsevwale-prog/banquetmenu/main/logo.png" alt="Kunjilal Food House" style="width:88%;max-width:400px;display:block;margin:0 auto 0.5rem">
     <div class="c-div"><span class="c-line"></span><span class="c-dia"></span><span class="c-line"></span></div>
     <div class="c-addr">Vidhya Nagar, Ramghat Road, Aligarh &nbsp;·&nbsp; +91-7088004440</div>
   </div>
-
-  <!-- CATEGORY NAV -->
   <div class="c-cat-nav">
     <div class="c-cat-header" onclick="toggleCatPanel()">
       <span class="c-cat-header-text" id="active-cat-name">☰ &nbsp;MENU</span>
@@ -359,11 +326,7 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
       <div class="c-cat-grid" id="cust-cat-nav"></div>
     </div>
   </div>
-
-  <!-- MENU CONTENT -->
   <div class="c-content" id="cust-content"></div>
-
-  <!-- FOOTER -->
   <div class="c-footer">
     <strong>Kunjilal Food House</strong><br>
     Vidhya Nagar, Ramghat Road, Aligarh, UP<br>
@@ -372,6 +335,7 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
   </div>
 </div>
 </div>
+
 <!-- ITEM MODAL -->
 <div class="modal-bg" id="item-modal">
   <div class="modal-box">
@@ -408,7 +372,8 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
     </div>
   </div>
 </div>
-  <div class="modal-bg" id="add-menu-modal">
+
+<div class="modal-bg" id="add-menu-modal">
   <div class="modal-box">
     <div class="modal-title">Add New Menu</div>
     <label class="f-label">Menu Name *</label>
