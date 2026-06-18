@@ -215,6 +215,14 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 .toast{position:fixed;bottom:1.2rem;left:50%;transform:translateX(-50%) translateY(50px);background:var(--navy);color:white;padding:0.7rem 1.3rem;border-radius:8px;font-size:0.75rem;font-weight:500;border-left:3px solid var(--gold2);opacity:0;transition:all 0.3s;z-index:999;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
+  /* THEME PANEL */
+.theme-panel{background:var(--navy);border-radius:12px;padding:1.2rem;margin-bottom:1rem;display:none}
+.theme-panel.show{display:block}
+.theme-panel-title{font-family:'Cinzel',serif;font-size:0.85rem;color:var(--gold2);margin-bottom:0.8rem}
+
+/* BANNER SECTION */
+.banner-section{background:var(--cream);border:1px solid var(--pale);border-radius:10px;padding:1rem;margin-bottom:1rem;display:none}
+.banner-section.show{display:block}
 @media(max-width:560px){.menu-selector{grid-template-columns:1fr}.qr-grid{grid-template-columns:1fr}.f-row{grid-template-columns:1fr}.welcome{flex-direction:column;text-align:center}}
 </style>
 
@@ -282,7 +290,51 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
       <div style="font-size:0.7rem;color:var(--green);opacity:0.85" id="success-detail"></div>
     </div>
   </div>
+<!-- THEME PANEL -->
+<div class="theme-panel" id="theme-panel">
+  <div class="theme-panel-title">🎨 AI Suggested Theme — Approve or Tweak</div>
+  <div id="theme-preview-bar" style="height:8px;border-radius:4px;margin-bottom:0.8rem;background:linear-gradient(to right,#8B1A1A,#B8953F)"></div>
+  <div style="display:flex;gap:0.6rem;align-items:center;margin-bottom:0.5rem">
+    <span style="font-size:0.62rem;color:rgba(200,224,240,0.7);width:80px;flex:none">Primary</span>
+    <input type="color" id="theme-primary" value="#8B1A1A" oninput="updateThemePreview()" style="width:36px;height:28px;border-radius:5px;border:none;cursor:pointer">
+    <input id="theme-primary-hex" value="#8B1A1A" oninput="syncColor('primary')" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:5px;padding:0.3rem 0.5rem;color:white;font-size:0.72rem;font-family:Raleway,sans-serif;flex:1">
+  </div>
+  <div style="display:flex;gap:0.6rem;align-items:center;margin-bottom:0.5rem">
+    <span style="font-size:0.62rem;color:rgba(200,224,240,0.7);width:80px;flex:none">Accent</span>
+    <input type="color" id="theme-accent" value="#B8953F" oninput="updateThemePreview()" style="width:36px;height:28px;border-radius:5px;border:none;cursor:pointer">
+    <input id="theme-accent-hex" value="#B8953F" oninput="syncColor('accent')" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:5px;padding:0.3rem 0.5rem;color:white;font-size:0.72rem;font-family:Raleway,sans-serif;flex:1">
+  </div>
+  <div style="display:flex;gap:0.6rem;align-items:center;margin-bottom:0.5rem">
+    <span style="font-size:0.62rem;color:rgba(200,224,240,0.7);width:80px;flex:none">Background</span>
+    <input type="color" id="theme-bg" value="#FBF5E6" oninput="updateThemePreview()" style="width:36px;height:28px;border-radius:5px;border:none;cursor:pointer">
+    <input id="theme-bg-hex" value="#FBF5E6" oninput="syncColor('bg')" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:5px;padding:0.3rem 0.5rem;color:white;font-size:0.72rem;font-family:Raleway,sans-serif;flex:1">
+  </div>
+  <div style="display:flex;gap:0.4rem;margin-bottom:0.7rem;align-items:center">
+    <span style="font-size:0.62rem;color:rgba(200,224,240,0.7);width:80px;flex:none">Font Style</span>
+    <button onclick="setFont('serif',this)" id="font-serif" style="padding:0.3rem 0.6rem;background:var(--gold);color:var(--navy);border:1px solid var(--gold);border-radius:5px;font-size:0.62rem;cursor:pointer">Serif</button>
+    <button onclick="setFont('sans',this)" id="font-sans" style="padding:0.3rem 0.6rem;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:5px;color:rgba(255,255,255,0.8);font-size:0.62rem;cursor:pointer">Sans</button>
+    <button onclick="setFont('decorative',this)" id="font-decorative" style="padding:0.3rem 0.6rem;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:5px;color:rgba(255,255,255,0.8);font-size:0.62rem;cursor:pointer">Decorative</button>
+  </div>
+  <button onclick="approveTheme()" style="width:100%;padding:0.6rem;background:var(--gold);color:var(--navy);border:none;border-radius:8px;font-family:Cinzel,serif;font-size:0.78rem;font-weight:700;cursor:pointer">✓ Apply This Theme</button>
+</div>
 
+<!-- BANNER SECTION -->
+<div class="banner-section" id="banner-section">
+  <div style="font-family:Cinzel,serif;font-size:0.72rem;color:var(--navy);margin-bottom:0.6rem;font-weight:600">🖼 Menu Banner — Upload & Crop</div>
+  <input type="file" id="banner-file-input" accept="image/*" style="display:none" onchange="loadBannerImage(this)">
+  <button onclick="document.getElementById('banner-file-input').click()" style="padding:0.4rem 0.9rem;background:var(--royal);color:white;border:none;border-radius:6px;font-size:0.65rem;font-weight:600;cursor:pointer;font-family:Raleway,sans-serif">📁 Upload Banner Image</button>
+  <div style="font-size:0.6rem;color:var(--muted);margin-top:0.3rem">Drag to select the region you want as the banner</div>
+  <div id="banner-preview" style="position:relative;margin-top:0.6rem;display:none;border-radius:8px;overflow:hidden;border:2px solid var(--pale)">
+    <img id="banner-source-img" src="" style="width:100%;display:block">
+    <canvas id="crop-overlay" style="position:absolute;top:0;left:0;cursor:crosshair;width:100%;height:100%"></canvas>
+  </div>
+  <div id="crop-actions" style="display:none;gap:0.5rem;margin-top:0.5rem">
+    <button onclick="applyCrop()" style="flex:1;padding:0.4rem;background:#166534;color:white;border:none;border-radius:6px;font-size:0.65rem;font-weight:600;cursor:pointer">✓ Use Selected Region</button>
+    <button onclick="clearCrop()" style="flex:1;padding:0.4rem;background:#fee2e2;color:#991b1b;border:none;border-radius:6px;font-size:0.65rem;font-weight:600;cursor:pointer">✕ Clear</button>
+  </div>
+  <div id="banner-set-indicator" style="font-size:0.65rem;color:var(--green);margin-top:0.4rem;display:none">✓ Banner set for this menu</div>
+</div>
+  
   <!-- EDITOR -->
   <div class="editor-wrap" id="editor-wrap">
     <div class="sec-hd">
@@ -312,8 +364,8 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 <!-- CUSTOMER VIEW -->
 <div id="view-customer" class="view">
 <div class="cw">
-  <div class="c-hero">
-    <img src="https://raw.githubusercontent.com/kunjilaldalsevwale-prog/banquetmenu/main/logo.png" alt="Kunjilal Food House" style="width:88%;max-width:400px;display:block;margin:0 auto 0.5rem">
+<div class="c-hero">
+    <img id="banner-img" src="https://raw.githubusercontent.com/kunjilaldalsevwale-prog/banquetmenu/main/logo.png"
     <div class="c-div"><span class="c-line"></span><span class="c-dia"></span><span class="c-line"></span></div>
     <div class="c-addr">Vidhya Nagar, Ramghat Road, Aligarh &nbsp;·&nbsp; +91-7088004440</div>
   </div>
@@ -520,6 +572,12 @@ const mDef=menuList.find(m=>m.id===type)||{name:type};
     document.getElementById('success-card').classList.remove('show');
   }
   document.getElementById('scan-card').classList.remove('show');
+  document.getElementById('banner-section').classList.add('show');
+  document.getElementById('banner-set-indicator').style.display=allMenus[currentMenu]?.banner?'block':'none';
+  document.getElementById('banner-preview').style.display='none';
+  document.getElementById('crop-actions').style.display='none';
+  if(allMenus[currentMenu]?.theme) showThemeSuggestion(allMenus[currentMenu].theme);
+  else document.getElementById('theme-panel').classList.remove('show');
 }
 
 // UPDATE SELECTOR COUNTS
@@ -636,6 +694,8 @@ if(result.content && result.content[0]){
         renderAdminCats();
         updateCounts();
         await saveData();
+        if(parsed.theme) showThemeSuggestion(parsed.theme);
+        else document.getElementById('banner-section').classList.add('show');
         toast('✅ ' + MENU_NAMES[currentMenu] + ' menu saved! ' + total + ' items found.');
       }, 500);
       return;
@@ -797,6 +857,7 @@ function renderCustomer(){
   const tabsEl=document.getElementById('cust-cat-nav');
   const contentEl=document.getElementById('cust-content');
   tabsEl.innerHTML='';contentEl.innerHTML='';
+  applyMenuTheme(menuType);
 
   if(!cats.length){
     contentEl.innerHTML=`<div class="no-menu-box">
@@ -944,6 +1005,124 @@ function switchCatDropdown(catId){
   const sec = document.getElementById('csec-'+catId);
   if(sec) sec.classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
+}
+  // ── THEME ──
+let currentThemeFont='serif';
+function updateThemePreview(){
+  const p=document.getElementById('theme-primary').value;
+  const a=document.getElementById('theme-accent').value;
+  const b=document.getElementById('theme-bg').value;
+  document.getElementById('theme-primary-hex').value=p;
+  document.getElementById('theme-accent-hex').value=a;
+  document.getElementById('theme-bg-hex').value=b;
+  document.getElementById('theme-preview-bar').style.background='linear-gradient(to right,'+p+','+a+')';
+}
+function syncColor(w){
+  const h=document.getElementById('theme-'+w+'-hex').value;
+  if(/^#[0-9A-Fa-f]{6}$/.test(h)){document.getElementById('theme-'+w).value=h;updateThemePreview();}
+}
+function setFont(f,btn){
+  currentThemeFont=f;
+  ['serif','sans','decorative'].forEach(x=>{
+    const el=document.getElementById('font-'+x);
+    if(el){el.style.background=x===f?'var(--gold)':'rgba(255,255,255,0.1)';el.style.color=x===f?'var(--navy)':'rgba(255,255,255,0.8)';}
+  });
+}
+function showThemeSuggestion(t){
+  const p=t.primary||'#8B1A1A',a=t.accent||'#B8953F',b=t.bg||'#FBF5E6';
+  document.getElementById('theme-primary').value=p;
+  document.getElementById('theme-accent').value=a;
+  document.getElementById('theme-bg').value=b;
+  document.getElementById('theme-primary-hex').value=p;
+  document.getElementById('theme-accent-hex').value=a;
+  document.getElementById('theme-bg-hex').value=b;
+  currentThemeFont=t.font||'serif';
+  setFont(currentThemeFont,document.getElementById('font-'+currentThemeFont));
+  updateThemePreview();
+  document.getElementById('theme-panel').classList.add('show');
+  document.getElementById('banner-section').classList.add('show');
+}
+function approveTheme(){
+  const theme={primary:document.getElementById('theme-primary').value,accent:document.getElementById('theme-accent').value,bg:document.getElementById('theme-bg').value,font:currentThemeFont};
+  if(!allMenus[currentMenu])allMenus[currentMenu]={categories:[]};
+  allMenus[currentMenu].theme=theme;
+  saveData();
+  toast('✅ Theme applied!');
+  document.getElementById('theme-panel').classList.remove('show');
+}
+// ── BANNER CROP ──
+let cropState={active:false,startX:0,startY:0,x:0,y:0,w:0,h:0};
+let bannerNatW=0,bannerNatH=0;
+function loadBannerImage(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const img=document.getElementById('banner-source-img');
+    img.src=e.target.result;
+    img.onload=()=>{
+      bannerNatW=img.naturalWidth;bannerNatH=img.naturalHeight;
+      document.getElementById('banner-preview').style.display='block';
+      document.getElementById('crop-actions').style.display='flex';
+      setupCropCanvas();
+    };
+  };
+  reader.readAsDataURL(file);input.value='';
+}
+function setupCropCanvas(){
+  const img=document.getElementById('banner-source-img');
+  const canvas=document.getElementById('crop-overlay');
+  canvas.width=img.offsetWidth;canvas.height=img.offsetHeight;
+  cropState={active:false,startX:0,startY:0,x:0,y:0,w:0,h:0};
+  const getPos=(e)=>{const r=canvas.getBoundingClientRect();const pt=e.touches?e.touches[0]:e;return{x:pt.clientX-r.left,y:pt.clientY-r.top};};
+  canvas.onmousedown=canvas.ontouchstart=(e)=>{e.preventDefault();const p=getPos(e);cropState.startX=p.x;cropState.startY=p.y;cropState.active=true;};
+  canvas.onmousemove=canvas.ontouchmove=(e)=>{if(!cropState.active)return;e.preventDefault();const p=getPos(e);cropState.x=Math.min(cropState.startX,p.x);cropState.y=Math.min(cropState.startY,p.y);cropState.w=Math.abs(p.x-cropState.startX);cropState.h=Math.abs(p.y-cropState.startY);drawCrop();};
+  canvas.onmouseup=canvas.ontouchend=()=>{cropState.active=false;};
+}
+function drawCrop(){
+  const canvas=document.getElementById('crop-overlay');
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  if(cropState.w<5||cropState.h<5)return;
+  ctx.fillStyle='rgba(0,0,0,0.5)';ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.clearRect(cropState.x,cropState.y,cropState.w,cropState.h);
+  ctx.strokeStyle='white';ctx.lineWidth=2;ctx.setLineDash([6,3]);
+  ctx.strokeRect(cropState.x,cropState.y,cropState.w,cropState.h);
+}
+function applyCrop(){
+  const img=document.getElementById('banner-source-img');
+  const scaleX=bannerNatW/img.offsetWidth,scaleY=bannerNatH/img.offsetHeight;
+  const sx=(cropState.w>5?cropState.x:0)*scaleX;
+  const sy=(cropState.h>5?cropState.y:0)*scaleY;
+  const sw=(cropState.w>5?cropState.w:img.offsetWidth)*scaleX;
+  const sh=(cropState.h>5?cropState.h:img.offsetHeight)*scaleY;
+  const out=document.createElement('canvas');
+  const maxW=800;const ratio=Math.min(1,maxW/sw);
+  out.width=sw*ratio;out.height=sh*ratio;
+  out.getContext('2d').drawImage(img,sx,sy,sw,sh,0,0,out.width,out.height);
+  const b64=out.toDataURL('image/jpeg',0.8).split(',')[1];
+  if(!allMenus[currentMenu])allMenus[currentMenu]={categories:[]};
+  allMenus[currentMenu].banner=b64;
+  saveData();
+  document.getElementById('banner-set-indicator').style.display='block';
+  document.getElementById('crop-actions').style.display='none';
+  document.getElementById('banner-preview').style.display='none';
+  toast('✅ Banner saved!');
+}
+function clearCrop(){
+  cropState={active:false,startX:0,startY:0,x:0,y:0,w:0,h:0};
+  const canvas=document.getElementById('crop-overlay');
+  if(canvas)canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
+}
+// ── APPLY THEME IN CUSTOMER VIEW ──
+function applyMenuTheme(menuType){
+  const menuData=allMenus[menuType]||{};
+  const t=menuData.theme||{primary:'#8B1A1A',accent:'#B8953F',bg:'#FBF5E6',font:'serif'};
+  let s=document.getElementById('menu-theme-style');
+  if(!s){s=document.createElement('style');s.id='menu-theme-style';document.head.appendChild(s);}
+  const ff=t.font==='sans'?"'Raleway',sans-serif":t.font==='decorative'?"'Cinzel',serif":"'EB Garamond',serif";
+  s.textContent=`.cw{background:${t.bg}!important}.c-hero{background:${t.bg}!important}.c-cat-nav,.c-sec-header{background:${t.primary}!important}.c-sec-name,.c-cat-header-text{color:${t.bg}!important}.c-item-price{color:${t.primary}!important}.c-dia{background:${t.accent}!important}.c-item-name{font-family:${ff}!important}.c-cat-tile.active{background:${t.bg}!important;color:${t.primary}!important}.c-footer{background:${t.bg}!important}`;
+  const bannerImg=document.getElementById('banner-img');
+  if(bannerImg&&menuData.banner){bannerImg.src='data:image/jpeg;base64,'+menuData.banner;}
 }
 
 function toast(msg){
