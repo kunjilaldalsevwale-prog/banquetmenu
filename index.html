@@ -251,6 +251,35 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
     <button class="admin-tab admin-tab-add" onclick="openAddMenuModal()">+ Add Menu</button>
   </div>
 <div class="menu-selector" id="menu-selector-grid"></div>
+</div>
+</div>
+
+<!-- CUSTOMER VIEW -->
+<div id="view-customer" class="view">
+<div class="cw">
+  <div class="c-hero">
+    <img src="https://raw.githubusercontent.com/kunjilaldalsevwale-prog/banquetmenu/main/logo.png" alt="Kunjilal Food House" style="width:88%;max-width:400px;display:block;margin:0 auto 0.5rem">
+    <div class="c-div"><span class="c-line"></span><span class="c-dia"></span><span class="c-line"></span></div>
+    <div class="c-addr">Vidhya Nagar, Ramghat Road, Aligarh &nbsp;·&nbsp; +91-7088004440</div>
+  </div>
+  <div class="c-cat-nav">
+    <div class="c-cat-header" onclick="toggleCatPanel()">
+      <span class="c-cat-header-text" id="active-cat-name">☰ &nbsp;MENU</span>
+      <span class="c-cat-header-arrow" id="cat-arrow">▼</span>
+    </div>
+    <div class="c-cat-panel" id="cat-panel">
+      <div class="c-cat-grid" id="cust-cat-nav"></div>
+    </div>
+  </div>
+  <div class="c-content" id="cust-content"></div>
+  <div class="c-footer">
+    <strong>Kunjilal Food House</strong><br>
+    Vidhya Nagar, Ramghat Road, Aligarh, UP<br>
+    <a href="tel:+917088004440">📞 +91-7088004440</a> &nbsp;·&nbsp;
+    <a href="https://wa.me/917088004440">💬 WhatsApp</a>
+  </div>
+</div>
+</div>
 
 
 
@@ -676,7 +705,7 @@ function renderAdminCats(){
   const tabsEl   = document.getElementById('cat-tabs');
   const panelsEl = document.getElementById('cat-panels');
   tabsEl.innerHTML=''; panelsEl.innerHTML='';
-
+console.log('rendering cats:', cats.length, 'menuType:', menuType);
   if(!cats.length){
     panelsEl.innerHTML='<div style="text-align:center;padding:1.5rem;color:var(--muted);font-size:0.78rem">No categories yet. Upload a menu photo or click "+ Add Category"</div>';
     return;
