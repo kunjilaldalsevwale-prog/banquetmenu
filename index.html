@@ -496,7 +496,12 @@ function switchView(v,btn){
   document.querySelectorAll('.tb-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('view-'+v).classList.add('active');
   btn.classList.add('active');
-  if(v==='customer'){ window._previewMenu=currentMenu; renderCustomer(); window._previewMenu=null; }
+if(v==='customer'){ 
+    window._previewMenu=currentMenu;
+    console.log('Preview menu:', currentMenu, 'cats:', allMenus[currentMenu]?.categories?.length);
+    renderCustomer();
+    window._previewMenu=null;
+  }
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
