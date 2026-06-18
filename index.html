@@ -496,7 +496,7 @@ function switchView(v,btn){
   document.querySelectorAll('.tb-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('view-'+v).classList.add('active');
   btn.classList.add('active');
-  if(v==='customer') renderCustomer();
+  if(v==='customer'){ window._previewMenu=currentMenu; renderCustomer(); window._previewMenu=null; }
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -793,7 +793,7 @@ function closeModal(){document.getElementById('item-modal').classList.remove('sh
 // CUSTOMER RENDER
 function renderCustomer(){
   const params=new URLSearchParams(window.location.search);
-  const menuType=params.get('menu')||'restaurant';
+  const menuType=window._previewMenu||params.get('menu')||'restaurant';
   const cats=allMenus[menuType]?.categories||[];
   const tabsEl=document.getElementById('cust-cat-nav');
   const contentEl=document.getElementById('cust-content');
