@@ -1038,10 +1038,10 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   if(menuParam){
     // CUSTOMER MODE — show menu immediately, load data in background
     document.getElementById('topbar').style.display = 'none';
-    document.getElementById('view-admin').style.display = 'none';
+    document.getElementById('view-admin').classList.remove('active');
     document.getElementById('passcode-screen').style.display = 'none';
     const sb=document.querySelector('.save-bar'); if(sb) sb.style.display='none';
-    document.getElementById('view-customer').style.display = 'block';
+    document.getElementById('view-customer').classList.add('active');
     await loadData();
     renderCustomer();
   } else {
