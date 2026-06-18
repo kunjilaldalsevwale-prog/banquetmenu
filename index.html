@@ -909,21 +909,21 @@ function downloadQR(type,label){
 }
 
 async function manualSave(){
-  const btn = document.getElementById('save-btn');
+  const btn = document.getElementById('save-menu-btn');
   btn.textContent = '⏳ Saving...';
-  btn.className = 'save-bar-btn saving';
+  btn.className = 'save-menu-btn saving';
   try {
     await saveData();
     btn.textContent = '✅ Saved!';
-    btn.className = 'save-bar-btn saved';
+    btn.className = 'save-menu-btn saved';
     toast('✅ Menu saved successfully!');
     setTimeout(()=>{
       btn.textContent = '💾 Save Menu';
-      btn.className = 'save-bar-btn';
+      btn.className = 'save-menu-btn';
     }, 3000);
   } catch(e) {
     btn.textContent = '💾 Save Menu';
-    btn.className = 'save-bar-btn';
+    btn.className = 'save-menu-btn';
     toast('⚠ Save failed. Try again.');
   }
 }
