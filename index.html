@@ -1295,6 +1295,8 @@ window.addEventListener('DOMContentLoaded', async ()=>{
     generateQRs();
     updateCounts();
     showSaveBar();
+        document.getElementById('banner-section').classList.add('show'); // ← add this
+
     if(allMenus.restaurant.categories.length > 0){
       document.getElementById('editor-wrap').classList.add('show');
       document.getElementById('success-card').classList.add('show');
