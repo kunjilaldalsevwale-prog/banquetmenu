@@ -533,9 +533,8 @@ if(data.menuList) menuList=data.menuList;
     const s=localStorage.getItem(STORE_KEY);
     if(s){ allMenus=JSON.parse(s); return; }
   }catch(e){}
-  // Last resort: preload
+// Last resort: preload — never save to server from here
   allMenus.restaurant = restaurantPreload;
-  await saveData();
 }
 async function saveData(){
   // Save to server
