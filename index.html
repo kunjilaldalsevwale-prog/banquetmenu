@@ -518,11 +518,7 @@ if(data.menuList) menuList=data.menuList;
       const menus=data.menus||data;
       const hasData = Object.values(menus).some(m=>m&&m.categories&&m.categories.length>0);
       if(hasData){ 
-        allMenus=menus;
-        if(allMenus['menu_1781782261752']&&(!allMenus['menu_1781615571166']||!allMenus['menu_1781615571166'].categories||!allMenus['menu_1781615571166'].categories.length)){
-          allMenus['menu_1781615571166']=allMenus['menu_1781782261752'];
-          saveData();
-        }
+        allMenus=menus;      
         return;
       }
     }
