@@ -13,6 +13,7 @@ export default async function handler(req, res) {
     {id:'banquet',    name:'Banquet Hall', icon:'🏛'},
     {id:'chaat',      name:'Chaat Adda',   icon:'🌶'}
   ];
+
   const empty = {
     menuList: defaultMenuList,
     menus: { restaurant:{categories:[]}, banquet:{categories:[]}, chaat:{categories:[]} }
@@ -22,7 +23,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Redis not configured' });
   }
 
-  // GET
+  // ── GET ──
   if (req.method === 'GET') {
     try {
       const r = await fetch(`${REDIS_URL}/get/${KEY}`, {
@@ -44,16 +45,29 @@ export default async function handler(req, res) {
     }
   }
 
-  // POST - save both menuList and menus
+  // ── POST ──
   if (req.method === 'POST') {
     try {
       const { menuList, menus } = req.body;
       if (!menus) return res.status(400).json({ error: 'No data' });
 
+      // Strip base64 banner and customQR images before saving to Redis.
+      // These are large (100KB+) and corrupt the payload, causing silent save failures.
+      // They are stored in localStorage on the client side only.
+      const cleanMenus = {};
+      for (const [id, menu] of Object.entries(menus)) {
+        cleanMenus[id] = {
+          categories: menu.categories || [],
+          theme: menu.theme || null
+          // banner and customQR intentionally excluded — too large for Redis
+        };
+      }
+
       const payload = {
         menuList: menuList || defaultMenuList,
-        menus: menus
+        menus: cleanMenus
       };
+
       const value = JSON.stringify(payload);
 
       const r = await fetch(`${REDIS_URL}/pipeline`, {
@@ -68,10 +82,11 @@ export default async function handler(req, res) {
       const result = await r.json();
       if (r.ok) return res.status(200).json({ success: true });
       return res.status(500).json({ error: result });
+
     } catch(e) {
       return res.status(500).json({ error: e.message });
     }
   }
 
   return res.status(405).json({ error: 'Method not allowed' });
-} 
+}
