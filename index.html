@@ -4,18 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Food House — Menu Manager</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Raleway:wght@300;400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --hide-admin: block;
-}
-#passcode-screen[data-customer="true"],
-body[data-customer="true"] #passcode-screen,
-body[data-customer="true"] .topbar,
-body[data-customer="true"] #view-admin,
-body[data-customer="true"] .save-bar{display:none!important}
 :root{
   --navy:#0D2744;--royal:#1A4A7A;--mid:#2E6FA8;--gold:#B8953F;--gold2:#D4AC5C;
   --pale:#C8E0F0;--ivory:#FBF8F2;--cream:#F5F0E8;--white:#fff;
@@ -25,8 +17,6 @@ body[data-customer="true"] .save-bar{display:none!important}
   --orange:#92400e;--orange-bg:#fef3c7;--orange-bd:#fcd34d;
 }
 body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);min-height:100vh;-webkit-tap-highlight-color:transparent}
-
-/* TOPBAR */
 .topbar{background:var(--navy);height:52px;padding:0 1rem;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:200}
 .tb-brand{font-family:'Cinzel',serif;font-size:0.82rem;font-weight:700;color:var(--gold2)}
 .tb-sub{font-size:0.48rem;color:rgba(200,224,240,0.5);letter-spacing:0.15em;text-transform:uppercase}
@@ -34,10 +24,8 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 .tb-btn{padding:0.38rem 0.75rem;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;border:none;background:none;color:rgba(200,224,240,0.6);cursor:pointer;font-weight:600;font-family:'Raleway',sans-serif;transition:all 0.2s;white-space:nowrap}
 .tb-btn.active{background:var(--gold);color:var(--navy)}
 .view{display:none}.view.active{display:block}
-
-/* ADMIN */
 .aw{max-width:860px;margin:0 auto;padding:1.2rem 1rem 5rem}
-.welcome{background:var(--navy);border-radius:12px;padding:1.3rem 1.4rem;margin-bottom:1.3rem;display:flex;gap:1rem;align-items:center;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50'%3E%3Ccircle cx='25' cy='25' r='8' fill='none' stroke='%235B9FD4' stroke-width='0.5' opacity='0.15'/%3E%3C/svg%3E")}
+.welcome{background:var(--navy);border-radius:12px;padding:1.3rem 1.4rem;margin-bottom:1.3rem;display:flex;gap:1rem;align-items:center}
 .w-icon{font-size:1.8rem;width:48px;height:48px;background:var(--gold);border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none}
 .w-title{font-family:'Cinzel',serif;font-size:1rem;color:var(--white);margin-bottom:0.2rem}
 .w-sub{font-size:0.7rem;color:rgba(200,224,240,0.65);line-height:1.5}
@@ -45,8 +33,6 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 .live-dot{width:5px;height:5px;border-radius:50%;background:#4ade80;animation:blink 1.4s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
 @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
-
-/* MENU TYPE SELECTOR */
 .menu-selector{display:grid;grid-template-columns:repeat(3,1fr);gap:0.8rem;margin-bottom:1.3rem}
 .menu-sel-btn{background:var(--white);border:2px solid var(--pale);border-radius:10px;padding:0.9rem 0.5rem;text-align:center;cursor:pointer;transition:all 0.2s;font-family:'Raleway',sans-serif}
 .menu-sel-btn:hover{border-color:var(--mid)}
@@ -56,8 +42,6 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 .menu-sel-count{font-size:0.58rem;color:var(--muted)}
 .menu-sel-status{font-size:0.55rem;font-weight:600;margin-top:0.25rem;display:block}
 .status-live{color:var(--green)}.status-empty{color:var(--red)}
-
-/* UPLOAD ZONE */
 .sec-hd{font-family:'Cinzel',serif;font-size:0.78rem;font-weight:600;color:var(--navy);letter-spacing:0.1em;text-transform:uppercase;padding-bottom:0.5rem;border-bottom:2px solid var(--pale);margin-bottom:0.9rem;display:flex;align-items:center;justify-content:space-between}
 .upload-zone{border:2px dashed var(--pale);border-radius:12px;padding:1.8rem 1.2rem;text-align:center;background:var(--white);cursor:pointer;transition:all 0.2s;margin-bottom:1rem}
 .upload-zone:hover,.upload-zone.drag{border-color:var(--royal);background:rgba(26,74,122,0.03)}
@@ -66,8 +50,6 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 .upload-zone h3{font-family:'Cinzel',serif;font-size:0.95rem;color:var(--navy);margin-bottom:0.3rem}
 .upload-zone p{font-size:0.7rem;color:var(--muted);line-height:1.5}
 .upload-hint{font-size:0.62rem;color:var(--gold);margin-top:0.4rem;font-weight:600;display:block}
-
-/* SCAN STATE */
 .scan-card{background:var(--navy);border-radius:12px;padding:1.5rem;text-align:center;display:none;margin-bottom:1rem}
 .scan-card.show{display:block}
 .scan-spinner{font-size:2rem;animation:spin 1s linear infinite;display:block;margin-bottom:0.6rem}
@@ -76,21 +58,20 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 .scan-sub{font-size:0.7rem;color:rgba(200,224,240,0.65);line-height:1.5}
 .scan-bar{height:4px;background:rgba(255,255,255,0.1);border-radius:2px;margin-top:0.8rem;overflow:hidden}
 .scan-fill{height:100%;background:linear-gradient(to right,var(--royal),var(--gold));border-radius:2px;width:0;transition:width 0.4s}
-
-/* SUCCESS */
 .success-card{background:var(--green-bg);border:1px solid var(--green-bd);border-radius:10px;padding:0.9rem 1.1rem;margin-bottom:1rem;display:none;align-items:center;gap:0.8rem}
 .success-card.show{display:flex}
-
-/* EDITOR */
-.editor-wrap{display:none}
-.editor-wrap.show{display:block}
+.editor-wrap{display:none}.editor-wrap.show{display:block}
 .admin-tabs{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:1rem}
 .admin-tab{padding:0.4rem 0.8rem;font-size:0.62rem;letter-spacing:0.06em;text-transform:uppercase;border:1px solid var(--pale);background:var(--white);color:var(--muted);cursor:pointer;border-radius:6px;font-weight:600;font-family:'Raleway',sans-serif;transition:all 0.2s}
 .admin-tab.active{background:var(--navy);color:var(--gold2);border-color:var(--navy)}
 .admin-tab-add{background:var(--gold);color:var(--navy);border-color:var(--gold)}
 .cat-panel{display:none}.cat-panel.active{display:block}
-.item-list{display:grid;gap:0.5rem;margin-bottom:0.8rem}
-.admin-item{background:var(--white);border:1px solid var(--pale);border-radius:8px;padding:0.65rem 0.85rem;display:flex;align-items:center;gap:0.6rem}
+.item-list{display:grid;gap:0.5rem;margin-bottom:0.8rem;min-height:40px}
+.admin-item{background:var(--white);border:1px solid var(--pale);border-radius:8px;padding:0.65rem 0.85rem;display:flex;align-items:center;gap:0.6rem;cursor:grab;transition:all 0.15s}
+.admin-item:active{cursor:grabbing}
+.admin-item.dragging{opacity:0.4;border:2px dashed var(--mid)}
+.drag-handle{color:var(--pale);font-size:0.9rem;cursor:grab;flex:none;padding:0 2px;user-select:none}
+.item-list.drag-over{background:rgba(46,111,168,0.06);border-radius:8px;border:2px dashed var(--royal);padding:0.3rem}
 .admin-item-info{flex:1;min-width:0}
 .admin-item-name{font-size:0.82rem;font-weight:600;color:var(--text)}
 .admin-item-desc{font-size:0.65rem;color:var(--muted);font-style:italic;margin-top:0.1rem}
@@ -107,8 +88,6 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 .cat-name-input{flex:1;min-width:120px;border:1px solid var(--pale);border-radius:5px;padding:0.38rem 0.6rem;font-size:0.8rem;font-family:'Cinzel',serif;color:var(--navy);background:var(--white);outline:none;font-weight:600}
 .btn-rename{padding:0.38rem 0.7rem;background:var(--royal);color:white;border:none;border-radius:5px;font-size:0.6rem;font-weight:600;cursor:pointer;font-family:'Raleway',sans-serif}
 .btn-delete-cat{padding:0.38rem 0.7rem;background:var(--red-bg);color:var(--red);border:1px solid var(--red-bd);border-radius:5px;font-size:0.6rem;font-weight:600;cursor:pointer;font-family:'Raleway',sans-serif}
-
-/* QR */
 .qr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.8rem;margin-bottom:1rem}
 .qr-card{background:var(--white);border:1px solid var(--pale);border-radius:10px;padding:0.9rem;text-align:center}
 .qr-card-title{font-size:0.65rem;font-weight:700;color:var(--navy);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem}
@@ -116,16 +95,8 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 .qr-canvas-wrap canvas{border-radius:6px;border:1px solid var(--pale)}
 .qr-dl-btn{width:100%;padding:0.45rem;background:var(--navy);color:var(--gold2);border:none;border-radius:5px;font-size:0.6rem;font-weight:700;cursor:pointer;font-family:'Raleway',sans-serif}
 .qr-status{font-size:0.58rem;margin-top:0.3rem;display:block}
-
-/* CUSTOMER */
 .cw{max-width:520px;margin:0 auto;background:#FBF5E6;min-height:100vh}
 .c-hero{background:#FBF5E6;text-align:center;padding:0;border-bottom:3px solid #8B1A1A;overflow:hidden;line-height:0;font-size:0}
-.c-addr{font-size:0.62rem;color:#8B6355;margin-top:0.4rem;letter-spacing:0.05em}
-.c-div{display:flex;align-items:center;gap:0.5rem;justify-content:center;margin:0.5rem 0}
-.c-line{flex:1;max-width:60px;height:1px;background:rgba(139,26,26,0.2)}
-.c-dia{width:5px;height:5px;background:#B8953F;transform:rotate(45deg)}
-
-/* CATEGORY NAV */
 .c-cat-nav{background:#8B1A1A;border-bottom:3px solid #5C0F0F;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.3)}
 .c-cat-header{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1rem;cursor:pointer;user-select:none}
 .c-cat-header-text{font-size:0.8rem;font-weight:700;color:#FBF5E6;font-family:'Cinzel',serif;letter-spacing:0.1em;text-transform:uppercase}
@@ -137,20 +108,16 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 .c-cat-tile{padding:0.55rem 0.3rem;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:5px;font-size:0.58rem;font-weight:700;color:rgba(255,245,230,0.8);cursor:pointer;text-align:center;font-family:'Cinzel',serif;transition:all 0.2s;letter-spacing:0.04em;text-transform:uppercase;line-height:1.3}
 .c-cat-tile.active{background:#FBF5E6;color:#8B1A1A;border-color:#FBF5E6}
 .c-cat-tile:hover{background:rgba(255,255,255,0.2);color:white}
-
-/* MENU CONTENT */
 .c-content{padding:0 0 5rem}
 .c-section{display:none}
 .c-section.active{display:block;animation:fadeUp 0.2s ease}
 @keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
-
 .c-sec-header{background:#8B1A1A;padding:0.8rem 1rem;display:flex;align-items:center;gap:0.6rem;position:relative}
 .c-sec-header::after{content:'';position:absolute;bottom:-6px;left:1rem;right:1rem;height:1px;background:rgba(139,26,26,0.2)}
 .c-sec-title-wrap{flex:1}
 .c-sec-eyebrow{display:none}
 .c-sec-name{font-family:'Cinzel',serif;font-size:1.15rem;font-weight:700;color:#FBF5E6;letter-spacing:0.05em}
 .c-sec-ornament{width:32px;height:32px;opacity:0.25}
-
 .c-items-wrap{padding:0.8rem 1rem}
 .c-item{display:flex;align-items:start;justify-content:space-between;gap:0.8rem;padding:0.75rem 0;border-bottom:1px solid rgba(139,26,26,0.12)}
 .c-item:last-child{border-bottom:none}
@@ -163,7 +130,6 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 .c-item-desc{font-size:0.68rem;color:#8B6355;margin-top:0.15rem;font-style:italic;line-height:1.4}
 .c-item-price{font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:#8B1A1A;white-space:nowrap;padding-top:0.1rem}
 .c-item-price::before{content:'₹';font-size:0.7rem;opacity:0.7;margin-right:1px}
-
 .no-menu-box{text-align:center;padding:4rem 1.5rem;background:#FBF5E6}
 .no-menu-box .ico{font-size:3rem;display:block;margin-bottom:1rem}
 .no-menu-box h3{font-family:'Cinzel',serif;font-size:1.1rem;color:#8B1A1A;margin-bottom:0.4rem}
@@ -171,8 +137,6 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 .c-footer{text-align:center;padding:1.5rem 1rem;font-size:0.65rem;color:#8B6355;line-height:2.2;border-top:2px solid rgba(139,26,26,0.15);background:#FBF5E6}
 .c-footer strong{color:#8B1A1A;font-family:'Cinzel',serif}
 .c-footer a{color:#8B1A1A;text-decoration:none;font-weight:700}
-
-/* MODALS */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(10,30,53,0.7);z-index:300;align-items:center;justify-content:center;padding:1rem}
 .modal-bg.show{display:flex}
 .modal-box{background:white;border-radius:12px;padding:1.5rem;width:100%;max-width:380px}
@@ -185,19 +149,14 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 .f-btn-row{display:flex;gap:0.5rem;justify-content:flex-end;margin-top:0.5rem}
 .f-btn-save{padding:0.5rem 1.2rem;background:var(--navy);color:var(--gold2);border:none;border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer;font-family:'Raleway',sans-serif}
 .f-btn-cancel{padding:0.5rem 1rem;background:none;color:var(--muted);border:1px solid var(--pale);border-radius:6px;font-size:0.7rem;cursor:pointer;font-family:'Raleway',sans-serif}
-
 .save-menu-btn{display:block;width:100%;padding:0.9rem;background:linear-gradient(135deg,var(--royal),var(--navy));color:var(--gold2);border:none;border-radius:10px;font-family:'Cinzel',serif;font-size:0.9rem;font-weight:600;letter-spacing:0.1em;cursor:pointer;margin-bottom:1.4rem;transition:all 0.2s;box-shadow:0 4px 15px rgba(13,39,68,0.3)}
 .save-menu-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(13,39,68,0.4)}
-.save-menu-btn:active{transform:translateY(0)}
 .save-menu-btn.saving{background:var(--muted);cursor:not-allowed}
 .save-menu-btn.saved{background:linear-gradient(135deg,var(--green),#14532d);color:white}
 .save-bar{position:fixed;bottom:0;left:0;right:0;background:var(--navy);padding:0.8rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;border-top:2px solid var(--gold);z-index:150}
 .save-bar-text{font-size:0.7rem;color:rgba(200,224,240,0.7)}
-.save-bar-btn{padding:0.6rem 1.5rem;background:var(--gold);color:var(--navy);border:none;border-radius:6px;font-family:'Cinzel',serif;font-size:0.75rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:0.4rem;white-space:nowrap}
+.save-bar-btn{padding:0.6rem 1.5rem;background:var(--gold);color:var(--navy);border:none;border-radius:6px;font-family:'Cinzel',serif;font-size:0.75rem;font-weight:700;cursor:pointer;white-space:nowrap}
 .save-bar-btn:hover{background:var(--gold2)}
-.save-bar-btn.saving{background:var(--royal);color:white;pointer-events:none}
-.save-bar-btn.saved{background:var(--green-bg);color:var(--green);border:1px solid var(--green-bd)}
-/* PASSCODE SCREEN */
 .passcode-screen{position:fixed;inset:0;background:#0D2744;z-index:500;display:none;align-items:center;justify-content:center;padding:1rem}
 .passcode-box{background:white;border-radius:16px;padding:2rem;width:100%;max-width:340px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.4)}
 .passcode-logo{font-family:'Cinzel',serif;font-size:1.2rem;font-weight:700;color:#0D2744;margin-bottom:0.3rem}
@@ -211,21 +170,14 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 .passcode-btn:active{background:#0D2744;color:white;transform:scale(0.95)}
 .passcode-clear{padding:1rem;background:#fee2e2;border:1px solid #fca5a5;border-radius:10px;font-size:1rem;color:#991b1b;cursor:pointer;font-family:'Raleway',sans-serif;transition:all 0.15s}
 .passcode-error{font-size:0.72rem;color:#991b1b;margin-top:0.5rem;min-height:1rem;font-weight:600}
-.passcode-screen.hidden{display:none}
 .toast{position:fixed;bottom:1.2rem;left:50%;transform:translateX(-50%) translateY(50px);background:var(--navy);color:white;padding:0.7rem 1.3rem;border-radius:8px;font-size:0.75rem;font-weight:500;border-left:3px solid var(--gold2);opacity:0;transition:all 0.3s;z-index:999;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-  /* THEME PANEL */
 .theme-panel{background:var(--navy);border-radius:12px;padding:1.2rem;margin-bottom:1rem;display:none}
 .theme-panel.show{display:block}
 .theme-panel-title{font-family:'Cinzel',serif;font-size:0.85rem;color:var(--gold2);margin-bottom:0.8rem}
-
-/* BANNER SECTION */
-.banner-section{background:var(--cream);border:1px solid var(--pale);border-radius:10px;padding:1rem;margin-bottom:1rem;display:none}
-.banner-section.show{display:block}
+.banner-section{background:var(--cream);border:1px solid var(--pale);border-radius:10px;padding:1rem;margin-bottom:1rem}
 @media(max-width:560px){.menu-selector{grid-template-columns:1fr}.qr-grid{grid-template-columns:1fr}.f-row{grid-template-columns:1fr}.welcome{flex-direction:column;text-align:center}}
 </style>
-
 </head>
 <body>
 
@@ -240,10 +192,8 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
   </div>
 </div>
 
-<!-- ADMIN -->
 <div id="view-admin" class="view active">
 <div class="aw">
-
   <div class="welcome">
     <div class="w-icon">✨</div>
     <div>
@@ -253,15 +203,13 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
     </div>
   </div>
 
-  <!-- MENU SELECTOR -->
   <div class="sec-hd">
     <span>Select Menu to Manage</span>
     <button class="admin-tab admin-tab-add" onclick="openAddMenuModal()">+ Add Menu</button>
   </div>
   <div class="menu-selector" id="menu-selector-grid"></div>
 
-  <!-- UPLOAD ZONE -->
-  <div class="sec-hd"><span id="upload-sec-title">📸 Upload Restaurant Menu</span></div>
+  <div class="sec-hd"><span id="upload-sec-title">📸 Upload Menu</span></div>
   <div class="upload-zone" id="upload-zone"
     onclick="document.getElementById('menu-file').click()"
     ondragover="event.preventDefault();this.classList.add('drag')"
@@ -274,7 +222,6 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
     <span class="upload-hint">✨ Powered by Claude AI · Select multiple images · Instant scanning</span>
   </div>
 
-  <!-- SCAN STATE -->
   <div class="scan-card" id="scan-card">
     <span class="scan-spinner">🔍</span>
     <div class="scan-title" id="scan-title">AI is Reading Your Menu...</div>
@@ -282,7 +229,6 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
     <div class="scan-bar"><div class="scan-fill" id="scan-fill"></div></div>
   </div>
 
-  <!-- SUCCESS -->
   <div class="success-card" id="success-card">
     <span style="font-size:1.5rem">✅</span>
     <div>
@@ -290,56 +236,58 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
       <div style="font-size:0.7rem;color:var(--green);opacity:0.85" id="success-detail"></div>
     </div>
   </div>
-<!-- THEME PANEL -->
-<div class="theme-panel" id="theme-panel">
-  <div class="theme-panel-title">🎨 AI Suggested Theme — Approve or Tweak</div>
-  <div id="theme-preview-bar" style="height:8px;border-radius:4px;margin-bottom:0.8rem;background:linear-gradient(to right,#8B1A1A,#B8953F)"></div>
-  <div style="display:flex;gap:0.6rem;align-items:center;margin-bottom:0.5rem">
-    <span style="font-size:0.62rem;color:rgba(200,224,240,0.7);width:80px;flex:none">Primary</span>
-    <input type="color" id="theme-primary" value="#8B1A1A" oninput="updateThemePreview()" style="width:36px;height:28px;border-radius:5px;border:none;cursor:pointer">
-    <input id="theme-primary-hex" value="#8B1A1A" oninput="syncColor('primary')" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:5px;padding:0.3rem 0.5rem;color:white;font-size:0.72rem;font-family:Raleway,sans-serif;flex:1">
-  </div>
-  <div style="display:flex;gap:0.6rem;align-items:center;margin-bottom:0.5rem">
-    <span style="font-size:0.62rem;color:rgba(200,224,240,0.7);width:80px;flex:none">Accent</span>
-    <input type="color" id="theme-accent" value="#B8953F" oninput="updateThemePreview()" style="width:36px;height:28px;border-radius:5px;border:none;cursor:pointer">
-    <input id="theme-accent-hex" value="#B8953F" oninput="syncColor('accent')" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:5px;padding:0.3rem 0.5rem;color:white;font-size:0.72rem;font-family:Raleway,sans-serif;flex:1">
-  </div>
-  <div style="display:flex;gap:0.6rem;align-items:center;margin-bottom:0.5rem">
-    <span style="font-size:0.62rem;color:rgba(200,224,240,0.7);width:80px;flex:none">Background</span>
-    <input type="color" id="theme-bg" value="#FBF5E6" oninput="updateThemePreview()" style="width:36px;height:28px;border-radius:5px;border:none;cursor:pointer">
-    <input id="theme-bg-hex" value="#FBF5E6" oninput="syncColor('bg')" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:5px;padding:0.3rem 0.5rem;color:white;font-size:0.72rem;font-family:Raleway,sans-serif;flex:1">
-  </div>
-  <div style="display:flex;gap:0.4rem;margin-bottom:0.7rem;align-items:center">
-    <span style="font-size:0.62rem;color:rgba(200,224,240,0.7);width:80px;flex:none">Font Style</span>
-    <button onclick="setFont('serif',this)" id="font-serif" style="padding:0.3rem 0.6rem;background:var(--gold);color:var(--navy);border:1px solid var(--gold);border-radius:5px;font-size:0.62rem;cursor:pointer">Serif</button>
-    <button onclick="setFont('sans',this)" id="font-sans" style="padding:0.3rem 0.6rem;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:5px;color:rgba(255,255,255,0.8);font-size:0.62rem;cursor:pointer">Sans</button>
-    <button onclick="setFont('decorative',this)" id="font-decorative" style="padding:0.3rem 0.6rem;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:5px;color:rgba(255,255,255,0.8);font-size:0.62rem;cursor:pointer">Decorative</button>
-  </div>
-  <button onclick="approveTheme()" style="width:100%;padding:0.6rem;background:var(--gold);color:var(--navy);border:none;border-radius:8px;font-family:Cinzel,serif;font-size:0.78rem;font-weight:700;cursor:pointer">✓ Apply This Theme</button>
-</div>
 
-<!-- BANNER SECTION -->
-<div class="banner-section" id="banner-section">
-  <div style="font-family:Cinzel,serif;font-size:0.72rem;color:var(--navy);margin-bottom:0.6rem;font-weight:600">🖼 Menu Banner — Upload & Crop</div>
-  <input type="file" id="banner-file-input" accept="image/*" style="display:none" onchange="loadBannerImage(this)">
-  <button onclick="document.getElementById('banner-file-input').click()" style="padding:0.4rem 0.9rem;background:var(--royal);color:white;border:none;border-radius:6px;font-size:0.65rem;font-weight:600;cursor:pointer;font-family:Raleway,sans-serif">📁 Upload Banner Image</button>
-  <div style="font-size:0.6rem;color:var(--muted);margin-top:0.3rem">Drag to select the region you want as the banner</div>
-  <div id="banner-preview" style="position:relative;margin-top:0.6rem;display:none;border-radius:8px;overflow:auto;border:2px solid var(--pale);max-height:400px">
-    <img id="banner-source-img" src="" style="width:100%;display:block">
-    <canvas id="crop-overlay" style="position:absolute;top:0;left:0;cursor:crosshair;width:100%;height:100%"></canvas>
+  <div class="theme-panel" id="theme-panel">
+    <div class="theme-panel-title">🎨 Theme — Customise Colors & Font</div>
+    <div id="theme-preview-bar" style="height:8px;border-radius:4px;margin-bottom:0.8rem;background:linear-gradient(to right,#8B1A1A,#B8953F)"></div>
+    <div style="display:flex;gap:0.6rem;align-items:center;margin-bottom:0.5rem">
+      <span style="font-size:0.62rem;color:rgba(200,224,240,0.7);width:80px;flex:none">Primary</span>
+      <input type="color" id="theme-primary" value="#8B1A1A" oninput="updateThemePreview()" style="width:36px;height:28px;border-radius:5px;border:none;cursor:pointer">
+      <input id="theme-primary-hex" value="#8B1A1A" oninput="syncColor('primary')" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:5px;padding:0.3rem 0.5rem;color:white;font-size:0.72rem;font-family:Raleway,sans-serif;flex:1">
+    </div>
+    <div style="display:flex;gap:0.6rem;align-items:center;margin-bottom:0.5rem">
+      <span style="font-size:0.62rem;color:rgba(200,224,240,0.7);width:80px;flex:none">Accent</span>
+      <input type="color" id="theme-accent" value="#B8953F" oninput="updateThemePreview()" style="width:36px;height:28px;border-radius:5px;border:none;cursor:pointer">
+      <input id="theme-accent-hex" value="#B8953F" oninput="syncColor('accent')" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:5px;padding:0.3rem 0.5rem;color:white;font-size:0.72rem;font-family:Raleway,sans-serif;flex:1">
+    </div>
+    <div style="display:flex;gap:0.6rem;align-items:center;margin-bottom:0.5rem">
+      <span style="font-size:0.62rem;color:rgba(200,224,240,0.7);width:80px;flex:none">Background</span>
+      <input type="color" id="theme-bg" value="#FBF5E6" oninput="updateThemePreview()" style="width:36px;height:28px;border-radius:5px;border:none;cursor:pointer">
+      <input id="theme-bg-hex" value="#FBF5E6" oninput="syncColor('bg')" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:5px;padding:0.3rem 0.5rem;color:white;font-size:0.72rem;font-family:Raleway,sans-serif;flex:1">
+    </div>
+    <div style="display:flex;gap:0.4rem;margin-bottom:0.7rem;align-items:center">
+      <span style="font-size:0.62rem;color:rgba(200,224,240,0.7);width:80px;flex:none">Font Style</span>
+      <button onclick="setFont('serif',this)" id="font-serif" style="padding:0.3rem 0.6rem;background:var(--gold);color:var(--navy);border:1px solid var(--gold);border-radius:5px;font-size:0.62rem;cursor:pointer">Serif</button>
+      <button onclick="setFont('sans',this)" id="font-sans" style="padding:0.3rem 0.6rem;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:5px;color:rgba(255,255,255,0.8);font-size:0.62rem;cursor:pointer">Sans</button>
+      <button onclick="setFont('decorative',this)" id="font-decorative" style="padding:0.3rem 0.6rem;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:5px;color:rgba(255,255,255,0.8);font-size:0.62rem;cursor:pointer">Decorative</button>
+    </div>
+    <button onclick="approveTheme()" style="width:100%;padding:0.6rem;background:var(--gold);color:var(--navy);border:none;border-radius:8px;font-family:Cinzel,serif;font-size:0.78rem;font-weight:700;cursor:pointer">✓ Apply This Theme</button>
   </div>
-  <div id="crop-actions" style="display:none;gap:0.5rem;margin-top:0.5rem">
-    <button onclick="applyCrop()" style="flex:1;padding:0.4rem;background:#166534;color:white;border:none;border-radius:6px;font-size:0.65rem;font-weight:600;cursor:pointer">✓ Use Selected Region</button>
-    <button onclick="clearCrop()" style="flex:1;padding:0.4rem;background:#fee2e2;color:#991b1b;border:none;border-radius:6px;font-size:0.65rem;font-weight:600;cursor:pointer">✕ Clear</button>
+
+  <!-- BANNER — always visible -->
+  <div class="banner-section" id="banner-section">
+    <div style="font-family:Cinzel,serif;font-size:0.72rem;color:var(--navy);margin-bottom:0.6rem;font-weight:600">🖼 Menu Banner — Upload & Crop</div>
+    <input type="file" id="banner-file-input" accept="image/*" style="display:none" onchange="loadBannerImage(this)">
+    <button onclick="document.getElementById('banner-file-input').click()" style="padding:0.4rem 0.9rem;background:var(--royal);color:white;border:none;border-radius:6px;font-size:0.65rem;font-weight:600;cursor:pointer;font-family:Raleway,sans-serif">📁 Upload Banner Image</button>
+    <div style="font-size:0.6rem;color:var(--muted);margin-top:0.3rem">Drag to select the region you want as the banner</div>
+    <div id="banner-preview" style="position:relative;margin-top:0.6rem;display:none;border-radius:8px;overflow:auto;border:2px solid var(--pale);max-height:400px">
+      <img id="banner-source-img" src="" style="width:100%;display:block">
+      <canvas id="crop-overlay" style="position:absolute;top:0;left:0;cursor:crosshair;width:100%;height:100%"></canvas>
+    </div>
+    <div id="crop-actions" style="display:none;gap:0.5rem;margin-top:0.5rem">
+      <button onclick="applyCrop()" style="flex:1;padding:0.4rem;background:#166534;color:white;border:none;border-radius:6px;font-size:0.65rem;font-weight:600;cursor:pointer">✓ Use Selected Region</button>
+      <button onclick="clearCrop()" style="flex:1;padding:0.4rem;background:#fee2e2;color:#991b1b;border:none;border-radius:6px;font-size:0.65rem;font-weight:600;cursor:pointer">✕ Clear</button>
+    </div>
+    <div id="banner-set-indicator" style="font-size:0.65rem;color:var(--green);margin-top:0.4rem;display:none">✓ Banner set for this menu</div>
   </div>
-  <div id="banner-set-indicator" style="font-size:0.65rem;color:var(--green);margin-top:0.4rem;display:none">✓ Banner set for this menu</div>
-</div>
-  
-  <!-- EDITOR -->
+
   <div class="editor-wrap" id="editor-wrap">
     <div class="sec-hd">
       <span id="editor-title">Edit Menu</span>
       <button class="admin-tab admin-tab-add" onclick="addCategory()">+ Add Category</button>
+    </div>
+    <div style="font-size:0.62rem;color:var(--muted);margin-bottom:0.6rem;padding:0.4rem 0.6rem;background:rgba(46,111,168,0.06);border-radius:6px;border-left:3px solid var(--mid)">
+      ↕ Drag the <strong>⠿</strong> handle on any item to move it to a different category
     </div>
     <div class="admin-tabs" id="cat-tabs"></div>
     <div id="cat-panels"></div>
@@ -349,19 +297,13 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
     </div>
   </div>
 
-  <!-- SAVE BUTTON -->
-  <button class="save-menu-btn" id="save-menu-btn" onclick="manualSave()">
-    💾 Save Menu to Server
-  </button>
+  <button class="save-menu-btn" id="save-menu-btn" onclick="manualSave()">💾 Save Menu to Server</button>
 
-  <!-- QR CODES -->
   <div class="sec-hd">📱 QR Codes — Download & Print for Tables</div>
   <div class="qr-grid" id="qr-grid-dynamic"></div>
-
 </div>
 </div>
 
-<!-- CUSTOMER VIEW -->
 <div id="view-customer" class="view">
 <div class="cw">
   <div class="c-hero">
@@ -431,6 +373,7 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
   </div>
 </div>
 
+<!-- ADD MENU MODAL -->
 <div class="modal-bg" id="add-menu-modal">
   <div class="modal-box">
     <div class="modal-title">Add New Menu</div>
@@ -451,7 +394,7 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
   </div>
 </div>
 
-<!-- PASSCODE SCREEN -->
+<!-- PASSCODE -->
 <div class="passcode-screen" id="passcode-screen">
   <div class="passcode-box">
     <div class="passcode-logo">🏛 Food House</div>
@@ -475,10 +418,15 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
       <button class="passcode-btn" onclick="enterDigit('9')">9</button>
       <button class="passcode-clear" onclick="clearDigit()">⌫</button>
       <button class="passcode-btn" onclick="enterDigit('0')">0</button>
-      <button class="passcode-btn" onclick="enterDigit('')" style="visibility:hidden"></button>
+      <button class="passcode-btn" style="visibility:hidden"></button>
     </div>
     <div class="passcode-error" id="passcode-error"></div>
   </div>
+</div>
+
+<div class="save-bar" id="save-bar" style="display:none">
+  <span class="save-bar-text">Unsaved changes</span>
+  <button class="save-bar-btn" onclick="manualSave()">💾 Save Menu</button>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -486,100 +434,86 @@ body{font-family:'Raleway',sans-serif;background:var(--ivory);color:var(--text);
 <script>
 const BASE_URL  = 'https://banquetmenu.vercel.app';
 const STORE_KEY = 'fh_all_menus_v1';
-const MENU_NAMES = { restaurant:'Restaurant', banquet:'Banquet Hall', chaat:'Chaat Adda' };
 const MENU_ICONS = { restaurant:'🍛', banquet:'🏛', chaat:'🌶' };
 
-// All 3 menus stored here
-let allMenus = {
-  restaurant: { categories: [] },
-  banquet:    { categories: [] },
-  chaat:      { categories: [] }
-};
-
+let allMenus = { restaurant:{categories:[]}, banquet:{categories:[]}, chaat:{categories:[]} };
 let menuList = [
   {id:'restaurant',name:'Restaurant',icon:'🍛',restname:'Kunjilal Food House',address:'Vidhya Nagar, Ramghat Road, Aligarh',phone:'+917088004440'},
   {id:'banquet',name:'Banquet Hall',icon:'🏛',restname:'Kunjilal Food House',address:'Vidhya Nagar, Ramghat Road, Aligarh',phone:'+917088004440'},
   {id:'chaat',name:'Chaat Adda',icon:'🌶',restname:'Kunjilal Food House',address:'Vidhya Nagar, Ramghat Road, Aligarh',phone:'+917088004440'},
-  {id:'menu_1781615571166',name:'Khirni Gate',icon:'🍽',restname:'Kunjilal Khirni Gate',address:' Khirni Gate Aligarh',phone:'+918392905550'}
+  {id:'menu_1781615571166',name:'Khirni Gate',icon:'🍽',restname:'Kunjilal Khirni Gate',address:'Khirni Gate Aligarh',phone:'+918392905550'}
 ];
 let currentMenu = 'restaurant';
 let editingItem  = null;
+let dragItem     = null;
 
-// Pre-load restaurant menu from your uploaded photo
-
-// LOAD / SAVE
+// ── LOAD / SAVE ──
 async function loadData(){
-  // ALWAYS load from server first — this ensures all devices see same menu
   try{
-    const r = await fetch('/api/menu', {cache:'no-store'});
+    const r=await fetch('/api/menu',{cache:'no-store'});
     if(r.ok){
-      const data = await r.json();
-if(data.menuList) menuList=data.menuList;
+      const data=await r.json();
+      // Always use server menuList if it has more menus than our default
+      if(data.menuList && data.menuList.length > 0) menuList=data.menuList;
       const menus=data.menus||data;
-      const hasData = Object.values(menus).some(m=>m&&m.categories&&m.categories.length>0);
-      if(hasData){ 
-        allMenus=menus;      
-        return;
-      }
+      const hasData=Object.values(menus).some(m=>m&&m.categories&&m.categories.length>0);
+      if(hasData){ allMenus=menus; return; }
     }
-  }catch(e){ console.log('Server load failed:', e); }
-  // Fallback: localStorage
+  }catch(e){console.log('Server load failed:',e);}
   try{
     const s=localStorage.getItem(STORE_KEY);
-    if(s){ allMenus=JSON.parse(s); return; }
+    if(s){allMenus=JSON.parse(s);return;}
   }catch(e){}
-// No fallback — show empty menu if server and localStorage both fail
-}
-async function saveData(){
-  // Save to server
-  try{
-    await fetch('/api/menu',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({menuList, menus:allMenus})
-    });
-  }catch(e){ console.log('Server save failed:',e); }
-  // Also localStorage as backup
-  try{ localStorage.setItem(STORE_KEY,JSON.stringify(allMenus)); }catch(e){}
+  // No fallback preload — show empty menu if server and localStorage both fail
 }
 
-// VIEW
+async function saveData(){
+  try{
+    const r=await fetch('/api/menu',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({menuList,menus:allMenus})
+    });
+    if(!r.ok) throw new Error('Save failed: '+r.status);
+  }catch(e){
+    console.log('Server save failed:',e);
+    throw e;
+  } finally {
+    try{localStorage.setItem(STORE_KEY,JSON.stringify(allMenus));}catch(e){}
+  }
+}
+
+// ── VIEW ──
 function switchView(v,btn){
   document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
   document.querySelectorAll('.tb-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('view-'+v).classList.add('active');
   btn.classList.add('active');
-if(v==='customer'){ 
-    window._previewMenu=currentMenu;
-    console.log('Preview menu:', currentMenu, 'cats:', allMenus[currentMenu]?.categories?.length);
-    renderCustomer();
-    window._previewMenu=null;
-  }
+  if(v==='customer'){window._previewMenu=currentMenu;renderCustomer();window._previewMenu=null;}
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-// MENU SELECTION
-function selectMenu(type, btn){
-  currentMenu = type;
+// ── MENU SELECTION ──
+function selectMenu(type,btn){
+  currentMenu=type;
   document.querySelectorAll('.menu-sel-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-const mDef=menuList.find(m=>m.id===type)||{name:type};
-  document.getElementById('upload-sec-title').textContent = '📸 Upload ' + mDef.name + ' Menu';
-  document.getElementById('editor-title').textContent = 'Edit ' + mDef.name + ' Menu';
-
-  const cats = allMenus[type].categories;
-  if(cats.length > 0){
+  const mDef=menuList.find(m=>m.id===type)||{name:type};
+  document.getElementById('upload-sec-title').textContent='📸 Upload '+mDef.name+' Menu';
+  document.getElementById('editor-title').textContent='Edit '+mDef.name+' Menu';
+  if(!allMenus[type]) allMenus[type]={categories:[]};
+  const cats=allMenus[type].categories;
+  if(cats.length>0){
     document.getElementById('editor-wrap').classList.add('show');
     document.getElementById('success-card').classList.add('show');
-    const total = cats.reduce((s,c)=>s+c.items.length,0);
-    document.getElementById('success-detail').textContent = total + ' items across ' + cats.length + ' categories';
+    const total=cats.reduce((s,c)=>s+c.items.length,0);
+    document.getElementById('success-detail').textContent=total+' items across '+cats.length+' categories';
     renderAdminCats();
-  } else {
+  }else{
     document.getElementById('editor-wrap').classList.remove('show');
     document.getElementById('success-card').classList.remove('show');
   }
   document.getElementById('scan-card').classList.remove('show');
-  document.getElementById('banner-section').classList.add('show');
   document.getElementById('banner-set-indicator').style.display=allMenus[currentMenu]?.banner?'block':'none';
   document.getElementById('banner-preview').style.display='none';
   document.getElementById('crop-actions').style.display='none';
@@ -587,9 +521,8 @@ const mDef=menuList.find(m=>m.id===type)||{name:type};
   else document.getElementById('theme-panel').classList.remove('show');
 }
 
-// UPDATE SELECTOR COUNTS
 function updateCounts(){
-  menuList.forEach(m=>{ if(!allMenus[m.id]) allMenus[m.id]={categories:[]}; });
+  menuList.forEach(m=>{if(!allMenus[m.id])allMenus[m.id]={categories:[]};});
   const grid=document.getElementById('menu-selector-grid');
   if(!grid)return;
   grid.innerHTML='';
@@ -607,120 +540,72 @@ function updateCounts(){
     btn.onclick=()=>selectMenu(m.id,btn);
     grid.appendChild(btn);
   });
-  // QR
-  ['restaurant','banquet','chaat'].forEach(type=>{
-    const qrEl=document.getElementById('qrstatus-'+type);
-    if(qrEl){const t=(allMenus[type]?.categories||[]).reduce((s,c)=>s+c.items.length,0);qrEl.textContent=t>0?'✓ '+t+' items ready':'○ No menu yet';}
-  });
 }
 
-// AI UPLOAD
-function handleDrop(e){ const files=Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith("image/")); if(files.length) processFile(files); }
-function handleUpload(input){ const files=Array.from(input.files); if(files.length) processFile(files); input.value=''; }
+// ── AI UPLOAD ──
+function handleDrop(e){const files=Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith("image/"));if(files.length)processFile(files);}
+function handleUpload(input){const files=Array.from(input.files);if(files.length)processFile(files);input.value='';}
 
 async function processFile(files){
-  // Support single file or array of files
-  if (!Array.isArray(files)) files = [files];
-  files = files.slice(0, 2); // max 2 images
-
-  // Clear current menu for this type before scanning
-  allMenus[currentMenu] = { categories: [] };
-
+  if(!Array.isArray(files))files=[files];
+  files=files.slice(0,2);
+  if(!allMenus[currentMenu])allMenus[currentMenu]={categories:[]};
+  allMenus[currentMenu].categories=[];
   document.getElementById('scan-card').classList.add('show');
   document.getElementById('success-card').classList.remove('show');
   document.getElementById('editor-wrap').classList.remove('show');
-  document.getElementById('cat-tabs').innerHTML = '';
-  document.getElementById('cat-panels').innerHTML = '';
-
-  const fill = document.getElementById('scan-fill');
-  const sub  = document.getElementById('scan-sub');
-  const title = document.getElementById('scan-title');
-  const sideText = files.length > 1 ? ' ('+files.length+' sides)' : '';
-  title.textContent = 'AI is Reading Your ' + MENU_NAMES[currentMenu] + ' Menu' + sideText + '...';
-
-  const steps = files.length > 1
-    ? ['Reading side 1...','Reading side 2...','Combining all items...','Extracting prices...','Building digital menu...']
-    : ['Reading menu image...','Identifying categories...','Extracting menu items...','Reading prices...','Building digital menu...'];
-  let prog=0, stepIdx=0;
-  const iv = setInterval(()=>{
-    prog = Math.min(prog + Math.random()*12, 88);
-    fill.style.width = prog+'%';
-    if(stepIdx < steps.length && prog > stepIdx*18){ sub.textContent = steps[stepIdx++]; }
-  }, 300);
-
+  document.getElementById('cat-tabs').innerHTML='';
+  document.getElementById('cat-panels').innerHTML='';
+  const fill=document.getElementById('scan-fill');
+  const sub=document.getElementById('scan-sub');
+  const title=document.getElementById('scan-title');
+  const mDef=menuList.find(m=>m.id===currentMenu)||{name:currentMenu};
+  title.textContent='AI is Reading Your '+mDef.name+' Menu'+(files.length>1?' ('+files.length+' sides)':'')+' ...';
+  const steps=files.length>1?['Reading side 1...','Reading side 2...','Combining all items...','Extracting prices...','Building digital menu...']:['Reading menu image...','Identifying categories...','Extracting menu items...','Reading prices...','Building digital menu...'];
+  let prog=0,stepIdx=0;
+  const iv=setInterval(()=>{prog=Math.min(prog+Math.random()*12,88);fill.style.width=prog+'%';if(stepIdx<steps.length&&prog>stepIdx*18){sub.textContent=steps[stepIdx++];}},300);
   try{
-    // Convert all files to base64
-const images = await Promise.all(files.map(async f => ({
-      base64: await fileToBase64(f),
-      mediaType: 'image/jpeg'
-    })));
-
-    const response = await fetch('/api/scan', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ images: images })
-    });
-
-    const result = await response.json();
-    clearInterval(iv);
-    fill.style.width='100%';
-
-    let parsed = null;
-
-// Try multiple ways to extract JSON from response
-if(result.content && result.content[0]){
-      let text = result.content[0].text;
-      console.log('AI Response:', text.substring(0, 200));
-      text = text.replace(/```json\s*/g,'').replace(/```\s*/g,'').trim();
-      try {
-        const jsonMatch = text.match(/\{[\s\S]*\}/);
-        if(jsonMatch) parsed = JSON.parse(jsonMatch[0]);
-      } catch(e1) {
-       try {
-          let jsonStr = text.substring(text.indexOf('{'));
-          // Remove incomplete last item
-          jsonStr = jsonStr.replace(/,\s*\{\s*"id"\s*:\s*"[^"]*"\s*,\s*"name"\s*:\s*"[^"]*$/, '');
-          jsonStr = jsonStr.replace(/,\s*"[^"]*"\s*:\s*"[^"]*$/, '');
-          jsonStr = jsonStr.replace(/,\s*$/, '');
-          let opens = (jsonStr.match(/\[/g)||[]).length - (jsonStr.match(/\]/g)||[]).length;
-          let braces = (jsonStr.match(/\{/g)||[]).length - (jsonStr.match(/\}/g)||[]).length;
-          for(let i=0;i<opens;i++) jsonStr+=']';
-          for(let i=0;i<braces;i++) jsonStr+='}';
-          parsed = JSON.parse(jsonStr);
-        } catch(e2) { console.log('Parse error:',e2.message); }
+    const images=await Promise.all(files.map(async f=>({base64:await fileToBase64(f),mediaType:'image/jpeg'})));
+    const response=await fetch('/api/scan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({images})});
+    const result=await response.json();
+    clearInterval(iv);fill.style.width='100%';
+    let parsed=null;
+    if(result.content&&result.content[0]){
+      let text=result.content[0].text;
+      text=text.replace(/```json\s*/g,'').replace(/```\s*/g,'').trim();
+      try{const m=text.match(/\{[\s\S]*\}/);if(m)parsed=JSON.parse(m[0]);}
+      catch(e1){
+        try{
+          let j=text.substring(text.indexOf('{'));
+          j=j.replace(/,\s*\{\s*"id"\s*:\s*"[^"]*"\s*,\s*"name"\s*:\s*"[^"]*$/,'');
+          j=j.replace(/,\s*"[^"]*"\s*:\s*"[^"]*$/,'').replace(/,\s*$/,'');
+          let o=(j.match(/\[/g)||[]).length-(j.match(/\]/g)||[]).length;
+          let b=(j.match(/\{/g)||[]).length-(j.match(/\}/g)||[]).length;
+          for(let i=0;i<o;i++)j+=']';for(let i=0;i<b;i++)j+='}';
+          parsed=JSON.parse(j);
+        }catch(e2){console.log('Parse error:',e2.message);}
       }
-    } else if(result.error) {
-      throw new Error('API Error: ' + result.error.message || JSON.stringify(result.error));
-    }
-
-    if(parsed && parsed.categories && parsed.categories.length > 0){
-      allMenus[currentMenu] = parsed;
-      const total = parsed.categories.reduce((s,c)=>s+c.items.length,0);
-      setTimeout(async ()=>{
+    }else if(result.error){throw new Error('API Error: '+JSON.stringify(result.error));}
+    if(parsed&&parsed.categories&&parsed.categories.length>0){
+      allMenus[currentMenu].categories=parsed.categories;
+      const total=parsed.categories.reduce((s,c)=>s+c.items.length,0);
+      setTimeout(async()=>{
         document.getElementById('scan-card').classList.remove('show');
         document.getElementById('success-card').classList.add('show');
-        document.getElementById('success-detail').textContent = total + ' items found across ' + parsed.categories.length + ' categories!';
+        document.getElementById('success-detail').textContent=total+' items found across '+parsed.categories.length+' categories!';
         document.getElementById('editor-wrap').classList.add('show');
-        renderAdminCats();
-        updateCounts();
-        await saveData();
-        if(parsed.theme) showThemeSuggestion(parsed.theme);
-        else document.getElementById('banner-section').classList.add('show');
-        toast('✅ ' + MENU_NAMES[currentMenu] + ' menu saved! ' + total + ' items found.');
-      }, 500);
+        renderAdminCats();updateCounts();
+        try{await saveData();toast('✅ Menu saved! '+total+' items found.');}
+        catch(e){toast('⚠ Scanned but save failed. Try Save button.');}
+      },500);
       return;
     }
     throw new Error('No menu data found. Please try a clearer photo.');
   }catch(e){
     clearInterval(iv);
     document.getElementById('scan-card').classList.remove('show');
-    if(allMenus[currentMenu].categories.length > 0){
-      document.getElementById('editor-wrap').classList.add('show');
-      renderAdminCats();
-      toast('⚠ Could not scan. Showing existing menu.');
-    } else {
-      toast('⚠ Could not read menu. Try a clearer photo.');
-    }
+    if(allMenus[currentMenu]?.categories?.length>0){document.getElementById('editor-wrap').classList.add('show');renderAdminCats();toast('⚠ Could not scan. Showing existing menu.');}
+    else toast('⚠ Could not read menu. Try a clearer photo.');
     console.error(e);
   }
 }
@@ -731,32 +616,28 @@ function fileToBase64(file){
     reader.onload=e=>{
       const img=new Image();
       img.onload=()=>{
-        const MAX=1200;
-        let w=img.width,h=img.height;
+        const MAX=1200;let w=img.width,h=img.height;
         if(w>MAX||h>MAX){if(w>h){h=Math.round(h*MAX/w);w=MAX;}else{w=Math.round(w*MAX/h);h=MAX;}}
-        const canvas=document.createElement('canvas');
-        canvas.width=w;canvas.height=h;
+        const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
         canvas.getContext('2d').drawImage(img,0,0,w,h);
         res(canvas.toDataURL('image/jpeg',0.8).split(',')[1]);
       };
-      img.onerror=rej;
-      img.src=e.target.result;
+      img.onerror=rej;img.src=e.target.result;
     };
-    reader.onerror=rej;
-    reader.readAsDataURL(file);
+    reader.onerror=rej;reader.readAsDataURL(file);
   });
 }
-// ADMIN RENDER
+
+// ── ADMIN RENDER ──
 function renderAdminCats(){
-  const cats = allMenus[currentMenu].categories;
-  const tabsEl   = document.getElementById('cat-tabs');
-  const panelsEl = document.getElementById('cat-panels');
-  tabsEl.innerHTML=''; panelsEl.innerHTML='';
+  const cats=allMenus[currentMenu]?.categories||[];
+  const tabsEl=document.getElementById('cat-tabs');
+  const panelsEl=document.getElementById('cat-panels');
+  tabsEl.innerHTML='';panelsEl.innerHTML='';
   if(!cats.length){
     panelsEl.innerHTML='<div style="text-align:center;padding:1.5rem;color:var(--muted);font-size:0.78rem">No categories yet. Upload a menu photo or click "+ Add Category"</div>';
     return;
   }
-
   cats.forEach((cat,ci)=>{
     const tb=document.createElement('button');
     tb.className='admin-tab'+(ci===0?' active':'');
@@ -768,7 +649,6 @@ function renderAdminCats(){
       document.getElementById('apanel-'+cat.id).classList.add('active');
     };
     tabsEl.appendChild(tb);
-
     const panel=document.createElement('div');
     panel.className='cat-panel'+(ci===0?' active':'');
     panel.id='apanel-'+cat.id;
@@ -783,12 +663,19 @@ function renderAdminCats(){
       </div>
       <button class="add-item-btn" onclick="openAddItem('${cat.id}')">+ Add Item to ${cat.name.split('(')[0].trim()}</button>`;
     panelsEl.appendChild(panel);
+    const listEl=panel.querySelector('.item-list');
+    listEl.addEventListener('dragover',e=>{e.preventDefault();if(dragItem&&dragItem.fromCatId!==cat.id)listEl.classList.add('drag-over');});
+    listEl.addEventListener('dragleave',e=>{if(!listEl.contains(e.relatedTarget))listEl.classList.remove('drag-over');});
+    listEl.addEventListener('drop',e=>{e.preventDefault();listEl.classList.remove('drag-over');if(!dragItem||dragItem.fromCatId===cat.id)return;moveItemToCategory(dragItem.itemId,dragItem.fromCatId,cat.id);});
   });
 }
 
 function renderAdminItem(catId,item){
   const dc=item.type==='nonveg'?'nonveg':'veg';
-  return `<div class="admin-item" id="ai-${item.id}">
+  return `<div class="admin-item" id="ai-${item.id}" draggable="true"
+    ondragstart="onItemDragStart(event,'${item.id}','${catId}')"
+    ondragend="onItemDragEnd(event)">
+    <span class="drag-handle" title="Drag to move to another category">⠿</span>
     <div class="vdot ${dc}"></div>
     <div class="admin-item-info">
       <div class="admin-item-name">${item.name}</div>
@@ -802,38 +689,61 @@ function renderAdminItem(catId,item){
   </div>`;
 }
 
-// CATEGORY ACTIONS
-function addCategory(){
-  document.getElementById('f-cat-name').value='';
-  document.getElementById('cat-modal').classList.add('show');
+// ── DRAG AND DROP ──
+function onItemDragStart(e,itemId,fromCatId){
+  dragItem={itemId,fromCatId};
+  e.dataTransfer.effectAllowed='move';
+  setTimeout(()=>{const el=document.getElementById('ai-'+itemId);if(el)el.classList.add('dragging');},0);
 }
+function onItemDragEnd(e){
+  if(dragItem){const el=document.getElementById('ai-'+dragItem.itemId);if(el)el.classList.remove('dragging');}
+  document.querySelectorAll('.item-list').forEach(l=>l.classList.remove('drag-over'));
+  dragItem=null;
+}
+function moveItemToCategory(itemId,fromCatId,toCatId){
+  const cats=allMenus[currentMenu].categories;
+  const fromCat=cats.find(c=>c.id===fromCatId);
+  const toCat=cats.find(c=>c.id===toCatId);
+  if(!fromCat||!toCat)return;
+  const idx=fromCat.items.findIndex(i=>i.id===itemId);
+  if(idx===-1)return;
+  const [item]=fromCat.items.splice(idx,1);
+  toCat.items.push(item);
+  saveData().catch(()=>{});
+  renderAdminCats();updateCounts();
+  const toIdx=cats.findIndex(c=>c.id===toCatId);
+  document.querySelectorAll('#cat-tabs .admin-tab').forEach((t,i)=>t.classList.toggle('active',i===toIdx));
+  document.querySelectorAll('#cat-panels .cat-panel').forEach((p,i)=>p.classList.toggle('active',i===toIdx));
+  toast('✅ Moved to '+toCat.name.split('(')[0].trim());
+}
+
+// ── CATEGORY ACTIONS ──
+function addCategory(){document.getElementById('f-cat-name').value='';document.getElementById('cat-modal').classList.add('show');}
 function renameCat(catId){
-  const val=document.getElementById('cname-'+catId).value.trim();
-  if(!val)return;
+  const val=document.getElementById('cname-'+catId).value.trim();if(!val)return;
   const cat=allMenus[currentMenu].categories.find(c=>c.id===catId);
-  if(cat){cat.name=val;saveData();renderAdminCats();toast('✓ Renamed!');}
+  if(cat){cat.name=val;saveData().catch(()=>{});renderAdminCats();toast('✓ Renamed!');}
 }
 function deleteCat(catId){
   if(!confirm('Delete this category and all its items?'))return;
   allMenus[currentMenu].categories=allMenus[currentMenu].categories.filter(c=>c.id!==catId);
-  saveData();renderAdminCats();updateCounts();toast('🗑 Deleted');
+  saveData().catch(()=>{});renderAdminCats();updateCounts();toast('🗑 Deleted');
 }
 function saveCatName(){
   const name=document.getElementById('f-cat-name').value.trim();
   if(!name){toast('⚠ Enter a name');return;}
+  if(!allMenus[currentMenu])allMenus[currentMenu]={categories:[]};
   allMenus[currentMenu].categories.push({id:'cat_'+Date.now(),name,items:[]});
-  saveData();renderAdminCats();updateCounts();closeCatModal();toast('✓ Category added!');
+  saveData().catch(()=>{});renderAdminCats();updateCounts();closeCatModal();toast('✓ Category added!');
 }
 function closeCatModal(){document.getElementById('cat-modal').classList.remove('show');}
 
-// ITEM ACTIONS
+// ── ITEM ACTIONS ──
 function openAddItem(catId){
   editingItem={catId,itemId:null};
   document.getElementById('modal-title').textContent='Add Item';
-  document.getElementById('f-name').value='';
-  document.getElementById('f-price').value='';
-  document.getElementById('f-desc').value='';
-  document.getElementById('f-type').value='veg';
+  document.getElementById('f-name').value='';document.getElementById('f-price').value='';
+  document.getElementById('f-desc').value='';document.getElementById('f-type').value='veg';
   document.getElementById('item-modal').classList.add('show');
 }
 function openEditItem(catId,itemId){
@@ -860,40 +770,32 @@ function saveItem(){
   }else{
     cat.items.push({id:'item_'+Date.now(),name,price,desc,type});toast('✓ Added!');
   }
-  saveData();renderAdminCats();updateCounts();closeModal();showSaveBar();
+  saveData().catch(()=>{});renderAdminCats();updateCounts();closeModal();showSaveBar();
 }
 function deleteItem(catId,itemId){
   if(!confirm('Delete this item?'))return;
   const cat=allMenus[currentMenu].categories.find(c=>c.id===catId);
   cat.items=cat.items.filter(i=>i.id!==itemId);
-  saveData();renderAdminCats();updateCounts();toast('🗑 Deleted');
+  saveData().catch(()=>{});renderAdminCats();updateCounts();toast('🗑 Deleted');
 }
 function closeModal(){document.getElementById('item-modal').classList.remove('show');}
 
-// CUSTOMER RENDER
+// ── CUSTOMER RENDER ──
 function renderCustomer(){
   const params=new URLSearchParams(window.location.search);
   const menuType=window._previewMenu||params.get('menu')||'restaurant';
+  const mDef=menuList.find(m=>m.id===menuType)||{name:menuType,icon:'📋'};
   const cats=allMenus[menuType]?.categories||[];
   const tabsEl=document.getElementById('cust-cat-nav');
   const contentEl=document.getElementById('cust-content');
   tabsEl.innerHTML='';contentEl.innerHTML='';
   applyMenuTheme(menuType);
-
   if(!cats.length){
-    contentEl.innerHTML=`<div class="no-menu-box">
-      <span class="ico">${MENU_ICONS[menuType]||'📋'}</span>
-      <h3>Menu Coming Soon</h3>
-      <p>Please call us at <strong>+91-7088004440</strong></p>
-    </div>`;
+    contentEl.innerHTML=`<div class="no-menu-box"><span class="ico">${mDef.icon}</span><h3>Menu Coming Soon</h3><p>Please call us at <strong>${mDef.phone||'+91-7088004440'}</strong></p></div>`;
     return;
   }
-
-  // SVG ornament for section headers
-  const ornamentSVG = `<svg class="c-sec-ornament" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="5" width="30" height="30" stroke="#FBF5E6" stroke-width="1.5" transform="rotate(45 20 20)"/><rect x="10" y="10" width="20" height="20" stroke="#FBF5E6" stroke-width="1" transform="rotate(45 20 20)"/></svg>`;
-
+  const ornamentSVG=`<svg class="c-sec-ornament" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="5" width="30" height="30" stroke="#FBF5E6" stroke-width="1.5" transform="rotate(45 20 20)"/><rect x="10" y="10" width="20" height="20" stroke="#FBF5E6" stroke-width="1" transform="rotate(45 20 20)"/></svg>`;
   cats.forEach((cat,ci)=>{
-    // Build tile
     const tile=document.createElement('div');
     tile.className='c-cat-tile'+(ci===0?' active':'');
     tile.textContent=cat.name.split('(')[0].trim();
@@ -908,57 +810,29 @@ function renderCustomer(){
       window.scrollTo({top:0,behavior:'smooth'});
     };
     tabsEl.appendChild(tile);
-
-    // Build section
     const sec=document.createElement('div');
     sec.className='c-section'+(ci===0?' active':'');
     sec.id='csec-'+cat.id;
-
     const itemsHtml=cat.items.map(item=>{
       const dc=item.type==='nonveg'?'nonveg':'veg';
-      const priceHtml = item.price > 0 
-        ? `<div class="c-item-price">${item.price}</div>`
-        : `<div class="c-item-price" style="font-size:0.7rem;color:#8B6355">MRP</div>`;
-      return `<div class="c-item">
-        <div class="c-item-left">
-          <div class="c-vdot ${dc}"></div>
-          <div class="c-item-info">
-            <div class="c-item-name">${item.name}</div>
-            ${item.desc?`<div class="c-item-desc">${item.desc}</div>`:''}
-          </div>
-        </div>
-        ${priceHtml}
-      </div>`;
+      const priceHtml=item.price>0?`<div class="c-item-price">${item.price}</div>`:`<div class="c-item-price" style="font-size:0.7rem;color:#8B6355">MRP</div>`;
+      return `<div class="c-item"><div class="c-item-left"><div class="c-vdot ${dc}"></div><div class="c-item-info"><div class="c-item-name">${item.name}</div>${item.desc?`<div class="c-item-desc">${item.desc}</div>`:''}</div></div>${priceHtml}</div>`;
     }).join('');
-
-    sec.innerHTML=`
-      <div class="c-sec-header">
-        <div class="c-sec-title-wrap">
-          <span class="c-sec-eyebrow">${MENU_NAMES[menuType]||'Menu'}</span>
-          <div class="c-sec-name">${cat.name.split('(')[0].trim()}</div>
-        </div>
-        ${ornamentSVG}
-      </div>
-      <div class="c-items-wrap">${itemsHtml}</div>`;
+    sec.innerHTML=`<div class="c-sec-header"><div class="c-sec-title-wrap"><div class="c-sec-name">${cat.name.split('(')[0].trim()}</div></div>${ornamentSVG}</div><div class="c-items-wrap">${itemsHtml}</div>`;
     contentEl.appendChild(sec);
   });
 }
 
+// ── QR ──
 function generateQRs(){
   const grid=document.getElementById('qr-grid-dynamic');
   if(!grid)return;
   grid.innerHTML='';
   menuList.forEach(m=>{
-    const card=document.createElement('div');
-    card.className='qr-card';
+    const card=document.createElement('div');card.className='qr-card';
     const hasCustomQR=!!(allMenus[m.id]&&allMenus[m.id].customQR);
-    const qrHtml=hasCustomQR
-      ?'<img src="data:image/png;base64,'+allMenus[m.id].customQR+'" style="width:120px;height:120px;border-radius:6px;border:1px solid #C8E0F0">'
-      :'<canvas id="qr-'+m.id+'" width="120" height="120"></canvas>';
-    const clearBtn=hasCustomQR
-      ?'<button onclick="clearCustomQR(\''+m.id+'\')" style="padding:0.45rem 0.5rem;background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;border-radius:5px;font-size:0.6rem;cursor:pointer">✕</button>'
-      :'';
-    const statusText=hasCustomQR?'📌 Custom QR':'';
+    const qrHtml=hasCustomQR?'<img src="data:image/png;base64,'+allMenus[m.id].customQR+'" style="width:120px;height:120px;border-radius:6px;border:1px solid #C8E0F0">':'<canvas id="qr-'+m.id+'" width="120" height="120"></canvas>';
+    const clearBtn=hasCustomQR?'<button onclick="clearCustomQR(\''+m.id+'\')" style="padding:0.45rem 0.5rem;background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;border-radius:5px;font-size:0.6rem;cursor:pointer">✕</button>':'';
     card.innerHTML='<div class="qr-card-title">'+m.icon+' '+m.name+'</div>'
       +'<div class="qr-canvas-wrap">'+qrHtml+'</div>'
       +'<div style="display:flex;gap:0.3rem;margin-top:0.4rem">'
@@ -966,82 +840,54 @@ function generateQRs(){
       +'<label style="flex:1;padding:0.45rem;background:#1A4A7A;color:white;border-radius:5px;font-size:0.6rem;font-weight:700;cursor:pointer;text-align:center;font-family:Raleway,sans-serif">📁 Upload QR'
       +'<input type="file" accept="image/*" style="display:none" onchange="uploadCustomQR(event,\''+m.id+'\')">'
       +'</label>'+clearBtn+'</div>'
-      +'<span class="qr-status" id="qrstatus-'+m.id+'">'+statusText+'</span>';
+      +'<span class="qr-status" id="qrstatus-'+m.id+'">'+(hasCustomQR?'📌 Custom QR':'')+'</span>';
     grid.appendChild(card);
     if(!hasCustomQR){
-      setTimeout(()=>{
-        const el=document.getElementById('qr-'+m.id);
-        if(el) new QRious({element:el,value:BASE_URL+'/?menu='+m.id,size:120,foreground:'#0D2744',background:'#FFFFFF',level:'M'});
-      },50);
+      setTimeout(()=>{const el=document.getElementById('qr-'+m.id);if(el)new QRious({element:el,value:BASE_URL+'/?menu='+m.id,size:120,foreground:'#0D2744',background:'#FFFFFF',level:'M'});},50);
     }
   });
 }
+
 function downloadQR(type,label){
   const canvas=document.getElementById('qr-'+type);
-  const out=document.createElement('canvas');
-  out.width=400;out.height=480;
+  if(!canvas){toast('⚠ No QR to download');return;}
+  const out=document.createElement('canvas');out.width=400;out.height=480;
   const ctx=out.getContext('2d');
   ctx.fillStyle='#FFFFFF';ctx.fillRect(0,0,400,480);
   ctx.fillStyle='#0D2744';ctx.fillRect(0,0,400,70);
   ctx.fillStyle='#D4AC5C';ctx.font='bold 22px Georgia,serif';ctx.textAlign='center';
   ctx.fillText('FOOD HOUSE',200,30);
   ctx.fillStyle='rgba(200,224,240,0.8)';ctx.font='11px Arial,sans-serif';
-  ctx.fillText('Kunjilal · Since 1947',200,48);
-  ctx.fillText(label+' Menu',200,63);
+  ctx.fillText('Kunjilal · Since 1947',200,48);ctx.fillText(label+' Menu',200,63);
   ctx.fillStyle='#B8953F';ctx.fillRect(0,70,400,3);
   ctx.drawImage(canvas,70,90,260,260);
-  ctx.fillStyle='#0D2744';ctx.font='bold 14px Arial,sans-serif';
-  ctx.fillText('Scan to View Menu',200,385);
+  ctx.fillStyle='#0D2744';ctx.font='bold 14px Arial,sans-serif';ctx.fillText('Scan to View Menu',200,385);
   ctx.fillStyle='#4A6A88';ctx.font='11px Arial,sans-serif';
-  ctx.fillText('Vidhya Nagar, Ramghat Road, Aligarh',200,405);
-  ctx.fillText('+91-7088004440',200,422);
+  ctx.fillText('Vidhya Nagar, Ramghat Road, Aligarh',200,405);ctx.fillText('+91-7088004440',200,422);
   ctx.strokeStyle='#C8E0F0';ctx.lineWidth=2;ctx.strokeRect(1,1,398,478);
-  const a=document.createElement('a');
-  a.href=out.toDataURL('image/png');
-  a.download='FoodHouse-'+type+'-QR.png';
-  a.click();
+  const a=document.createElement('a');a.href=out.toDataURL('image/png');a.download='FoodHouse-'+type+'-QR.png';a.click();
   toast('⬇ '+label+' QR downloaded!');
 }
 
 async function manualSave(){
-  const btn = document.getElementById('save-menu-btn');
-  btn.textContent = '⏳ Saving...';
-  btn.className = 'save-menu-btn saving';
-  try {
+  const btn=document.getElementById('save-menu-btn');
+  btn.textContent='⏳ Saving...';btn.className='save-menu-btn saving';btn.disabled=true;
+  try{
     await saveData();
-    btn.textContent = '✅ Saved!';
-    btn.className = 'save-menu-btn saved';
+    btn.textContent='✅ Saved!';btn.className='save-menu-btn saved';
     toast('✅ Menu saved successfully!');
-    setTimeout(()=>{
-      btn.textContent = '💾 Save Menu';
-      btn.className = 'save-menu-btn';
-    }, 3000);
-  } catch(e) {
-    btn.textContent = '💾 Save Menu';
-    btn.className = 'save-menu-btn';
-    toast('⚠ Save failed. Try again.');
+    const bar=document.getElementById('save-bar');if(bar)bar.style.display='none';
+    setTimeout(()=>{btn.textContent='💾 Save Menu to Server';btn.className='save-menu-btn';btn.disabled=false;},3000);
+  }catch(e){
+    btn.textContent='💾 Save Menu to Server';btn.className='save-menu-btn';btn.disabled=false;
+    toast('⚠ Save failed — check connection and try again.');
   }
 }
 
-function showSaveBar(){
-  const bar = document.getElementById('save-bar');
-  if(bar) bar.style.display = 'flex';
-}
+function showSaveBar(){const bar=document.getElementById('save-bar');if(bar)bar.style.display='flex';}
+function toggleCatPanel(){document.getElementById('cat-panel').classList.toggle('open');document.getElementById('cat-arrow').classList.toggle('open');}
 
-function toggleCatPanel(){
-  const panel = document.getElementById('cat-panel');
-  const arrow = document.getElementById('cat-arrow');
-  panel.classList.toggle('open');
-  arrow.classList.toggle('open');
-}
-
-function switchCatDropdown(catId){
-  document.querySelectorAll('.c-section').forEach(s=>s.classList.remove('active'));
-  const sec = document.getElementById('csec-'+catId);
-  if(sec) sec.classList.add('active');
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-  // ── THEME ──
+// ── THEME ──
 let currentThemeFont='serif';
 function updateThemePreview(){
   const p=document.getElementById('theme-primary').value;
@@ -1056,7 +902,7 @@ function syncColor(w){
   const h=document.getElementById('theme-'+w+'-hex').value;
   if(/^#[0-9A-Fa-f]{6}$/.test(h)){document.getElementById('theme-'+w).value=h;updateThemePreview();}
 }
-function setFont(f,btn){
+function setFont(f){
   currentThemeFont=f;
   ['serif','sans','decorative'].forEach(x=>{
     const el=document.getElementById('font-'+x);
@@ -1065,41 +911,30 @@ function setFont(f,btn){
 }
 function showThemeSuggestion(t){
   const p=t.primary||'#8B1A1A',a=t.accent||'#B8953F',b=t.bg||'#FBF5E6';
-  document.getElementById('theme-primary').value=p;
-  document.getElementById('theme-accent').value=a;
-  document.getElementById('theme-bg').value=b;
-  document.getElementById('theme-primary-hex').value=p;
-  document.getElementById('theme-accent-hex').value=a;
-  document.getElementById('theme-bg-hex').value=b;
-  currentThemeFont=t.font||'serif';
-  setFont(currentThemeFont,document.getElementById('font-'+currentThemeFont));
+  document.getElementById('theme-primary').value=p;document.getElementById('theme-accent').value=a;document.getElementById('theme-bg').value=b;
+  document.getElementById('theme-primary-hex').value=p;document.getElementById('theme-accent-hex').value=a;document.getElementById('theme-bg-hex').value=b;
+  currentThemeFont=t.font||'serif';setFont(currentThemeFont);
   updateThemePreview();
   document.getElementById('theme-panel').classList.add('show');
-  document.getElementById('banner-section').classList.add('show');
 }
 function approveTheme(){
   const theme={primary:document.getElementById('theme-primary').value,accent:document.getElementById('theme-accent').value,bg:document.getElementById('theme-bg').value,font:currentThemeFont};
   if(!allMenus[currentMenu])allMenus[currentMenu]={categories:[]};
   allMenus[currentMenu].theme=theme;
-  saveData();
+  saveData().catch(()=>{});
   toast('✅ Theme applied!');
   document.getElementById('theme-panel').classList.remove('show');
 }
-// ── BANNER CROP ──
+
+// ── BANNER ──
 let cropState={active:false,startX:0,startY:0,x:0,y:0,w:0,h:0};
 let bannerNatW=0,bannerNatH=0;
 function loadBannerImage(input){
   const file=input.files[0];if(!file)return;
   const reader=new FileReader();
   reader.onload=e=>{
-    const img=document.getElementById('banner-source-img');
-    img.src=e.target.result;
-    img.onload=()=>{
-      bannerNatW=img.naturalWidth;bannerNatH=img.naturalHeight;
-      document.getElementById('banner-preview').style.display='block';
-      document.getElementById('crop-actions').style.display='flex';
-      setupCropCanvas();
-    };
+    const img=document.getElementById('banner-source-img');img.src=e.target.result;
+    img.onload=()=>{bannerNatW=img.naturalWidth;bannerNatH=img.naturalHeight;document.getElementById('banner-preview').style.display='block';document.getElementById('crop-actions').style.display='flex';setupCropCanvas();};
   };
   reader.readAsDataURL(file);input.value='';
 }
@@ -1115,30 +950,24 @@ function setupCropCanvas(){
   canvas.onmouseup=canvas.ontouchend=()=>{cropState.active=false;};
 }
 function drawCrop(){
-  const canvas=document.getElementById('crop-overlay');
-  const ctx=canvas.getContext('2d');
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  if(cropState.w<5||cropState.h<5)return;
+  const canvas=document.getElementById('crop-overlay');const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);if(cropState.w<5||cropState.h<5)return;
   ctx.fillStyle='rgba(0,0,0,0.5)';ctx.fillRect(0,0,canvas.width,canvas.height);
   ctx.clearRect(cropState.x,cropState.y,cropState.w,cropState.h);
-  ctx.strokeStyle='white';ctx.lineWidth=2;ctx.setLineDash([6,3]);
-  ctx.strokeRect(cropState.x,cropState.y,cropState.w,cropState.h);
+  ctx.strokeStyle='white';ctx.lineWidth=2;ctx.setLineDash([6,3]);ctx.strokeRect(cropState.x,cropState.y,cropState.w,cropState.h);
 }
 function applyCrop(){
   const img=document.getElementById('banner-source-img');
   const scaleX=bannerNatW/img.offsetWidth,scaleY=bannerNatH/img.offsetHeight;
-  const sx=(cropState.w>5?cropState.x:0)*scaleX;
-  const sy=(cropState.h>5?cropState.y:0)*scaleY;
-  const sw=(cropState.w>5?cropState.w:img.offsetWidth)*scaleX;
-  const sh=(cropState.h>5?cropState.h:img.offsetHeight)*scaleY;
-  const out=document.createElement('canvas');
-  const maxW=800;const ratio=Math.min(1,maxW/sw);
-  out.width=sw*ratio;out.height=sh*ratio;
-  out.getContext('2d').drawImage(img,sx,sy,sw,sh,0,0,out.width,out.height);
+  const sx=(cropState.w>5?cropState.x:0)*scaleX,sy=(cropState.h>5?cropState.y:0)*scaleY;
+  const sw=(cropState.w>5?cropState.w:img.offsetWidth)*scaleX,sh=(cropState.h>5?cropState.h:img.offsetHeight)*scaleY;
+  const out=document.createElement('canvas');const maxW=800;const ratio=Math.min(1,maxW/sw);
+  out.width=sw*ratio;out.height=sh*ratio;out.getContext('2d').drawImage(img,sx,sy,sw,sh,0,0,out.width,out.height);
   const b64=out.toDataURL('image/jpeg',0.8).split(',')[1];
   if(!allMenus[currentMenu])allMenus[currentMenu]={categories:[]};
   allMenus[currentMenu].banner=b64;
-  saveData();
+  // Save banner to localStorage only (too large for Redis)
+  try{localStorage.setItem(STORE_KEY,JSON.stringify(allMenus));}catch(e){}
   document.getElementById('banner-set-indicator').style.display='block';
   document.getElementById('crop-actions').style.display='none';
   document.getElementById('banner-preview').style.display='none';
@@ -1146,158 +975,104 @@ function applyCrop(){
 }
 function clearCrop(){
   cropState={active:false,startX:0,startY:0,x:0,y:0,w:0,h:0};
-  const canvas=document.getElementById('crop-overlay');
-  if(canvas)canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
+  const canvas=document.getElementById('crop-overlay');if(canvas)canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
 }
-// ── APPLY THEME IN CUSTOMER VIEW ──
+
+// ── APPLY THEME ──
 function applyMenuTheme(menuType){
   const menuData=allMenus[menuType]||{};
   const t=menuData.theme||{primary:'#8B1A1A',accent:'#B8953F',bg:'#FBF5E6',font:'serif'};
   let s=document.getElementById('menu-theme-style');
   if(!s){s=document.createElement('style');s.id='menu-theme-style';document.head.appendChild(s);}
   const ff=t.font==='sans'?"'Raleway',sans-serif":t.font==='decorative'?"'Cinzel',serif":"'EB Garamond',serif";
-  s.textContent=`.cw{background:${t.bg}!important}.c-hero{background:${t.bg}!important}.c-cat-nav,.c-sec-header{background:${t.primary}!important}.c-sec-name,.c-cat-header-text{color:${t.bg}!important}.c-item-price{color:${t.primary}!important}.c-dia{background:${t.accent}!important}.c-item-name{font-family:${ff}!important}.c-cat-tile.active{background:${t.bg}!important;color:${t.primary}!important}.c-footer{background:${t.bg}!important}`;
+  s.textContent=`.cw{background:${t.bg}!important}.c-hero{background:${t.bg}!important}.c-cat-nav,.c-sec-header{background:${t.primary}!important}.c-sec-name,.c-cat-header-text{color:${t.bg}!important}.c-item-price{color:${t.primary}!important}.c-item-name{font-family:${ff}!important}.c-cat-tile.active{background:${t.bg}!important;color:${t.primary}!important}.c-footer{background:${t.bg}!important}`;
   const bannerImg=document.getElementById('banner-img');
   if(bannerImg&&menuData.banner){bannerImg.src='data:image/jpeg;base64,'+menuData.banner;}
 }
-  function uploadCustomQR(event, menuId){
-  const file=event.target.files[0];
-  if(!file)return;
+
+// ── CUSTOM QR ──
+function uploadCustomQR(event,menuId){
+  const file=event.target.files[0];if(!file)return;
   const reader=new FileReader();
   reader.onload=e=>{
     const b64=e.target.result.split(',')[1];
     if(!allMenus[menuId])allMenus[menuId]={categories:[]};
     allMenus[menuId].customQR=b64;
-    saveData();
-    generateQRs();
-    toast('✅ Custom QR saved!');
+    try{localStorage.setItem(STORE_KEY,JSON.stringify(allMenus));}catch(e){}
+    generateQRs();toast('✅ Custom QR saved!');
   };
   reader.readAsDataURL(file);
 }
 function clearCustomQR(menuId){
   if(!allMenus[menuId])return;
   delete allMenus[menuId].customQR;
-  saveData();
-  generateQRs();
-  toast('🗑 Custom QR removed');
+  try{localStorage.setItem(STORE_KEY,JSON.stringify(allMenus));}catch(e){}
+  generateQRs();toast('🗑 Custom QR removed');
 }
 
-function toast(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg;t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),3500);
-}
-  function openAddMenuModal(){
-  document.getElementById('f-menu-name').value='';
-  document.getElementById('f-menu-icon').value='🍽';
-  document.getElementById('f-menu-restname').value='';
-  document.getElementById('f-menu-address').value='';
-  document.getElementById('f-menu-phone').value='';
+// ── ADD / DELETE MENU ──
+function openAddMenuModal(){
+  document.getElementById('f-menu-name').value='';document.getElementById('f-menu-icon').value='🍽';
+  document.getElementById('f-menu-restname').value='';document.getElementById('f-menu-address').value='';document.getElementById('f-menu-phone').value='';
   document.getElementById('add-menu-modal').classList.add('show');
 }
 function saveNewMenu(){
   const name=document.getElementById('f-menu-name').value.trim();
   if(!name){alert('Enter a menu name');return;}
   const id='menu_'+Date.now();
-  menuList.push({id,name,
-    icon:document.getElementById('f-menu-icon').value.trim()||'🍽',
-    restname:document.getElementById('f-menu-restname').value.trim(),
-    address:document.getElementById('f-menu-address').value.trim(),
-    phone:document.getElementById('f-menu-phone').value.trim()
-  });
+  menuList.push({id,name,icon:document.getElementById('f-menu-icon').value.trim()||'🍽',restname:document.getElementById('f-menu-restname').value.trim(),address:document.getElementById('f-menu-address').value.trim(),phone:document.getElementById('f-menu-phone').value.trim()});
   allMenus[id]={categories:[]};
-  saveData().catch(()=>{});
-  updateCounts();
+  saveData().catch(()=>{});updateCounts();
   document.getElementById('add-menu-modal').classList.remove('show');
+  toast('✅ Menu created!');
 }
 function deleteMenu(id){
   if(menuList.length<=3){alert('Cannot delete the 3 default menus');return;}
   if(!confirm('Delete this menu and all its items?'))return;
-  menuList=menuList.filter(m=>m.id!==id);
-  delete allMenus[id];
+  menuList=menuList.filter(m=>m.id!==id);delete allMenus[id];
   if(currentMenu===id)currentMenu=menuList[0].id;
-  saveData().catch(()=>{});
-  updateCounts();
+  saveData().catch(()=>{});updateCounts();
 }
 
-// INIT
+// ── TOAST ──
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3500);}
+
 // ── PASSCODE ──
-const ADMIN_PASSCODE = '1947'; // Change this to your preferred passcode
-let currentPin = '';
-
-function enterDigit(d) {
-  if (currentPin.length >= 4) return;
-  currentPin += d;
-  updateDots();
-  if (currentPin.length === 4) {
-    setTimeout(checkPasscode, 150);
-  }
+const ADMIN_PASSCODE='1947';
+let currentPin='';
+function enterDigit(d){if(currentPin.length>=4)return;currentPin+=d;updateDots();if(currentPin.length===4)setTimeout(checkPasscode,150);}
+function clearDigit(){currentPin=currentPin.slice(0,-1);updateDots();document.getElementById('passcode-error').textContent='';}
+function updateDots(){for(let i=0;i<4;i++){const dot=document.getElementById('dot-'+i);if(i<currentPin.length)dot.classList.add('filled');else dot.classList.remove('filled');}}
+function checkPasscode(){
+  if(currentPin===ADMIN_PASSCODE){document.getElementById('passcode-screen').style.display='none';sessionStorage.setItem('fh_admin_auth','1');}
+  else{document.getElementById('passcode-error').textContent='❌ Wrong passcode. Try again.';currentPin='';updateDots();const box=document.querySelector('.passcode-box');box.style.animation='shake 0.4s ease';setTimeout(()=>box.style.animation='',400);}
 }
 
-function clearDigit() {
-  currentPin = currentPin.slice(0, -1);
-  updateDots();
-  document.getElementById('passcode-error').textContent = '';
-}
-
-function updateDots() {
-  for (let i = 0; i < 4; i++) {
-    const dot = document.getElementById('dot-' + i);
-    if (i < currentPin.length) {
-      dot.classList.add('filled');
-    } else {
-      dot.classList.remove('filled');
-    }
-  }
-}
-
-function checkPasscode() {
-  if (currentPin === ADMIN_PASSCODE) {
-document.getElementById('passcode-screen').style.display = 'none';
-    sessionStorage.setItem('fh_admin_auth', '1');
-  } else {
-    document.getElementById('passcode-error').textContent = '❌ Wrong passcode. Try again.';
-    currentPin = '';
-    updateDots();
-    // Shake animation
-    const box = document.querySelector('.passcode-box');
-    box.style.animation = 'shake 0.4s ease';
-    setTimeout(() => box.style.animation = '', 400);
-  }
-}
-
-window.addEventListener('DOMContentLoaded', async ()=>{
-  const params = new URLSearchParams(window.location.search);
-  const menuParam = params.get('menu');
-
+// ── INIT ──
+window.addEventListener('DOMContentLoaded',async()=>{
+  const params=new URLSearchParams(window.location.search);
+  const menuParam=params.get('menu');
   if(menuParam){
-    // CUSTOMER MODE — show menu immediately, load data in background
-    document.getElementById('topbar').style.display = 'none';
+    document.getElementById('topbar').style.display='none';
     document.getElementById('view-admin').classList.remove('active');
-    document.getElementById('passcode-screen').style.display = 'none';
-    const sb=document.querySelector('.save-bar'); if(sb) sb.style.display='none';
+    document.getElementById('passcode-screen').style.display='none';
+    document.getElementById('save-bar').style.display='none';
     document.getElementById('view-customer').classList.add('active');
     await loadData();
     renderCustomer();
-  } else {
-    // ADMIN MODE
+  }else{
     await loadData();
-    const screen = document.getElementById('passcode-screen');
-    if(sessionStorage.getItem('fh_admin_auth') === '1'){
-      screen.style.display = 'none';
-    } else {
-      screen.style.display = 'flex';
-    }
+    const screen=document.getElementById('passcode-screen');
+    screen.style.display=sessionStorage.getItem('fh_admin_auth')==='1'?'none':'flex';
     generateQRs();
     updateCounts();
     showSaveBar();
-        document.getElementById('banner-section').classList.add('show'); // ← add this
-
-    if(allMenus.restaurant.categories.length > 0){
+    document.getElementById('banner-section').classList.add('show'); // always show banner
+    if(allMenus[currentMenu]?.categories?.length>0){
       document.getElementById('editor-wrap').classList.add('show');
       document.getElementById('success-card').classList.add('show');
-      const total = allMenus.restaurant.categories.reduce((s,c)=>s+c.items.length,0);
-      document.getElementById('success-detail').textContent = total+' items across '+allMenus.restaurant.categories.length+' categories';
+      const total=allMenus[currentMenu].categories.reduce((s,c)=>s+c.items.length,0);
+      document.getElementById('success-detail').textContent=total+' items across '+allMenus[currentMenu].categories.length+' categories';
       renderAdminCats();
     }
   }
@@ -1305,16 +1080,3 @@ window.addEventListener('DOMContentLoaded', async ()=>{
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
